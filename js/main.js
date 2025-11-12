@@ -26,12 +26,26 @@ document.addEventListener('DOMContentLoaded', function(){
     });
   });
 
+  // helper to format meta keys (e.g. 'revis' -> 'Revisions')
+  function formatMetaKey(k){
+    var key = String(k||'');
+    var lower = key.toLowerCase();
+    if(/revis/.test(lower)) return 'Revisions';
+    if(/format/.test(lower)) return 'Format';
+    if(/turnaround|time|days/.test(lower)) return 'Turnaround';
+    return key.replace(/[-_]/g,' ').split(' ').map(function(w){ return w.charAt(0).toUpperCase()+w.slice(1); }).join(' ');
+  }
+
   // Render snapshot on index (first 6)
   var snap = document.getElementById('packages-snapshot');
   if(snap && typeof SERVICES !== 'undefined'){
     SERVICES.slice(0,6).forEach(function(s){
       var card = document.createElement('div'); card.className = 'card';
-      card.innerHTML = '<h3>'+s.title+' <span style="float:right;color:var(--green);font-weight:800">'+s.price+'</span></h3><p style="color:#666">'+s.shortDescription+'</p><div style="margin-top:10px"><a class="cta" href="details.html?id='+encodeURIComponent(s.id)+'">View Details</a></div>';
+      // Title first, price on its own line underneath and emphasized
+  card.innerHTML = '<h3 style="margin:0 0 8px 0">'+s.title+'</h3>' +
+           '<div class="package-price" style="color:var(--green);font-weight:900;font-size:38px;margin-bottom:8px">'+s.price+'</div>' +
+                       '<p style="color:#666">'+s.shortDescription+'</p>' +
+                       '<div style="margin-top:10px"><a class="cta" href="details.html?id='+encodeURIComponent(s.id)+'">View Details</a></div>';
       snap.appendChild(card);
     });
   }
@@ -43,9 +57,14 @@ document.addEventListener('DOMContentLoaded', function(){
       var card = document.createElement('div'); card.className = 'card';
       var metaHtml = '';
       if(s.meta && typeof s.meta === 'object'){
-        metaHtml = Object.entries(s.meta).map(function(kv){ return '<div><strong>'+kv[0]+':</strong> '+kv[1]+'</div>'; }).join('');
+        metaHtml = Object.entries(s.meta).map(function(kv){ return '<div><strong>'+ (formatMetaKey(kv[0]) )+':</strong> '+kv[1]+'</div>'; }).join('');
       }
-      card.innerHTML = '<h3>'+s.title+' <span style="float:right;color:var(--green);font-weight:800">'+s.price+'</span></h3><div class="meta">'+metaHtml+'</div><p style="color:#666;margin-top:8px">'+s.shortDescription+'</p><div style="margin-top:10px"><a class="cta" href="details.html?id='+encodeURIComponent(s.id)+'">View Details</a></div>';
+      // Place price under the title and make it more prominent
+  card.innerHTML = '<h3 style="margin:0 0 8px 0">'+s.title+'</h3>' +
+           '<div class="package-price" style="color:var(--green);font-weight:900;font-size:46px;margin-bottom:8px">'+s.price+'</div>' +
+                       '<div class="meta">'+metaHtml+'</div>' +
+                       '<p style="color:#666;margin-top:8px">'+s.shortDescription+'</p>' +
+                       '<div style="margin-top:10px"><a class="cta" href="details.html?id='+encodeURIComponent(s.id)+'">View Details</a></div>';
       list.appendChild(card);
     });
   }
