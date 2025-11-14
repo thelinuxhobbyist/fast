@@ -13,8 +13,8 @@ document.addEventListener('DOMContentLoaded', function() {
 // Stripe Checkout Integration
 // Replace 'pk_test_...' with your actual Stripe Publishable Key when ready
 
-// Initialize Stripe with placeholder key
-const stripe = Stripe('pk_test_YOUR_PUBLISHABLE_KEY_HERE');
+// Initialize Stripe with your publishable key
+const stripe = Stripe('pk_test_51STTem2KkObKPVCjWYundub4WiyxnWFMZZvulyXPNQSrpe8LfO89doMDHZXy6bg02BAOZyGDllziDTGVFcnhEYkU00QCdNmDJ3');
 
 // Create an instance of Elements
 const elements = stripe.elements({
@@ -90,55 +90,55 @@ submitButton.addEventListener('click', async function(event) {
 	buttonText.style.display = 'none';
 	spinner.classList.remove('hidden');
 	
-	// In a real implementation, you would:
-	// 1. Create a PaymentIntent on your server
-	// 2. Get the client_secret from the response
-	// 3. Confirm the payment with Stripe
-	
-	// For now, we'll simulate the process
-	simulatePayment(customerName, customerEmail);
+	// Process payment with Stripe
+	processPayment(customerName, customerEmail);
 });
 
-// Simulate payment processing (replace with actual Stripe integration)
-async function simulatePayment(name, email) {
+// Process payment with Stripe
+async function processPayment(name, email) {
 	try {
-		// Simulate API call delay
-		await new Promise(resolve => setTimeout(resolve, 2000));
+		// Get the order amount (convert to cents/pence)
+		const totalAmount = Math.round(getOrderTotal() * 100);
 		
-		// In production, you would do:
-		// const response = await fetch('/create-payment-intent', {
-		//   method: 'POST',
-		//   headers: { 'Content-Type': 'application/json' },
-		//   body: JSON.stringify({
-		//     name: name,
-		//     email: email,
-		//     packageId: getSelectedPackageId(),
-		//     amount: getOrderTotal(),
-		//   }),
-		// });
-		// const { clientSecret } = await response.json();
-		// 
-		// const result = await stripe.confirmCardPayment(clientSecret, {
-		//   payment_method: {
-		//     card: cardElement,
-		//     billing_details: {
-		//       name: name,
-		//       email: email,
-		//     },
-		//   },
-		// });
-		// 
-		// if (result.error) {
-		//   showError(result.error.message);
-		// } else {
-		//   if (result.paymentIntent.status === 'succeeded') {
-		//     window.location.href = 'success.html?payment_intent=' + result.paymentIntent.id;
-		//   }
-		// }
+		// Create Payment Intent on server
+		const response = await fetch('/api/create-payment-intent', {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify({
+				amount: totalAmount,
+				currency: 'gbp',
+				customerEmail: email,
+				customerName: name
+			}),
+		});
 		
-		// For demo purposes, redirect to success page
-		console.log('Payment simulation for:', name, email);
-		window.location.href = 'success.html';
+		const data = await response.json();
+		
+		if (data.error) {
+			showError(data.error);
+			return;
+		}
+		
+		const { clientSecret } = data;
+		
+		// Confirm the payment with Stripe
+		const result = await stripe.confirmCardPayment(clientSecret, {
+			payment_method: {
+				card: cardElement,
+				billing_details: {
+					name: name,
+					email: email,
+				},
+			},
+		});
+		
+		if (result.error) {
+			showError(result.error.message);
+		} else {
+			if (result.paymentIntent.status === 'succeeded') {
+				window.location.href = 'success.html?payment_intent=' + result.paymentIntent.id;
+			}
+		}
 		
 	} catch (error) {
 		showError('An error occurred. Please try again.');
