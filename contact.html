@@ -23,7 +23,6 @@
 <script src="js/services.js"></script>
 <script src="js/main.js"></script>
 <script>
-document.getElementById('menuToggleC').addEventListener('click', function(){ document.getElementById('navC').classList.toggle('active'); });
 document.getElementById('type').addEventListener('change', function(){ var custom = document.getElementById('customArea'); if(this.value==='custom') custom.style.display='block'; else custom.style.display='none'; });
 if(window.location.hash && window.location.hash==='#custom'){ document.getElementById('contactTitle').scrollIntoView({behavior:'smooth'}); document.getElementById('type').value='custom'; document.getElementById('customArea').style.display='block'; }
 </script>
