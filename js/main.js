@@ -45,7 +45,7 @@ document.addEventListener('DOMContentLoaded', function(){
   card.innerHTML = '<h3 style="margin:0 0 8px 0">'+s.title+'</h3>' +
            '<div class="package-price" style="color:var(--green);font-weight:900;font-size:38px;margin-bottom:8px">'+s.price+'</div>' +
                        '<p style="color:#666">'+s.shortDescription+'</p>' +
-                       '<div style="margin-top:10px"><a class="cta" href="details.html?id='+encodeURIComponent(s.id)+'">View Details</a></div>';
+                       '<div class="card-actions" style="margin-top:auto;padding-top:16px"><a class="cta" href="details.html?id='+encodeURIComponent(s.id)+'" style="display:block;width:100%;text-align:center">View Details</a></div>';
       snap.appendChild(card);
     });
   }
@@ -64,7 +64,7 @@ document.addEventListener('DOMContentLoaded', function(){
            '<div class="package-price" style="color:var(--green);font-weight:900;font-size:46px;margin-bottom:8px">'+s.price+'</div>' +
                        '<div class="meta">'+metaHtml+'</div>' +
                        '<p style="color:#666;margin-top:8px">'+s.shortDescription+'</p>' +
-                       '<div style="margin-top:10px"><a class="cta" href="details.html?id='+encodeURIComponent(s.id)+'">View Details</a></div>';
+                       '<div class="card-actions" style="margin-top:auto;padding-top:16px"><a class="cta" href="details.html?id='+encodeURIComponent(s.id)+'" style="display:block;width:100%;text-align:center">View Details</a></div>';
       list.appendChild(card);
     });
   }
@@ -99,7 +99,7 @@ document.addEventListener('DOMContentLoaded', function(){
         return '<div class="meta-item">'+icon+'<div><strong>'+key+':</strong><div style="color:var(--muted)">'+val+'</div></div></div>';
       }).join('');
     }
-    var rightHtml = '<aside class="price-card"><div style="text-align:center;margin-bottom:20px"><div class="price-sub">Price</div><div class="price-big">'+s.price+'</div><div class="price-sub" style="font-size:12px;color:var(--green);font-weight:700">One-time payment • No hidden fees</div></div><div style="background:linear-gradient(135deg,rgba(164,206,57,0.08),rgba(11,102,51,0.05));padding:14px;border-radius:8px;margin-bottom:16px"><a class="btn-primary btn btn-primary-cta" href="'+(s.stripe||'#')+'" target="_blank" style="width:100%;background:var(--accent);box-shadow:0 8px 24px rgba(11, 102, 102, 0.3)"><span class="btn-icon">✓</span> Order Your Design Now</a></div><div class="meta-list" style="border-top:1px solid #eee;padding-top:14px;margin-bottom:16px">'+metaHtmlRight+'</div><div class="trust-section"><div class="trust-badge"><i class="fa-solid fa-star" style="color:#ffc107"></i> <span><strong>Rated 4.9/5</strong> by 300+ Clients</span></div><div class="trust-item"><i class="fa-solid fa-shield-halved" style="color:var(--green)"></i> <span>30-Day Money-Back Guarantee</span></div><div class="trust-item"><i class="fa-solid fa-bolt" style="color:var(--accent)"></i> <span>First Draft in 48 Hours</span></div><div class="trust-item"><i class="fa-solid fa-undo" style="color:var(--green)"></i> <span>2 Rounds of Free Revisions</span></div></div></aside>';
+    var rightHtml = '<aside class="price-card"><div style="text-align:center;margin-bottom:20px"><div class="price-sub">Price</div><div class="price-big">'+s.price+'</div><div class="price-sub" style="font-size:12px;color:var(--green);font-weight:700">One-time payment • No hidden fees</div></div><div style="background:linear-gradient(135deg,rgba(164,206,57,0.08),rgba(11,102,51,0.05));padding:14px;border-radius:8px;margin-bottom:16px"><a class="btn-primary btn btn-primary-cta" href="checkout.html?package='+encodeURIComponent(s.id)+'" style="width:100%;background:var(--accent);box-shadow:0 8px 24px rgba(11, 102, 102, 0.3)"><span class="btn-icon">✓</span> Order Your Design Now</a></div><div class="meta-list" style="border-top:1px solid #eee;padding-top:14px;margin-bottom:16px">'+metaHtmlRight+'</div><div class="trust-section"><div class="trust-badge"><i class="fa-solid fa-star" style="color:#ffc107"></i> <span><strong>Rated 4.9/5</strong> by 300+ Clients</span></div><div class="trust-item"><i class="fa-solid fa-shield-halved" style="color:var(--green)"></i> <span>30-Day Money-Back Guarantee</span></div><div class="trust-item"><i class="fa-solid fa-bolt" style="color:var(--accent)"></i> <span>First Draft in 48 Hours</span></div><div class="trust-item"><i class="fa-solid fa-undo" style="color:var(--green)"></i> <span>2 Rounds of Free Revisions</span></div></div></aside>';
     details.innerHTML = '<div class="details-layout">'+leftHtml+rightHtml+'</div>';
   }
 

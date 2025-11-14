@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width,initial-scale=1">
+	<title>Checkout - Fast Graphic Design</title>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+	<link rel="stylesheet" href="css/style.css">
+	<script src="https://js.stripe.com/v3/"></script>
+</head>
+<body>
+<header>
+	<div class="container header-inner">
+		<div class="brand">
+			<img src="assets/fast.png" alt="Fast logo">
+			<div>
+				<strong>Fast Graphic Design</strong>
+				<div style="font-size:13px;color:#666">Creative outsourcing for small businesses</div>
+			</div>
+		</div>
+		<button class="menu-toggle" id="menuToggle" aria-label="Open menu">
+			<i class="fa fa-bars"></i>
+		</button>
+		<nav class="nav" id="nav">
+			<a href="index.html">Home</a>
+			<a href="packages.html">Packages</a>
+			<a href="contact.html">Contact</a>
+		</nav>
+	</div>
+</header>
+
+<main class="container">
+	<div class="checkout-layout">
+		<!-- Left: Checkout form -->
+		<div class="checkout-main">
+			<h1 style="margin-top:0;color:var(--accent);font-size:32px">Complete Your Order</h1>
+			<p style="color:var(--muted);margin-bottom:32px">Secure checkout powered by Stripe. Your payment information is encrypted and secure.</p>
+
+			<!-- Package Selection (optional, can be pre-selected from packages page) -->
+			<div class="checkout-section">
+				<h3><i class="fa-solid fa-box"></i> Selected Package</h3>
+				<div id="selected-package" class="selected-package-card">
+					<div class="package-info">
+						<strong id="package-name">Logo Design - Basic</strong>
+						<p id="package-desc">Professional logo with 2 concepts</p>
+					</div>
+					<div class="package-price" id="package-price">£199</div>
+				</div>
+				<a href="packages.html" class="text-link" style="font-size:13px;margin-top:8px;display:inline-block">
+					<i class="fa-solid fa-arrow-left"></i> Choose a different package
+				</a>
+			</div>
+
+			<!-- Contact Information -->
+			<div class="checkout-section">
+				<h3><i class="fa-solid fa-user"></i> Contact Information</h3>
+				<div class="form-grid">
+					<div class="form-field">
+						<label for="customer-name">Full Name *</label>
+						<input type="text" id="customer-name" required placeholder="John Smith">
+					</div>
+					<div class="form-field">
+						<label for="customer-email">Email Address *</label>
+						<input type="email" id="customer-email" required placeholder="john@example.com">
+					</div>
+				</div>
+				<div class="form-field">
+					<label for="customer-company">Company Name (Optional)</label>
+					<input type="text" id="customer-company" placeholder="Your Company Ltd">
+				</div>
+			</div>
+
+			<!-- Payment Information -->
+			<div class="checkout-section">
+				<h3><i class="fa-solid fa-credit-card"></i> Payment Details</h3>
+				<div class="form-field">
+					<label for="card-element">Card Information</label>
+					<div id="card-element" class="stripe-element">
+						<!-- Stripe Card Element will be inserted here -->
+					</div>
+					<div id="card-errors" role="alert" class="error-message"></div>
+				</div>
+
+				<div class="security-badges">
+					<div class="security-badge">
+						<i class="fa-solid fa-lock"></i>
+						<span>Secure 256-bit SSL encryption</span>
+					</div>
+					<div class="security-badge">
+						<i class="fa-brands fa-cc-stripe"></i>
+						<span>Powered by Stripe</span>
+					</div>
+				</div>
+			</div>
+
+			<!-- Submit Button -->
+			<button type="submit" id="submit-payment" class="btn-checkout">
+				<span id="button-text">
+					<i class="fa-solid fa-lock"></i>
+					Pay Securely
+				</span>
+				<div id="spinner" class="spinner hidden"></div>
+			</button>
+
+			<p class="checkout-terms">
+				By completing this purchase, you agree to our 
+				<a href="terms.html">Terms of Service</a> and 
+				<a href="privacy.html">Privacy Policy</a>.
+			</p>
+		</div>
+
+		<!-- Right: Order Summary -->
+		<div class="checkout-sidebar">
+			<div class="order-summary">
+				<h3>Order Summary</h3>
+				
+				<div class="summary-item">
+					<span id="summary-package-name">Logo Design - Basic</span>
+					<span id="summary-package-price">£199.00</span>
+				</div>
+
+				<div class="summary-divider"></div>
+
+				<div class="summary-item summary-total">
+					<strong>Total</strong>
+					<strong id="summary-total">£199.00</strong>
+				</div>
+
+				<div class="trust-items">
+					<div class="trust-item-small">
+						<i class="fa-solid fa-clock"></i>
+						<span>Fast 2-5 day turnaround</span>
+					</div>
+					<div class="trust-item-small">
+						<i class="fa-solid fa-shield-halved"></i>
+						<span>100% satisfaction guarantee</span>
+					</div>
+					<div class="trust-item-small">
+						<i class="fa-solid fa-rotate"></i>
+						<span>Unlimited revisions</span>
+					</div>
+				</div>
+
+				<div class="payment-methods">
+					<img src="https://img.shields.io/badge/Visa-1A1F71?style=flat&logo=visa&logoColor=white" alt="Visa" style="height:24px">
+					<img src="https://img.shields.io/badge/Mastercard-EB001B?style=flat&logo=mastercard&logoColor=white" alt="Mastercard" style="height:24px">
+				</div>
+			</div>
+
+			<div class="help-card">
+				<i class="fa-solid fa-headset"></i>
+				<h4>Need Help?</h4>
+				<p>Our team is here to assist you.</p>
+				<a href="contact.html" class="text-link">Contact Support →</a>
+			</div>
+		</div>
+	</div>
+</main>
+
+<footer class="footer">
+	<div class="container">
+		<div style="text-align:center;padding:20px 0">
+			<p style="color:#888;font-size:13px;margin:0">© 2025 Fast Graphic Design. All rights reserved.</p>
+		</div>
+	</div>
+</footer>
+
+<script src="js/services.js"></script>
+<script src="js/main.js"></script>
+<script src="js/checkout.js"></script>
+</body>
+</html>
