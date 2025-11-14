@@ -130,7 +130,8 @@ textarea{min-height:120px}
 /* Hide redundant hero 'Request Custom Work' button on smaller screens to avoid wrapping
 	 Mobile navigation already includes the CTA. Matches mobile breakpoint used elsewhere. */
 @media (max-width:880px) {
-	.hero-actions a[href*="#custom"]{
+	.hero-actions a[href*="#custom"],
+	.hero-primary{
 		display: none !important;
 	}
 
