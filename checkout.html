@@ -36,23 +36,46 @@
 			<h1 style="margin-top:0;color:var(--accent);font-size:32px">Complete Your Order</h1>
 			<p style="color:var(--muted);margin-bottom:32px">Secure checkout powered by Stripe. Your payment information is encrypted and secure.</p>
 
-			<!-- Package Selection (optional, can be pre-selected from packages page) -->
-			<div class="checkout-section">
-				<h3><i class="fa-solid fa-box"></i> Selected Package</h3>
-				<div id="selected-package" class="selected-package-card">
-					<div class="package-info">
-						<strong id="package-name">Logo Design - Basic</strong>
-						<p id="package-desc">Professional logo with 2 concepts</p>
+			<!-- Collapsible Order Summary (mobile only, at top) -->
+			<div class="order-summary-mobile collapsible-summary">
+				<button class="summary-toggle" type="button" aria-expanded="false">
+					<span>Order Summary</span>
+					<span class="summary-total-label">— Total <span id="summary-total-mobile">£199.00</span></span>
+					<span class="summary-toggle-icon" aria-hidden="true">&#x25BC;</span>
+				</button>
+				<div class="collapsible-content" style="display:none">
+					<div class="summary-item">
+						<span id="summary-package-name-mobile">Logo Design - Basic</span>
+						<span id="summary-package-price-mobile">£199.00</span>
 					</div>
-					<div class="package-price" id="package-price">£199</div>
+					<div class="summary-divider"></div>
+					<div class="summary-item summary-total">
+						<strong>Total</strong>
+						<strong>£199.00</strong>
+					</div>
+					<div class="trust-items">
+						<div class="trust-item-small">
+							<i class="fa-solid fa-clock"></i>
+							<span>Fast 2-5 day turnaround</span>
+						</div>
+						<div class="trust-item-small">
+							<i class="fa-solid fa-shield-halved"></i>
+							<span>100% satisfaction guarantee</span>
+						</div>
+						<div class="trust-item-small">
+							<i class="fa-solid fa-rotate"></i>
+							<span>Unlimited revisions</span>
+						</div>
+					</div>
+					<div class="payment-methods">
+						<!-- payment-methods removed from summary, will be placed in payment section -->
+					</div>
 				</div>
-				<a href="packages.html" class="text-link" style="font-size:13px;margin-top:8px;display:inline-block">
-					<i class="fa-solid fa-arrow-left"></i> Choose a different package
-				</a>
 			</div>
 
-			<!-- Contact Information -->
-			<div class="checkout-section">
+
+			<!-- Contact Information (moved up for mobile) -->
+			<div class="checkout-section checkout-contact-section">
 				<h3><i class="fa-solid fa-user"></i> Contact Information</h3>
 				<div class="form-grid">
 					<div class="form-field">
@@ -70,13 +93,17 @@
 				</div>
 			</div>
 
-			<!-- Payment Information -->
-			<div class="checkout-section">
+			<!-- Payment Information (moved after contact for mobile) -->
+			<div class="checkout-section checkout-payment-section">
 				<h3><i class="fa-solid fa-credit-card"></i> Payment Details</h3>
 				<div class="form-field">
 					<label for="card-element">Card Information</label>
 					<div id="card-element" class="stripe-element">
 						<!-- Stripe Card Element will be inserted here -->
+					</div>
+					<div class="payment-methods">
+						<img src="https://img.shields.io/badge/Visa-1A1F71?style=flat&logo=visa&logoColor=white" alt="Visa" style="height:24px">
+						<img src="https://img.shields.io/badge/Mastercard-EB001B?style=flat&logo=mastercard&logoColor=white" alt="Mastercard" style="height:24px">
 					</div>
 					<div id="card-errors" role="alert" class="error-message"></div>
 				</div>
@@ -93,14 +120,31 @@
 				</div>
 			</div>
 
-			<!-- Submit Button -->
-			<button type="submit" id="submit-payment" class="btn-checkout">
-				<span id="button-text">
-					<i class="fa-solid fa-lock"></i>
-					Pay Securely
-				</span>
-				<div id="spinner" class="spinner hidden"></div>
-			</button>
+			<!-- Package Selection (below payment for mobile, hidden on mobile) -->
+			<div class="checkout-section checkout-package-section">
+				<h3><i class="fa-solid fa-box"></i> Selected Package</h3>
+				<div id="selected-package" class="selected-package-card">
+					<div class="package-info">
+						<strong id="package-name">Logo Design - Basic</strong>
+						<p id="package-desc">Professional logo with 2 concepts</p>
+					</div>
+					<div class="package-price" id="package-price">£199</div>
+				</div>
+				<a href="packages.html" class="text-link" style="font-size:13px;margin-top:8px;display:inline-block">
+					<i class="fa-solid fa-arrow-left"></i> Choose a different package
+				</a>
+			</div>
+
+			<!-- Submit Button (sticky on mobile) -->
+			<div class="sticky-pay-btn-wrapper">
+				<button type="submit" id="submit-payment" class="btn-checkout">
+					<span id="button-text">
+						<i class="fa-solid fa-lock"></i>
+						Pay Securely
+					</span>
+					<div id="spinner" class="spinner hidden"></div>
+				</button>
+			</div>
 
 			<p class="checkout-terms">
 				By completing this purchase, you agree to our 
@@ -109,23 +153,19 @@
 			</p>
 		</div>
 
-		<!-- Right: Order Summary -->
+		<!-- Right: Order Summary (desktop) -->
 		<div class="checkout-sidebar">
-			<div class="order-summary">
+			<div class="order-summary order-summary-desktop">
 				<h3>Order Summary</h3>
-				
 				<div class="summary-item">
 					<span id="summary-package-name">Logo Design - Basic</span>
 					<span id="summary-package-price">£199.00</span>
 				</div>
-
 				<div class="summary-divider"></div>
-
 				<div class="summary-item summary-total">
 					<strong>Total</strong>
 					<strong id="summary-total">£199.00</strong>
 				</div>
-
 				<div class="trust-items">
 					<div class="trust-item-small">
 						<i class="fa-solid fa-clock"></i>
@@ -140,13 +180,11 @@
 						<span>Unlimited revisions</span>
 					</div>
 				</div>
-
-				<div class="payment-methods">
-					<img src="https://img.shields.io/badge/Visa-1A1F71?style=flat&logo=visa&logoColor=white" alt="Visa" style="height:24px">
-					<img src="https://img.shields.io/badge/Mastercard-EB001B?style=flat&logo=mastercard&logoColor=white" alt="Mastercard" style="height:24px">
-				</div>
 			</div>
+		</div>
 
+		<!-- Support box below all form sections on mobile -->
+		<div class="mobile-support-card">
 			<div class="help-card">
 				<i class="fa-solid fa-headset"></i>
 				<h4>Need Help?</h4>

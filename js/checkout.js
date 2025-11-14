@@ -1,3 +1,15 @@
+// Collapsible order summary for mobile
+document.addEventListener('DOMContentLoaded', function() {
+	var toggle = document.querySelector('.summary-toggle');
+	var content = document.querySelector('.collapsible-content');
+	if (toggle && content) {
+		toggle.addEventListener('click', function() {
+			var expanded = toggle.getAttribute('aria-expanded') === 'true';
+			toggle.setAttribute('aria-expanded', !expanded);
+			content.style.display = expanded ? 'none' : 'block';
+		});
+	}
+});
 // Stripe Checkout Integration
 // Replace 'pk_test_...' with your actual Stripe Publishable Key when ready
 
