@@ -10,26 +10,29 @@
 	display: block;
 }
 @media (max-width: 640px) {
+	/* Make the pay button flow normally instead of sticking to the viewport */
 	.sticky-pay-btn-wrapper {
-		position: fixed;
-		left: 0;
-		right: 0;
-		bottom: 0;
-		z-index: 1000;
-		background: #fff;
-		padding: 12px 12px 8px 12px;
-		box-shadow: 0 -2px 16px 0 rgba(0,0,0,0.08);
-		width: 100vw;
+		position: static;
+		left: auto;
+		right: auto;
+		bottom: auto;
+		z-index: auto;
+		background: transparent;
+		padding: 0;
+		box-shadow: none;
+		width: auto;
 	}
 	.btn-checkout {
+		/* keep full-width within the content column but not fixed to viewport */
 		width: 100%;
-		max-width: 100%;
+		max-width: 480px;
 		font-size: 18px;
-		margin: 0 auto;
+		margin: 16px 0 0 0;
 		display: block;
 	}
+	/* no extra bottom padding needed when button is not sticky */
 	main.container {
-		padding-bottom: 80px !important;
+		padding-bottom: 0 !important;
 	}
 }
 @media (max-width: 640px) {
