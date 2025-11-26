@@ -129,17 +129,32 @@
 					<div id="card-errors" role="alert" class="error-message"></div>
 				</div>
 
-				<!-- Security badges (under form) -->
-				<div class="security-badges">
-					<div class="security-badge">
-						<i class="fa-solid fa-lock"></i>
-						<span>Secure 256-bit SSL encryption</span>
-					</div>
-					<div class="security-badge">
-						<i class="fa-brands fa-cc-stripe"></i>
-						<span>Powered by Stripe</span>
-					</div>
+			<!-- Security badges (under form) -->
+			<div class="security-badges">
+				<div class="security-badge">
+					<i class="fa-solid fa-lock"></i>
+					<span>Secure 256-bit SSL encryption</span>
 				</div>
+				<div class="security-badge">
+					<i class="fa-brands fa-cc-stripe"></i>
+					<span>Powered by Stripe</span>
+				</div>
+			</div>
+
+			<!-- Pay Button (mobile) -->
+			<button type="submit" id="submit-payment-mobile" class="btn-checkout" style="width:100%;margin-top:24px;display:none">
+				<span id="button-text-mobile">
+					<i class="fa-solid fa-lock"></i>
+					Pay Securely
+				</span>
+				<div id="spinner-mobile" class="spinner hidden"></div>
+			</button>
+
+			<p class="checkout-terms" style="text-align:center;font-size:12px;margin-top:12px;display:none" id="checkout-terms-mobile">
+				By completing this purchase, you agree to our 
+				<a href="terms.html">Terms of Service</a> and 
+				<a href="privacy.html">Privacy Policy</a>.
+			</p>
 			</div>
 		</div>
 

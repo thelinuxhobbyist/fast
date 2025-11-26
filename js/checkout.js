@@ -63,39 +63,50 @@ cardElement.on('change', function(event) {
 
 // Handle form submission
 const submitButton = document.getElementById('submit-payment');
+const submitButtonMobile = document.getElementById('submit-payment-mobile');
 const buttonText = document.getElementById('button-text');
+const buttonTextMobile = document.getElementById('button-text-mobile');
 const spinner = document.getElementById('spinner');
+const spinnerMobile = document.getElementById('spinner-mobile');
 
-submitButton.addEventListener('click', async function(event) {
-	event.preventDefault();
-	
-	// Validate contact information
-	const customerName = document.getElementById('customer-name').value.trim();
-	const customerEmail = document.getElementById('customer-email').value.trim();
-	
-	if (!customerName || !customerEmail) {
-		alert('Please fill in all required fields.');
-		return;
+// Function to attach click handler to both buttons
+function attachPaymentHandler(btn, btnText, spin) {
+	if (btn) {
+		btn.addEventListener('click', async function(event) {
+			event.preventDefault();
+			
+			// Validate contact information
+			const customerName = document.getElementById('customer-name').value.trim();
+			const customerEmail = document.getElementById('customer-email').value.trim();
+			
+			if (!customerName || !customerEmail) {
+				alert('Please fill in all required fields.');
+				return;
+			}
+			
+			// Basic email validation
+			const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+			if (!emailRegex.test(customerEmail)) {
+				alert('Please enter a valid email address.');
+				return;
+			}
+			
+			// Disable button and show loading state
+			btn.disabled = true;
+			btnText.style.display = 'none';
+			spin.classList.remove('hidden');
+			
+			// Process payment with Stripe
+			processPayment(customerName, customerEmail, btn, btnText, spin);
+		});
 	}
-	
-	// Basic email validation
-	const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-	if (!emailRegex.test(customerEmail)) {
-		alert('Please enter a valid email address.');
-		return;
-	}
-	
-	// Disable button and show loading state
-	submitButton.disabled = true;
-	buttonText.style.display = 'none';
-	spinner.classList.remove('hidden');
-	
-	// Process payment with Stripe
-	processPayment(customerName, customerEmail);
-});
+}
+
+attachPaymentHandler(submitButton, buttonText, spinner);
+attachPaymentHandler(submitButtonMobile, buttonTextMobile, spinnerMobile);
 
 // Process payment with Stripe
-async function processPayment(name, email) {
+async function processPayment(name, email, btn, btnText, spin) {
 	try {
 		// Get the order amount (convert to cents/pence)
 		const totalAmount = Math.round(getOrderTotal() * 100);
@@ -115,7 +126,7 @@ async function processPayment(name, email) {
 		const data = await response.json();
 		
 		if (data.error) {
-			showError(data.error);
+			showError(data.error, btn, btnText, spin);
 			return;
 		}
 		
@@ -133,7 +144,7 @@ async function processPayment(name, email) {
 		});
 		
 		if (result.error) {
-			showError(result.error.message);
+			showError(result.error.message, btn, btnText, spin);
 		} else {
 			if (result.paymentIntent.status === 'succeeded') {
 				window.location.href = 'success.html?payment_intent=' + result.paymentIntent.id;
@@ -141,20 +152,20 @@ async function processPayment(name, email) {
 		}
 		
 	} catch (error) {
-		showError('An error occurred. Please try again.');
+		showError('An error occurred. Please try again.', btn, btnText, spin);
 		console.error('Payment error:', error);
 	}
 }
 
-function showError(message) {
+function showError(message, btn, btnText, spin) {
 	const displayError = document.getElementById('card-errors');
 	displayError.textContent = message;
 	displayError.classList.add('visible');
 	
 	// Re-enable button
-	submitButton.disabled = false;
-	buttonText.style.display = 'flex';
-	spinner.classList.add('hidden');
+	btn.disabled = false;
+	btnText.style.display = 'flex';
+	spin.classList.add('hidden');
 }
 
 // Helper functions for package selection (can be expanded)
