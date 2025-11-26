@@ -1,5 +1,4 @@
 @media (max-width: 640px) {
-	.checkout-sidebar { display: none; }
 	.mobile-support-card { display: block; margin-top: 32px; }
 }
 	display: none;
