@@ -357,7 +357,7 @@ textarea{min-height:120px}
 
 @media(max-width:1024px){
 	.checkout-layout{grid-template-columns:1fr;gap:32px}
-	.checkout-sidebar{position:relative;top:0}
+	.checkout-sidebar{position:relative;top:0;display:none}
 	.order-summary{margin-bottom:0}
 	.mobile-pay-btn { display: block; }
 }

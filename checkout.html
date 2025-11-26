@@ -134,7 +134,7 @@
 				</div>
 			</div>
 
-			<!-- Submit Button (mobile only) -->
+			<!-- Pay Button (mobile only) -->
 			<div class="sticky-pay-btn-wrapper mobile-pay-btn">
 				<button type="submit" id="submit-payment" class="btn-checkout">
 					<span id="button-text">
@@ -150,9 +150,9 @@
 				<a href="terms.html">Terms of Service</a> and 
 				<a href="privacy.html">Privacy Policy</a>.
 			</p>
-		</div>>
+		</div>
 
-		<!-- Right: Order Summary (desktop) -->
+		<!-- Right: Order Summary + Pay Button (desktop) -->
 		<div class="checkout-sidebar">
 			<div class="order-summary order-summary-desktop">
 				<h3>Order Summary</h3>
@@ -192,6 +192,15 @@
 					<span>Powered by Stripe</span>
 				</div>
 			</div>
+
+			<!-- Pay Button (desktop) -->
+			<button type="submit" id="submit-payment" class="btn-checkout" style="width:100%;margin-top:20px">
+				<span id="button-text">
+					<i class="fa-solid fa-lock"></i>
+					Pay Securely
+				</span>
+				<div id="spinner" class="spinner hidden"></div>
+			</button>
 
 			<!-- Help card (desktop) -->
 			<div class="help-card" style="margin-top:20px">
