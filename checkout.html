@@ -132,21 +132,10 @@
 					</div>
 					<div id="card-errors" role="alert" class="error-message"></div>
 				</div>
-
-				<div class="security-badges">
-					<div class="security-badge">
-						<i class="fa-solid fa-lock"></i>
-						<span>Secure 256-bit SSL encryption</span>
-					</div>
-					<div class="security-badge">
-						<i class="fa-brands fa-cc-stripe"></i>
-						<span>Powered by Stripe</span>
-					</div>
-				</div>
 			</div>
 
-			<!-- Submit Button (sticky on mobile) -->
-			<div class="sticky-pay-btn-wrapper">
+			<!-- Submit Button (mobile only) -->
+			<div class="sticky-pay-btn-wrapper mobile-pay-btn">
 				<button type="submit" id="submit-payment" class="btn-checkout">
 					<span id="button-text">
 						<i class="fa-solid fa-lock"></i>
@@ -161,7 +150,7 @@
 				<a href="terms.html">Terms of Service</a> and 
 				<a href="privacy.html">Privacy Policy</a>.
 			</p>
-		</div>
+		</div>>
 
 		<!-- Right: Order Summary (desktop) -->
 		<div class="checkout-sidebar">
@@ -204,13 +193,22 @@
 				</div>
 			</div>
 
+			<!-- Pay button (desktop) -->
+			<button type="submit" id="submit-payment" class="btn-checkout desktop-pay-btn" style="margin-top:20px;width:100%">
+				<span id="button-text">
+					<i class="fa-solid fa-lock"></i>
+					Pay Securely
+				</span>
+				<div id="spinner" class="spinner hidden"></div>
+			</button>
+
 			<!-- Help card (desktop) -->
 			<div class="help-card" style="margin-top:20px">
 				<i class="fa-solid fa-headset"></i>
 				<h4>Need Help?</h4>
 				<p>Our team is here to assist you.</p>
 				<a href="contact.html" class="text-link">Contact Support →</a>
-			</div>
+			</div>>
 		</div>
 
 		<!-- Support box below all form sections on mobile -->

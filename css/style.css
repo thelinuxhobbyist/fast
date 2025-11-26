@@ -354,11 +354,15 @@ textarea{min-height:120px}
 .message-container h1{margin:0 0 16px 0;font-size:32px;color:var(--accent)}
 .message-container p{color:var(--muted);font-size:16px;line-height:1.6;margin-bottom:28px}
 
-/* Responsive Checkout */
+.mobile-pay-btn { display: none; }
+.desktop-pay-btn { display: block; }
+
 @media(max-width:1024px){
 	.checkout-layout{grid-template-columns:1fr;gap:32px}
 	.checkout-sidebar{position:relative;top:0}
 	.order-summary{margin-bottom:0}
+	.mobile-pay-btn { display: block; }
+	.desktop-pay-btn { display: none; }
 }
 /* Mobile/Desktop Order Summary Toggle */
 .order-summary-mobile { display: none; }
