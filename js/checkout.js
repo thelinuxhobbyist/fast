@@ -168,6 +168,38 @@ function showError(message, btn, btnText, spin) {
 	spin.classList.add('hidden');
 }
 
+// Payment Request Button for Apple Pay, Google Pay, etc.
+const paymentRequest = stripe.paymentRequest({
+  country: 'GB',
+  currency: 'gbp',
+  total: {
+    label: 'Fast Graphic Design',
+    amount: Math.round(getOrderTotal() * 100),
+  },
+  requestPayerName: true,
+  requestPayerEmail: true,
+});
+
+const prButton = elements.create('paymentRequestButton', {
+  paymentRequest: paymentRequest,
+  style: {
+    paymentRequestButton: {
+      type: 'default',
+      theme: 'light',
+      height: '44px',
+    },
+  },
+});
+
+paymentRequest.canMakePayment().then(function(result) {
+  if (result) {
+    prButton.mount('#payment-request-button');
+    document.getElementById('payment-request-button').style.display = 'block';
+  } else {
+    document.getElementById('payment-request-button').style.display = 'none';
+  }
+});
+
 // Helper functions for package selection (can be expanded)
 function getSelectedPackageId() {
 	// In production, get from URL params or session storage
