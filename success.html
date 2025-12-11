@@ -86,7 +86,7 @@
 
 			<div class="form-field">
 				<label for="deadline">Preferred deadline or completion date</label>
-				<input type="text" id="deadline" name="deadline" placeholder="e.g., December 20, 2025" required>
+				<input type="text" id="deadline" name="deadline" placeholder="e.g., 10+ days from today" required>
 			</div>
 
 			<div style="background:#f9fdfb;border:1px solid #e8f2e8;border-radius:10px;padding:16px;margin-bottom:24px">
@@ -141,6 +141,21 @@
 </footer>
 
 <script src="js/main.js"></script>
+<script>
+// Set deadline placeholder to a date 10+ days in the future
+document.addEventListener('DOMContentLoaded', function() {
+  const deadlineInput = document.getElementById('deadline');
+  if (deadlineInput) {
+    const today = new Date();
+    const futureDate = new Date(today.getTime() + (10 * 24 * 60 * 60 * 1000)); // 10 days from today
+    
+    const options = { year: 'numeric', month: 'long', day: 'numeric' };
+    const formattedDate = futureDate.toLocaleDateString('en-US', options);
+    
+    deadlineInput.placeholder = 'e.g., ' + formattedDate;
+  }
+});
+</script>
 <!-- Google AdSense code - loaded asynchronously to prevent page blocking -->
 <script>
   // Load AdSense script after page is interactive
