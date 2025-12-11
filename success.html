@@ -189,8 +189,15 @@ document.addEventListener('DOMContentLoaded', function() {
 			body: formData
 		}).then(function(response) {
 			if (response.ok) {
-				// replace form with a friendly confirmation
-				form.innerHTML = '<p style="font-size:18px;color:var(--green)">Thanks — your project details have been sent. Our team will review and be in touch soon.</p>';
+				// replace the entire card section with a focused confirmation panel
+				var card = form.closest('section.card');
+				if (card) {
+					card.innerHTML = '\n            <div style="text-align:center;padding:40px 20px">\n              <div style="font-size:48px;color:var(--green);margin-bottom:12px">\u2714</div>\n              <h2 style="margin:0 0 12px 0">Thanks — we received your details</h2>\n              <p style="color:#666;max-width:720px;margin:0 auto 18px">Your project information has been sent to our team. We'll review it and be in touch with any follow-up questions or a proposed timeline.</p>\n              <p style="margin-top:18px"><a href="index.html" class="cta" style="padding:10px 18px">Return to Home</a></p>\n            </div>';
+				} else {
+					form.innerHTML = '<p style="font-size:18px;color:var(--green)">Thanks — your project details have been sent. Our team will review and be in touch soon.</p>';
+				}
+				// Optionally update the URL to indicate submission
+				try { history.replaceState(null, '', window.location.pathname + '?submitted=true'); } catch(e){}
 			} else {
 				return response.json().then(function(data){
 					var msg = (data && data.error) ? data.error : 'Submission failed';
