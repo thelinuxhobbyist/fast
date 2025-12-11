@@ -73,6 +73,20 @@ const spinnerMobile = document.getElementById('spinner-mobile');
 var SELECTED_PACKAGE_ID = getSelectedPackageId();
 
 // Function to attach click handler to both buttons
+
+function formatCurrency(n){
+	if (isNaN(n)) return '£0.00';
+	return '£' + Number(n).toFixed(2);
+}
+
+function updatePayButtonAmount(){
+	var total = getOrderTotal();
+	var amt = formatCurrency(total);
+	var bt = document.getElementById('button-text');
+	var btm = document.getElementById('button-text-mobile');
+	if (bt) bt.innerHTML = '<i class="fa-solid fa-lock"></i> Pay ' + amt;
+	if (btm) btm.innerHTML = '<i class="fa-solid fa-lock"></i> Pay ' + amt;
+}
 function attachPaymentHandler(btn, btnText, spin) {
 	if (btn) {
 		btn.addEventListener('click', async function(event) {
@@ -262,6 +276,8 @@ function loadPackageDetails(packageId) {
 	if (pkg) {
 		// remember selected package id for metadata
 		SELECTED_PACKAGE_ID = packageId;
+		// update pay button to show the package amount
+		try { updatePayButtonAmount(); } catch(e){}
 		document.getElementById('package-name').textContent = pkg.title;
 		document.getElementById('package-desc').textContent = pkg.shortDescription || pkg.longDescription || '';
 		document.getElementById('package-price').textContent = pkg.price;
