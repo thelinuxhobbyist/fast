@@ -119,7 +119,9 @@ async function processPayment(name, email, btn, btnText, spin) {
 				amount: totalAmount,
 				currency: 'gbp',
 				customerEmail: email,
-				customerName: name
+				customerName: name,
+				package_id: getSelectedPackageId(),
+				order_type: 'checkout'
 			}),
 		});
 		
