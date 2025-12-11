@@ -217,9 +217,26 @@ function getSelectedPackageId() {
 }
 
 function getOrderTotal() {
-	// Parse from the summary
-	const totalText = document.getElementById('summary-total').textContent;
-	return parseFloat(totalText.replace('£', '').replace(',', ''));
+	// Prefer reading the numeric price from the selected SERVICE object
+	try {
+		const pkgId = getSelectedPackageId();
+		if (typeof findService === 'function') {
+			const pkg = findService(pkgId);
+			if (pkg && pkg.price) {
+				// price may be like "£199" or "£0.30" — strip non-numeric except dot and parse
+				const num = pkg.price.replace(/[^0-9.]/g, '');
+				const val = parseFloat(num);
+				if (!isNaN(val)) return val;
+			}
+		}
+	} catch (e) { /* fallback below */ }
+	// Fallback: Parse from the summary DOM element
+	const el = document.getElementById('summary-total');
+	if (el) {
+		const totalText = el.textContent || el.innerText || '';
+		return parseFloat(totalText.replace(/[^0-9.]/g, '')) || 0;
+	}
+	return 0;
 }
 
 // Optional: Load package details from URL parameters
