@@ -10,18 +10,6 @@
 
   gtag('config', 'G-MVKRK0TSRL');
 </script>
-<!-- Facebook SDK for JavaScript -->
-<div id="fb-root"></div>
-<script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v18.0" nonce="ABC123"></script>
-<script>
-  window.fbAsyncInit = function() {
-    FB.init({
-      appId      : '1730939007171026',
-      xfbml      : true,
-      version    : 'v18.0'
-    });
-  };
-</script>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width,initial-scale=1">
 	<title>Payment Successful - Fast Graphic Design</title>
@@ -46,65 +34,123 @@
 </header>
 
 <main class="container">
-	<div class="message-container">
-		<div class="message-icon success">
-			<i class="fa-solid fa-circle-check"></i>
-		</div>
-		<h1>Payment Successful!</h1>
-		<p>Thank you for your order. We've received your payment and will begin work on your project right away.</p>
-		<p style="font-size:14px;color:#666;margin-bottom:32px">A confirmation email has been sent to your inbox with your order details and next steps.</p>
+	<section class="card">
+		<h1>Tell Us About Your Project</h1>
+		<p style="color:#666;margin-bottom:24px">Thank you for your payment! To help our team get started, please answer a few general questions about your business and project. We'll review your responses and follow up with any specific questions needed to complete your design.</p>
 		
-		<div style="background:#f9fdfb;border:1px solid #e8f2e8;border-radius:10px;padding:24px;margin-bottom:28px;text-align:left">
-			<h3 style="margin:0 0 16px 0;color:var(--accent);font-size:18px">
-				<i class="fa-solid fa-clipboard-list"></i> What happens next?
-			</h3>
-			<ul style="margin:0;padding-left:20px;color:#333;line-height:2">
-				<li>Check your email for order confirmation and invoice</li>
-				<li>Our design team will review your requirements</li>
-				<li>You'll receive your first concepts within 2-5 business days</li>
-				<li>We'll work with you on revisions until you're 100% satisfied</li>
-			</ul>
-		</div>
+		<form id="projectForm" action="https://formspree.io/f/xldkyoqz" method="POST">
+			<div class="form-field">
+				<label for="fullname">Full Name</label>
+				<input type="text" id="fullname" name="fullname" required>
+			</div>
 
-		<div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
-			<a href="index.html" class="cta" style="padding:12px 24px">
-				<i class="fa-solid fa-house"></i> Return Home
-			</a>
-			<a href="contact.html" class="btn" style="padding:12px 24px;border:2px solid var(--accent);font-weight:700">
-				<i class="fa-solid fa-envelope"></i> Contact Support
-			</a>
-		</div>
+			<div class="form-field">
+				<label for="company">Company / Business Name</label>
+				<input type="text" id="company" name="company" placeholder="(Leave blank if not applicable.)">
+			</div>
 
-		<p style="margin-top:32px;padding-top:32px;border-top:1px solid #eee;font-size:13px;color:#888">
-			Order ID: <strong id="order-id">#ORD-XXXX</strong>
-		</p>
-	</div>
+			<div class="form-field">
+				<label for="email">Email Address</label>
+				<input type="email" id="email" name="email" required>
+			</div>
+
+			<div class="form-field">
+				<label for="phone">Phone Number</label>
+				<input type="tel" id="phone" name="phone">
+			</div>
+
+			<div class="form-field">
+				<label for="purpose">What is the purpose of this design?</label>
+				<input type="text" id="purpose" name="purpose" placeholder="Example: promoting an event, product advertising, brand awareness, social media post, etc." required>
+			</div>
+
+			<div class="form-field">
+				<label for="business">Tell us about your business or brand</label>
+				<textarea id="business" name="business" placeholder="What do you do? Who is your target audience? What message are you trying to convey?" required style="min-height:120px"></textarea>
+			</div>
+
+			<div class="form-field">
+				<label for="vision">Project details & vision</label>
+				<textarea id="vision" name="vision" placeholder="What are you looking for? Style, tone, required text, colors, elements, etc." required style="min-height:120px"></textarea>
+			</div>
+
+			<div class="form-field">
+				<label for="guidelines">Do you have any brand guidelines or specific instructions?</label>
+				<textarea id="guidelines" name="guidelines" placeholder="Colors to use/avoid, required wording, layout preferences, etc." style="min-height:100px"></textarea>
+			</div>
+
+			<div class="form-field">
+				<label for="reference">Reference images or inspiration links</label>
+				<textarea id="reference" name="reference" placeholder="Paste links to designs or styles you like." style="min-height:100px"></textarea>
+			</div>
+
+			<div class="form-field">
+				<label for="deadline">Preferred deadline or completion date</label>
+				<input type="text" id="deadline" name="deadline" placeholder="e.g., December 20, 2025" required>
+			</div>
+
+			<div style="background:#f9fdfb;border:1px solid #e8f2e8;border-radius:10px;padding:16px;margin-bottom:24px">
+				<p style="margin:0 0 12px 0;font-size:14px;color:#333;font-weight:600">
+					Please send any logos, brand assets, or reference files to:
+				</p>
+				<p style="margin:0;font-size:15px"><strong><a href="mailto:assets@fastgraphicdesign.co.uk" style="color:var(--accent);text-decoration:none">assets@fastgraphicdesign.co.uk</a></strong></p>
+			</div>
+
+			<div class="form-actions">
+				<button class="cta" type="submit">Submit Project Details</button>
+			</div>
+		</form>
+
+		<div style="margin-top:32px;padding-top:32px;border-top:1px solid #eee;text-align:center">
+			<p style="color:#666;font-size:14px;margin:0">Questions? <a href="contact.html" style="color:var(--accent);font-weight:700">Contact our team</a></p>
+		</div>
+	</section>
 </main>
 
 <footer class="footer">
 	<div class="container">
-		<div style="text-align:center;padding:20px 0">
-			<p style="color:#888;font-size:13px;margin:0">© 2025 Fast Graphic Design. All rights reserved.</p>
+		<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:40px;margin-bottom:40px">
+			<div>
+				<h4 style="color:var(--green);margin-bottom:16px;font-size:18px">Fast Graphic Design</h4>
+				<p style="color:#ccc;font-size:16px;line-height:1.6">Professional white-label outsourcing solutions for small businesses. We deliver high-quality graphic design services that help your business stand out.</p>
+			</div>
+			<div>
+				<h4 style="color:var(--green);margin-bottom:16px">Quick Links</h4>
+				<a href="index.html">Home</a>
+				<a href="packages.html">Packages</a>
+				<a href="contact.html">Contact</a>
+			</div>
+			<div>
+				<h4 style="color:var(--green);margin-bottom:16px">Legal</h4>
+				<a href="terms.html">Terms of Service</a>
+				<a href="privacy.html">Privacy Policy</a>
+				<a href="refund.html">Refund Policy</a>
+			</div>
+			<div>
+				<h4 style="color:var(--green);margin-bottom:16px">Follow Us</h4>
+				<p style="color:#fff;margin:0">
+					<a href="https://www.facebook.com/fastgraphicdesign" style="color:#fff;font-size:28px;margin-right:16px;display:inline-block" title="Visit our Facebook"><i class="fa-brands fa-facebook"></i></a>
+					<a href="https://www.youtube.com/@fastgraphicdesign" style="color:#fff;font-size:28px;display:inline-block" title="Visit our YouTube"><i class="fa-brands fa-youtube"></i></a>
+				</p>
+			</div>
+		</div>
+		<div style="border-top:1px solid #333;padding-top:20px">
+			<div style="color:#888;font-size:13px">© 2025 Fast Graphic Design. All rights reserved.</div>
 		</div>
 	</div>
 </footer>
 
 <script src="js/main.js"></script>
+<!-- Google AdSense code - loaded asynchronously to prevent page blocking -->
 <script>
-	// Extract payment intent or order ID from URL if available
-	const urlParams = new URLSearchParams(window.location.search);
-	const paymentIntent = urlParams.get('payment_intent');
-	if (paymentIntent) {
-		document.getElementById('order-id').textContent = '#' + paymentIntent.substring(0, 12).toUpperCase();
-	}
+  // Load AdSense script after page is interactive
+  setTimeout(function() {
+    var script = document.createElement('script');
+    script.src = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-0399816370564181';
+    script.async = true;
+    script.crossOrigin = 'anonymous';
+    document.head.appendChild(script);
+  }, 2000);
 </script>
-<!-- Facebook Messenger Plugin -->
-<div id="fb-customer-chat" class="fb-customerchat"></div>
-<script>
-var chatbox = document.getElementById('fb-customer-chat');
-chatbox.setAttribute('page_id', '1730939007171026');
-chatbox.setAttribute('attribution', 'biz_inbox');
-</script>
-
 </body>
 </html>
