@@ -39,6 +39,8 @@
 		<p style="color:#666;margin-bottom:24px">Thank you for your payment! To help our team get started, please answer a few general questions about your business and project. We'll review your responses and follow up with any specific questions needed to complete your design.</p>
 		
 		<form id="projectForm" action="https://formspree.io/f/xldkyoqz" method="POST">
+			<input type="hidden" name="_next" value="https://fastgraphicdesign.co.uk/success.html?submitted=true">
+			<input type="hidden" name="_subject" value="New Project Inquiry">
 			<div class="form-field">
 				<label for="fullname">Full Name</label>
 				<input type="text" id="fullname" name="fullname" required>
@@ -158,14 +160,51 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 <!-- Google AdSense code - loaded asynchronously to prevent page blocking -->
 <script>
-  // Load AdSense script after page is interactive
-  setTimeout(function() {
-    var script = document.createElement('script');
-    script.src = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-0399816370564181';
-    script.async = true;
-    script.crossOrigin = 'anonymous';
-    document.head.appendChild(script);
-  }, 2000);
+	// Load AdSense script after page is interactive
+	setTimeout(function() {
+		var script = document.createElement('script');
+		script.src = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-0399816370564181';
+		script.async = true;
+		script.crossOrigin = 'anonymous';
+		document.head.appendChild(script);
+	}, 2000);
+</script>
+
+<script>
+// Formspree: submit the project form via fetch and show inline success/error
+document.addEventListener('DOMContentLoaded', function() {
+	var form = document.getElementById('projectForm');
+	if (!form) return;
+
+	form.addEventListener('submit', function(e) {
+		e.preventDefault();
+		var submitBtn = form.querySelector('button[type="submit"]');
+		if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = 'Sending...'; }
+
+		var formData = new FormData(form);
+
+		fetch(form.action, {
+			method: 'POST',
+			headers: { 'Accept': 'application/json' },
+			body: formData
+		}).then(function(response) {
+			if (response.ok) {
+				// replace form with a friendly confirmation
+				form.innerHTML = '<p style="font-size:18px;color:var(--green)">Thanks — your project details have been sent. Our team will review and be in touch soon.</p>';
+			} else {
+				return response.json().then(function(data){
+					var msg = (data && data.error) ? data.error : 'Submission failed';
+					throw new Error(msg);
+				});
+			}
+		}).catch(function(err) {
+			// revert submit button and show error
+			if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = 'Submit Project Details'; }
+			alert('Submission error: ' + (err && err.message ? err.message : err));
+			console.error('Formspree submit error:', err);
+		});
+	});
+});
 </script>
 </body>
 </html>
