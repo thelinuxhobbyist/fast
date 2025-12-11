@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Payment Verified — Project Details</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <main class="container">
+  <section class="card">
+    <h1>Tell Us About Your Project</h1>
+    <p style="color:#666;margin-bottom:24px">Thank you for your payment! To help our team get started, please answer a few general questions about your business and project.</p>
+
+    <form id="projectForm" action="/success" method="POST">
+      <input type="hidden" name="payment_intent" value="<%= payment_intent %>">
+
+      <div class="form-field">
+        <label for="fullname">Full Name</label>
+        <input type="text" id="fullname" name="fullname" required>
+      </div>
+
+      <div class="form-field">
+        <label for="company">Company / Business Name</label>
+        <input type="text" id="company" name="company" placeholder="(Leave blank if not applicable.)">
+      </div>
+
+      <div class="form-field">
+        <label for="email">Email Address</label>
+        <input type="email" id="email" name="email" value="<%= prefill.email %>" required>
+      </div>
+
+      <div class="form-field">
+        <label for="phone">Phone Number</label>
+        <input type="tel" id="phone" name="phone">
+      </div>
+
+      <div class="form-field">
+        <label for="purpose">What is the purpose of this design?</label>
+        <input type="text" id="purpose" name="purpose" placeholder="Example: promoting an event, product advertising, brand awareness, social media post, etc." required>
+      </div>
+
+      <div class="form-field">
+        <label for="business">Tell us about your business or brand</label>
+        <textarea id="business" name="business" required style="min-height:120px"></textarea>
+      </div>
+
+      <div class="form-field">
+        <label for="vision">Project details & vision</label>
+        <textarea id="vision" name="vision" required style="min-height:120px"></textarea>
+      </div>
+
+      <div class="form-field">
+        <label for="deadline">Preferred deadline or completion date</label>
+        <input type="date" id="deadline" name="deadline" required>
+      </div>
+
+      <div class="form-actions">
+        <button class="cta" type="submit">Submit Project Details</button>
+      </div>
+    </form>
+  </section>
+  </main>
+  <script>
+    // client-side: ensure deadline min is 10 days from today
+    document.addEventListener('DOMContentLoaded', function(){
+      var d = new Date(); d.setHours(0,0,0,0); d.setDate(d.getDate()+10);
+      function toISODate(x){return x.getFullYear()+'-'+String(x.getMonth()+1).padStart(2,'0')+'-'+String(x.getDate()).padStart(2,'0');}
+      var el = document.getElementById('deadline'); if (el) el.min = toISODate(d);
+    });
+  </script>
+</body>
+</html>

@@ -33,6 +33,17 @@
 	</div>
 </header>
 
+<script>
+	// Redirect to server-side success endpoint which verifies Stripe payments.
+	(function(){
+		try {
+			var search = window.location.search || '';
+			var href = '/success' + search;
+			window.location.replace(href);
+		} catch(e) { console.error('Redirect failed', e); }
+	})();
+</script>
+
 <main class="container">
 	<section class="card">
 		<h1>Tell Us About Your Project</h1>

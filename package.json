@@ -1,0 +1,17 @@
+{
+  "name": "fast-server",
+  "version": "1.0.0",
+  "description": "Small Express server to verify Stripe payments and render project form",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "body-parser": "^1.20.2",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "node-fetch": "^2.6.7",
+    "stripe": "^11.11.0",
+    "ejs": "^3.1.9"
+  }
+}
