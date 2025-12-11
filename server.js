@@ -53,6 +53,13 @@ function setPaymentFields(id, fields){ const list = readPayments(); const idx = 
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
+// Load package titles for display
+let packageMap = {};
+try {
+  const mapPath = path.join(__dirname, 'data', 'packages.json');
+  if (fs.existsSync(mapPath)) packageMap = JSON.parse(fs.readFileSync(mapPath));
+} catch (e) { console.warn('Could not load package map', e && e.message); }
+
 app.use(express.static(path.join(__dirname)));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
@@ -117,7 +124,11 @@ app.get('/success', async (req, res) => {
     const token = crypto.randomBytes(16).toString('hex');
     setPaymentFields(pi.id, { csrfToken: token, email: prefill.email, metadata: pi.metadata || {} });
 
-    res.render('success', { payment_intent: pi.id, prefill, csrfToken: token });
+    // determine friendly package title from metadata.package
+    const pkgId = (pi.metadata && pi.metadata.package) || (pi.metadata && pi.metadata.package_id) || '';
+    const packageTitle = pkgId ? (packageMap[pkgId] || pkgId) : '';
+
+    res.render('success', { payment_intent: pi.id, prefill, csrfToken: token, packageId: pkgId, packageTitle });
   } catch (err) {
     console.error('Error in /success', err && err.message);
     res.status(500).send('Server error verifying payment.');
