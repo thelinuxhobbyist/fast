@@ -14,6 +14,7 @@
 
     <form id="projectForm" action="/success" method="POST">
       <input type="hidden" name="payment_intent" value="<%= payment_intent %>">
+      <input type="hidden" name="csrf_token" value="<%= csrfToken %>">
 
       <div class="form-field">
         <label for="fullname">Full Name</label>

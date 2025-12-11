@@ -3,7 +3,7 @@ export async function onRequestPost(context) {
 	const { request, env } = context;
 	
 	try {
-		const { amount, currency = 'gbp', customerEmail, customerName } = await request.json();
+		const { amount, currency = 'gbp', customerEmail, customerName, package_id, order_type } = await request.json();
 		
 		// Validate the request
 		if (!amount || amount < 50) {
@@ -20,13 +20,20 @@ export async function onRequestPost(context) {
 				'Authorization': `Bearer ${env.STRIPE_SECRET_KEY}`,
 				'Content-Type': 'application/x-www-form-urlencoded'
 			},
-			body: new URLSearchParams({
+			body: new URLSearchParams(Object.assign({
 				amount: amount.toString(),
 				currency: currency,
 				'automatic_payment_methods[enabled]': 'true',
 				'receipt_email': customerEmail || '',
 				'description': `Payment from ${customerName || 'Customer'}`
-			})
+			},
+			// attach metadata for easier server-side verification and form prefilling
+			{
+				'metadata[package]': package_id || '',
+				'metadata[order_type]': order_type || '',
+				'metadata[email]': customerEmail || '',
+				'metadata[site]': env.SITE_IDENTIFIER || 'fastgraphicdesign'
+			}))
 		});
 		
 		const paymentIntent = await response.json();

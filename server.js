@@ -9,6 +9,31 @@ const Stripe = require('stripe');
 const app = express();
 const PORT = process.env.PORT || 3000;
 const stripe = new Stripe(process.env.STRIPE_SECRET || '', { apiVersion: '2022-11-15' });
+const crypto = require('crypto');
+
+// Simple in-memory rate limiter (IP => {count, firstRequestAt})
+const rateWindowMs = 60 * 1000; // 1 minute
+const maxRequestsPerWindow = 20;
+const rateStore = new Map();
+
+function rateLimit(req, res, next) {
+  try {
+    const ip = req.ip || req.connection.remoteAddress || 'unknown';
+    const now = Date.now();
+    const rec = rateStore.get(ip) || { count: 0, first: now };
+    if (now - rec.first > rateWindowMs) {
+      rec.count = 1; rec.first = now;
+    } else {
+      rec.count++;
+    }
+    rateStore.set(ip, rec);
+    if (rec.count > maxRequestsPerWindow) {
+      res.status(429).send('Too many requests, please wait.');
+      return;
+    }
+    next();
+  } catch (e) { next(); }
+}
 
 // Simple file-backed storage for payment records
 const storageDir = path.join(__dirname, 'storage');
@@ -22,6 +47,8 @@ function readPayments(){
 function writePayments(list){ fs.writeFileSync(paymentsFile, JSON.stringify(list, null, 2)); }
 function addPayment(record){ const list = readPayments(); list.push(record); writePayments(list); }
 function hasPayment(id){ return readPayments().some(p => p.id === id); }
+function getPayment(id){ return readPayments().find(p => p.id === id) || null; }
+function setPaymentFields(id, fields){ const list = readPayments(); const idx = list.findIndex(p => p.id === id); if (idx === -1) { list.push(Object.assign({ id: id }, fields)); } else { list[idx] = Object.assign({}, list[idx], fields); } writePayments(list); }
 
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
@@ -86,7 +113,11 @@ app.get('/success', async (req, res) => {
     // prefill some values if available
     const prefill = { email: pi.receipt_email || (pi.charges && pi.charges.data[0] && pi.charges.data[0].billing_details && pi.charges.data[0].billing_details.email) || '' };
 
-    res.render('success', { payment_intent: pi.id, prefill });
+    // create a per-payment CSRF token and save it with the payment record
+    const token = crypto.randomBytes(16).toString('hex');
+    setPaymentFields(pi.id, { csrfToken: token, email: prefill.email, metadata: pi.metadata || {} });
+
+    res.render('success', { payment_intent: pi.id, prefill, csrfToken: token });
   } catch (err) {
     console.error('Error in /success', err && err.message);
     res.status(500).send('Server error verifying payment.');
@@ -94,12 +125,20 @@ app.get('/success', async (req, res) => {
 });
 
 // POST /success - receive form, re-verify payment and forward to Formspree
-app.post('/success', async (req, res) => {
+app.post('/success', rateLimit, async (req, res) => {
   const payment_intent = req.body.payment_intent || req.query.payment_intent;
   if (!payment_intent) return res.status(400).send('Missing payment identifier.');
   try {
     const pi = await stripe.paymentIntents.retrieve(payment_intent);
     if (!pi || pi.status !== 'succeeded') return res.status(400).send('Payment not completed.');
+
+    // CSRF: verify csrf token sent with form matches stored token for this payment
+    const stored = getPayment(payment_intent);
+    const sentToken = req.body.csrf_token || req.body.csrfToken;
+    if (!stored || !stored.csrfToken || !sentToken || stored.csrfToken !== sentToken) {
+      console.warn('CSRF token mismatch for', payment_intent);
+      return res.status(403).send('Invalid or missing form token.');
+    }
 
     // Optionally store that we've accepted the form for this payment
     if (!hasPayment(pi.id)) addPayment({ id: pi.id, email: (pi.receipt_email||''), metadata: pi.metadata || {}, acceptedAt: Date.now() });
