@@ -69,6 +69,9 @@ const buttonTextMobile = document.getElementById('button-text-mobile');
 const spinner = document.getElementById('spinner');
 const spinnerMobile = document.getElementById('spinner-mobile');
 
+// Track selected package id so metadata is accurate when creating PaymentIntent
+var SELECTED_PACKAGE_ID = getSelectedPackageId();
+
 // Function to attach click handler to both buttons
 function attachPaymentHandler(btn, btnText, spin) {
 	if (btn) {
@@ -120,7 +123,7 @@ async function processPayment(name, email, btn, btnText, spin) {
 				currency: 'gbp',
 				customerEmail: email,
 				customerName: name,
-				package_id: getSelectedPackageId(),
+				package_id: SELECTED_PACKAGE_ID || getSelectedPackageId(),
 				order_type: 'checkout'
 			}),
 		});
@@ -204,7 +207,12 @@ paymentRequest.canMakePayment().then(function(result) {
 
 // Helper functions for package selection (can be expanded)
 function getSelectedPackageId() {
-	// In production, get from URL params or session storage
+	// Prefer the runtime-selected package id (set by loadPackageDetails)
+	if (typeof SELECTED_PACKAGE_ID !== 'undefined' && SELECTED_PACKAGE_ID) return SELECTED_PACKAGE_ID;
+	// Fallback to URL parameter
+	const urlParams = new URLSearchParams(window.location.search);
+	const param = urlParams.get('package');
+	if (param) return param;
 	return 'logo-basic';
 }
 
@@ -235,6 +243,8 @@ function loadPackageDetails(packageId) {
 	const pkg = SERVICES.find(s => s.id === packageId);
 	
 	if (pkg) {
+		// remember selected package id for metadata
+		SELECTED_PACKAGE_ID = packageId;
 		document.getElementById('package-name').textContent = pkg.title;
 		document.getElementById('package-desc').textContent = pkg.shortDescription || pkg.longDescription || '';
 		document.getElementById('package-price').textContent = pkg.price;
