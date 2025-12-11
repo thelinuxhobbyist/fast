@@ -88,7 +88,7 @@
 
 			<div class="form-field">
 				<label for="deadline">Preferred deadline or completion date</label>
-				<input type="text" id="deadline" name="deadline" placeholder="e.g., 10+ days from today" required>
+				<input type="date" id="deadline" name="deadline" placeholder="e.g., 10+ days from today" required>
 			</div>
 
 			<div style="background:#f9fdfb;border:1px solid #e8f2e8;border-radius:10px;padding:16px;margin-bottom:24px">
@@ -154,21 +154,18 @@ document.addEventListener('DOMContentLoaded', function() {
     const options = { year: 'numeric', month: 'long', day: 'numeric' };
     const formattedDate = futureDate.toLocaleDateString('en-US', options);
     
-    deadlineInput.placeholder = 'e.g., ' + formattedDate;
+		// set placeholder (for non-date-supporting browsers) and set minimum selectable date
+		deadlineInput.placeholder = 'e.g., ' + formattedDate;
+		// set min attribute in yyyy-mm-dd format so browser date pickers prevent earlier picks
+		function toISODate(d){
+			var y = d.getFullYear(); var m = (d.getMonth()+1).toString().padStart(2,'0'); var dt = d.getDate().toString().padStart(2,'0');
+			return y + '-' + m + '-' + dt;
+		}
+		deadlineInput.min = toISODate(futureDate);
   }
 });
 </script>
-<!-- Google AdSense code - loaded asynchronously to prevent page blocking -->
-<script>
-	// Load AdSense script after page is interactive
-	setTimeout(function() {
-		var script = document.createElement('script');
-		script.src = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-0399816370564181';
-		script.async = true;
-		script.crossOrigin = 'anonymous';
-		document.head.appendChild(script);
-	}, 2000);
-</script>
+<!-- AdSense loader removed as requested -->
 
 <script>
 // Formspree: submit the project form via fetch and show inline success/error
@@ -178,6 +175,36 @@ document.addEventListener('DOMContentLoaded', function() {
 
 	form.addEventListener('submit', function(e) {
 		e.preventDefault();
+
+		// Validate deadline: must be at least 10 days in the future
+		var deadlineInput = form.querySelector('#deadline');
+		function getMinDate() { var d = new Date(); d.setHours(0,0,0,0); d.setDate(d.getDate() + 10); return d; }
+		function showDeadlineError(msg){
+			if (!deadlineInput) return;
+			var err = document.getElementById('deadlineError');
+			if (!err) {
+				err = document.createElement('div');
+				err.id = 'deadlineError';
+				err.style.color = '#b00020';
+				err.style.fontSize = '13px';
+				err.style.marginTop = '8px';
+				deadlineInput.parentNode.appendChild(err);
+			}
+			err.textContent = msg;
+		}
+		function clearDeadlineError(){ var err = document.getElementById('deadlineError'); if (err) err.textContent = ''; }
+
+		if (deadlineInput) {
+			var minDate = getMinDate();
+			var selected = deadlineInput.value ? new Date(deadlineInput.value) : NaN;
+			if (isNaN(selected) || selected.setHours(0,0,0,0) < minDate.getTime()) {
+				showDeadlineError('Please choose a date at least 10 days from today.');
+				deadlineInput.focus();
+				return;
+			}
+		}
+
+		clearDeadlineError();
 		var submitBtn = form.querySelector('button[type="submit"]');
 		if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = 'Sending...'; }
 
@@ -211,6 +238,14 @@ document.addEventListener('DOMContentLoaded', function() {
 			console.error('Formspree submit error:', err);
 		});
 	});
+
+	// Clear deadline error when user changes the date
+	var deadlineField = form.querySelector('#deadline');
+	if (deadlineField) {
+		deadlineField.addEventListener('input', function(){
+			var err = document.getElementById('deadlineError'); if (err) err.textContent = '';
+		});
+	}
 });
 </script>
 </body>
