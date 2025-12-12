@@ -146,16 +146,13 @@ async function ensurePaymentElement(name, email) {
 	};
 	elements = stripe.elements({ clientSecret, appearance });
 	paymentElement = elements.create('payment', {
-		// Disable postal code for UK
-		defaultValues: {
-			billingDetails: {
-				address: {
-					country: 'GB'
-				}
-			}
+		// Only show card and link; exclude other wallets (Apple Pay, Google Pay, Amazon Pay, Revolut, etc.)
+		wallets: {
+			googlePay: 'never',
+			applePay: 'never'
 		},
 		fields: {
-			billingDetails: 'never'  // Don't collect billing details in Payment Element; we'll collect them separately
+			billingDetails: 'never'  // Don't collect billing details in Payment Element; we collect them separately
 		}
 	});
 	const mountPoint = document.getElementById('card-element');
