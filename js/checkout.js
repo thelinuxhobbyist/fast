@@ -13,8 +13,8 @@ document.addEventListener('DOMContentLoaded', function() {
 // Stripe Checkout Integration
 // Replace 'pk_test_...' with your actual Stripe Publishable Key when ready
 
-// Initialize Stripe with your publishable key
-const stripe = Stripe('pk_test_51STTem2KkObKPVCjWYundub4WiyxnWFMZZvulyXPNQSrpe8LfO89doMDHZXy6bg02BAOZyGDllziDTGVFcnhEYkU00QCdNmDJ3');
+// Initialize Stripe with your publishable key and set UK locale so address labels use postcode
+const stripe = Stripe('pk_test_51STTem2KkObKPVCjWYundub4WiyxnWFMZZvulyXPNQSrpe8LfO89doMDHZXy6bg02BAOZyGDllziDTGVFcnhEYkU00QCdNmDJ3', { locale: 'en-GB' });
 
 // We'll create Elements & the Payment Element dynamically after we receive a client secret
 let elements = null;
@@ -275,6 +275,14 @@ function updateSummaries(){
 		var stMbot = document.getElementById('summary-total-mobile-bottom'); if (stMbot) stMbot.textContent = formatted;
 		// update any toggle label
 		var toggleLabel = document.querySelector('.summary-total-label span'); if (toggleLabel) toggleLabel.textContent = formatted;
+		// Show debug info for troubleshooting
+		try{
+			var dbg = document.getElementById('debug-banner');
+			if(dbg){
+				dbg.style.display = 'block';
+				dbg.textContent = 'Parsed package: ' + (getSelectedPackageId() || '(none)') + ' — Total: ' + formatted;
+			}
+		}catch(e){}
 	}catch(e){console.error('updateSummaries error', e)}
 }
 
