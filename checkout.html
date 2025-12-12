@@ -1,233 +1,76 @@
 <!doctype html>
 <html lang="en">
 <head>
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-MVKRK0TSRL"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-<main class="container">
-	<section style="max-width:760px;margin:32px auto;padding:20px">
-		<h1 style="margin-top:0;color:var(--accent);font-size:28px">Secure Checkout</h1>
-		<p style="color:#666">Complete your order. Your payment is processed securely by Stripe.</p>
+	<!-- Google tag (gtag.js) -->
+	<script async src="https://www.googletagmanager.com/gtag/js?id=G-MVKRK0TSRL"></script>
+	<script>
+		window.dataLayer = window.dataLayer || [];
+		function gtag(){dataLayer.push(arguments);}
+		gtag('js', new Date());
+		gtag('config', 'G-MVKRK0TSRL');
+	</script>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width,initial-scale=1">
+	<title>Secure Checkout · Fast Graphic Design</title>
+	<meta name="description" content="Secure checkout for Fast Graphic Design packages">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+	<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+	<header>
+		<div class="container header-inner">
+			<div class="brand"><a href="index.html"><img src="assets/logo.png" alt="Fast logo"></a></div>
+			<nav class="nav" id="nav"><a href="index.html">Home</a><a href="packages.html">Packages</a><a href="contact.html">Contact</a></nav>
+		</div>
+	</header>
 
-		<div style="margin-top:18px;padding:18px;border-radius:10px;border:1px solid #eee">
-			<div style="display:flex;justify-content:space-between;align-items:center">
-				<div>
-					<div id="package-name" style="font-weight:800;font-size:18px">Package</div>
-					<div id="package-desc" style="color:#666;font-size:14px">Description</div>
-				</div>
-				<div id="package-price" style="font-weight:800;color:var(--green);font-size:18px">£0.00</div>
-			</div>
-		</div>
+	<main class="container">
+		<section style="max-width:760px;margin:32px auto;padding:20px">
+			<h1 style="margin-top:0;color:var(--accent);font-size:28px">Secure Checkout</h1>
+			<p style="color:#666">Complete your order. Your payment is processed securely by Stripe.</p>
 
-		<div style="margin-top:18px">
-			<label for="customer-name">Full name</label>
-			<input id="customer-name" type="text" placeholder="Your name" style="width:100%;padding:10px;margin-top:6px;border:1px solid #ddd;border-radius:6px">
-		</div>
-		<div style="margin-top:12px">
-			<label for="customer-email">Email</label>
-			<input id="customer-email" type="email" placeholder="you@example.com" style="width:100%;padding:10px;margin-top:6px;border:1px solid #ddd;border-radius:6px">
-		</div>
-
-		<div id="payment-element" style="margin-top:18px;padding:14px;border:1px solid #eee;border-radius:8px">
-			<!-- Stripe Payment Element mounts here -->
-		</div>
-
-		<div style="margin-top:16px;display:flex;gap:12px;align-items:center">
-			<button id="submit-payment" class="btn" style="padding:12px 18px;background:var(--accent);color:#fff;border:none;border-radius:8px">Pay</button>
-			<div id="checkout-message" style="color:#666"></div>
-		</div>
-	</section>
-</main>
-					<span class="summary-toggle-icon" aria-hidden="true">&#x25BC;</span>
-				</button>
-				<div class="collapsible-content" style="display:none">
-					<div class="summary-item">
-						<span id="summary-package-name-mobile">Logo Design - Basic</span>
-						<span id="summary-package-price-mobile">£199.00</span>
+			<div style="margin-top:18px;padding:18px;border-radius:10px;border:1px solid #eee">
+				<div style="display:flex;justify-content:space-between;align-items:center">
+					<div>
+						<div id="package-name" style="font-weight:800;font-size:18px">Package</div>
+						<div id="package-desc" style="color:#666;font-size:14px">Description</div>
 					</div>
-					<div class="summary-divider"></div>
-					<div class="summary-item summary-total">
-						<strong>Total</strong>
-						<strong>£199.00</strong>
-					</div>
-					<div class="trust-items">
-						<div class="trust-item-small">
-							<i class="fa-solid fa-clock"></i>
-							<span>Fast 2-5 day turnaround</span>
-						</div>
-						<div class="trust-item-small">
-							<i class="fa-solid fa-shield-halved"></i>
-							<span>100% satisfaction guarantee</span>
-						</div>
-						<div class="trust-item-small">
-							<i class="fa-solid fa-rotate"></i>
-							<span>Unlimited revisions</span>
-						</div>
-					</div>
-					<div class="payment-methods">
-						<!-- payment-methods removed from summary, will be placed in payment section -->
-					</div>
+					<div id="package-price" style="font-weight:800;color:var(--green);font-size:18px">£0.00</div>
 				</div>
 			</div>
 
-
-			<!-- Contact Information (moved up for mobile) -->
-			<div class="checkout-section checkout-contact-section">
-				<h3><i class="fa-solid fa-user"></i> Contact Information</h3>
-				<div class="form-grid">
-					<div class="form-field">
-						<label for="customer-name">Full Name *</label>
-						<input type="text" id="customer-name" required placeholder="John Smith">
-					</div>
-					<div class="form-field">
-						<label for="customer-email">Email Address *</label>
-						<input type="email" id="customer-email" required placeholder="john@example.com">
-					</div>
-				</div>
-				<div class="form-field">
-					<label for="customer-company">Company Name (Optional)</label>
-					<input type="text" id="customer-company" placeholder="Your Company Ltd">
-				</div>
+			<div style="margin-top:18px">
+				<label for="customer-name">Full name</label>
+				<input id="customer-name" type="text" placeholder="Your name" style="width:100%;padding:10px;margin-top:6px;border:1px solid #ddd;border-radius:6px">
+			</div>
+			<div style="margin-top:12px">
+				<label for="customer-email">Email</label>
+				<input id="customer-email" type="email" placeholder="you@example.com" style="width:100%;padding:10px;margin-top:6px;border:1px solid #ddd;border-radius:6px">
 			</div>
 
-			<!-- Payment Information (moved after contact for mobile) -->
-			<div class="checkout-section checkout-payment-section">
-				<h3><i class="fa-solid fa-credit-card"></i> Payment Details</h3>
-				<div class="form-field">
-					<label for="card-element">Card Information</label>
-					<div id="payment-request-button" style="margin-bottom:16px"></div>
-					<div id="payment-element" class="stripe-element">
-						<!-- Stripe Payment Element will be inserted here -->
-					</div>
-					<div class="payment-methods">
-						<img src="https://img.shields.io/badge/Visa-1A1F71?style=flat&logo=visa&logoColor=white" alt="Visa" style="height:24px">
-						<img src="https://img.shields.io/badge/Mastercard-EB001B?style=flat&logo=mastercard&logoColor=white" alt="Mastercard" style="height:24px">
-					</div>
-					<div id="card-errors" role="alert" class="error-message"></div>
-				</div>
-
-			<!-- Security badges (under form) -->
-			<div class="security-badges">
-				<div class="security-badge">
-					<i class="fa-solid fa-lock"></i>
-					<span>Secure 256-bit SSL encryption</span>
-				</div>
-				<div class="security-badge">
-					<i class="fa-brands fa-cc-stripe"></i>
-					<span>Powered by Stripe</span>
-				</div>
+			<div id="payment-element" style="margin-top:18px;padding:14px;border:1px solid #eee;border-radius:8px">
+				<!-- Stripe Payment Element mounts here -->
 			</div>
 
-			<!-- Pay Button (mobile) -->
-			<button type="submit" id="submit-payment-mobile" class="btn-checkout" style="width:100%;margin-top:24px">
-				<span id="button-text-mobile">
-					<i class="fa-solid fa-lock"></i>
-					Pay Securely
-				</span>
-				<div id="spinner-mobile" class="spinner hidden"></div>
-			</button>
+			<div style="margin-top:16px;display:flex;gap:12px;align-items:center">
+				<button id="submit-payment" class="btn" style="padding:12px 18px;background:var(--accent);color:#fff;border:none;border-radius:8px">Pay</button>
+				<div id="checkout-message" style="color:#666"></div>
+			</div>
+		</section>
+	</main>
 
-			<p class="checkout-terms" style="text-align:center;font-size:12px;margin-top:12px;display:none" id="checkout-terms-mobile">
-				By completing this purchase, you agree to our 
-				<a href="terms.html">Terms of Service</a> and 
-				<a href="privacy.html">Privacy Policy</a>.
-			</p>
+	<footer class="footer">
+		<div class="container">
+			<div style="border-top:1px solid #333;padding-top:20px">
+				<div style="color:#888;font-size:13px">© 2025 Fast Graphic Design. All rights reserved.</div>
 			</div>
 		</div>
+	</footer>
 
-		<!-- Right: Order Summary + Pay Button (desktop) -->
-		<div class="checkout-sidebar">
-			<div class="order-summary order-summary-desktop">
-				<h3>Order Summary</h3>
-				<div class="summary-item">
-					<span id="summary-package-name">Logo Design - Basic</span>
-					<span id="summary-package-price">£199.00</span>
-				</div>
-				<div class="summary-divider"></div>
-				<div class="summary-item summary-total">
-					<strong>Total</strong>
-					<strong id="summary-total">£199.00</strong>
-				</div>
-				<div class="trust-items">
-					<div class="trust-item-small">
-						<i class="fa-solid fa-clock"></i>
-						<span>Fast 2-5 day turnaround</span>
-					</div>
-					<div class="trust-item-small">
-						<i class="fa-solid fa-shield-halved"></i>
-						<span>100% satisfaction guarantee</span>
-					</div>
-					<div class="trust-item-small">
-						<i class="fa-solid fa-rotate"></i>
-						<span>Unlimited revisions</span>
-					</div>
-				</div>
-
-				<!-- Pay Button (desktop) -->
-				<button type="submit" id="submit-payment" class="btn-checkout" style="width:100%;margin-top:20px">
-					<span id="button-text">
-						<i class="fa-solid fa-lock"></i>
-						Pay Securely
-					</span>
-					<div id="spinner" class="spinner hidden"></div>
-				</button>
-
-				<p class="checkout-terms" style="text-align:center;font-size:12px;margin-top:12px">
-					By completing this purchase, you agree to our 
-					<a href="terms.html">Terms of Service</a> and 
-					<a href="privacy.html">Privacy Policy</a>.
-				</p>
-			</div>
-
-			<!-- Help card (desktop) -->
-			<div class="help-card" style="margin-top:20px">
-				<i class="fa-solid fa-headset"></i>
-				<h4>Need Help?</h4>
-				<p>Our team is here to assist you.</p>
-				<a href="contact.html" class="text-link">Contact Support →</a>
-			</div>
-		</div>
-	</div>
-</main>
-
-<footer class="footer">
-  <div class="container">
-    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:40px;margin-bottom:40px">
-      <div>
-        <h4 style="color:var(--green);margin-bottom:16px;font-size:18px">Fast Graphic Design</h4>
-        <p style="color:#ccc;font-size:16px;line-height:1.6">Professional white-label outsourcing solutions for small businesses. We deliver high-quality graphic design services that help your business stand out.</p>
-      </div>
-      <div>
-        <h4 style="color:var(--green);margin-bottom:16px">Quick Links</h4>
-        <a href="index.html">Home</a>
-        <a href="packages.html">Packages</a>
-        <a href="contact.html">Contact</a>
-      </div>
-      <div>
-        <h4 style="color:var(--green);margin-bottom:16px">Legal</h4>
-        <a href="terms.html">Terms of Service</a>
-        <a href="privacy.html">Privacy Policy</a>
-        <a href="refund.html">Refund Policy</a>
-      </div>
-      <div>
-        <h4 style="color:var(--green);margin-bottom:16px">Follow Us</h4>
-        <p style="color:#fff;margin:0">
-          <a href="https://www.facebook.com/fastgraphicdesign" style="color:#fff;font-size:28px;margin-right:16px;display:inline-block" title="Visit our Facebook"><i class="fa-brands fa-facebook"></i></a>
-          <a href="https://www.youtube.com/@fastgraphicdesign" style="color:#fff;font-size:28px;display:inline-block" title="Visit our YouTube"><i class="fa-brands fa-youtube"></i></a>
-        </p>
-      </div>
-    </div>
-    <div style="border-top:1px solid #333;padding-top:20px">
-      <div style="color:#888;font-size:13px">© 2025 Fast Graphic Design. All rights reserved.</div>
-    </div>
-  </div>
-</footer>
-
-<script src="js/services.js"></script>
-<script src="js/main.js"></script>
-<script src="js/checkout.js"></script>
-
+	<script src="js/services.js"></script>
+	<script src="js/main.js"></script>
+	<script src="https://js.stripe.com/v3/"></script>
+	<script src="js/checkout.js"></script>
 </body>
 </html>
+
