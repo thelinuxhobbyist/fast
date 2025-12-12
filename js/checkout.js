@@ -345,11 +345,12 @@ function updateSummaries(){
 		var stMbot = document.getElementById('summary-total-mobile-bottom'); if (stMbot) stMbot.textContent = formatted;
 		// update any toggle label
 		var toggleLabel = document.querySelector('.summary-total-label span'); if (toggleLabel) toggleLabel.textContent = formatted;
-		// Show debug info for troubleshooting
+		// Show debug info for troubleshooting (disabled by default)
 		try{
 			var dbg = document.getElementById('debug-banner');
 			if(dbg){
-				dbg.style.display = 'block';
+				// Uncomment the line below to enable debug banner
+				// dbg.style.display = 'block';
 				var ref = document.referrer || '(none)';
 				var stored = '(none)'; try{ stored = sessionStorage.getItem('fast_selected_package') || '(none)'; }catch(e){}
 				dbg.textContent = 'Parsed package: ' + (getSelectedPackageId() || '(none)') + ' — Total: ' + formatted + ' — URL: ' + window.location.href + ' — referrer: ' + ref + ' — session: ' + stored;
