@@ -15,8 +15,21 @@ document.addEventListener('DOMContentLoaded', function() {
 // Stripe Checkout Integration
 // Replace 'pk_test_...' with your actual Stripe Publishable Key when ready
 
-// Initialize Stripe with your publishable key (kept from previous config)
-const stripe = Stripe('pk_test_51STTem2KkObKPVCjWYundub4WiyxnWFMZZvulyXPNQSrpe8LfO89doMDHZXy6bg02BAOZyGDllziDTGVFcnhEYkU00QCdNmDJ3');
+// Initialize Stripe safely after Stripe.js has loaded. Use `let` so we can assign later.
+let stripe = null;
+
+// Create Stripe instance once DOM and Stripe.js are available.
+document.addEventListener('DOMContentLoaded', function () {
+	try {
+		if (typeof Stripe === 'function') {
+			stripe = Stripe('pk_test_51STTem2KkObKPVCjWYundub4WiyxnWFMZZvulyXPNQSrpe8LfO89doMDHZXy6bg02BAOZyGDllziDTGVFcnhEYkU00QCdNmDJ3');
+		} else {
+			console.error('Stripe.js is not loaded. Make sure https://js.stripe.com/v3/ is included before js/checkout.js');
+		}
+	} catch (e) {
+		console.error('Error initializing Stripe:', e);
+	}
+});
 
 // We'll create Elements & the Payment Element dynamically after we receive a client secret
 

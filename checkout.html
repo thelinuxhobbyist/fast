@@ -24,44 +24,73 @@
 		</div>
 	</header>
 
-	<main class="container">
-		<section style="max-width:760px;margin:32px auto;padding:20px">
-			<h1 style="margin-top:0;color:var(--accent);font-size:28px">Secure Checkout</h1>
-			<p style="color:#666">Complete your order. Your payment is processed securely by Stripe.</p>
+	<main class="container" style="padding:28px 16px">
+		<div class="checkout-grid" style="display:grid;grid-template-columns:1fr 320px;gap:24px;align-items:start;max-width:1100px;margin:0 auto">
 
-			<div style="margin-top:18px;padding:18px;border-radius:10px;border:1px solid #eee">
-				<div style="display:flex;justify-content:space-between;align-items:center">
-					<div>
-						<div id="package-name" style="font-weight:800;font-size:18px">Package</div>
-						<div id="package-desc" style="color:#666;font-size:14px">Description</div>
-					</div>
-					<div id="package-price" style="font-weight:800;color:var(--green);font-size:18px">£0.00</div>
+			<!-- Left: Checkout Form -->
+			<section class="checkout-form" style="background:#fff;padding:20px;border-radius:10px;border:1px solid #eee">
+				<h1 style="margin-top:0;color:var(--accent);font-size:24px">Secure Checkout</h1>
+				<p style="color:#666;margin-bottom:8px">Complete your order. Payments processed securely by Stripe.</p>
+
+				<div style="margin-top:12px" class="form-row">
+					<label for="customer-name">Full name</label>
+					<input id="customer-name" type="text" placeholder="Your name" style="width:100%;padding:10px;margin-top:6px;border:1px solid #ddd;border-radius:6px">
 				</div>
-			</div>
+				<div style="margin-top:12px" class="form-row">
+					<label for="customer-email">Email</label>
+					<input id="customer-email" type="email" placeholder="you@example.com" style="width:100%;padding:10px;margin-top:6px;border:1px solid #ddd;border-radius:6px">
+				</div>
 
-			<div style="margin-top:18px">
-				<label for="customer-name">Full name</label>
-				<input id="customer-name" type="text" placeholder="Your name" style="width:100%;padding:10px;margin-top:6px;border:1px solid #ddd;border-radius:6px">
-			</div>
-			<div style="margin-top:12px">
-				<label for="customer-email">Email</label>
-				<input id="customer-email" type="email" placeholder="you@example.com" style="width:100%;padding:10px;margin-top:6px;border:1px solid #ddd;border-radius:6px">
-			</div>
+				<div style="margin-top:18px;padding:12px;border-radius:8px;border:1px solid #eee" id="payment-block">
+					<div id="payment-element"> <!-- Stripe Payment Element mounts here --> </div>
+				</div>
 
-			<div id="payment-element" style="margin-top:18px;padding:14px;border:1px solid #eee;border-radius:8px">
-				<!-- Stripe Payment Element mounts here -->
-			</div>
+				<div style="margin-top:16px;display:flex;gap:12px;align-items:center">
+					<button id="submit-payment" class="btn" style="padding:12px 18px;background:var(--accent);color:#fff;border:none;border-radius:8px">Pay</button>
+					<div id="checkout-message" style="color:#666"></div>
+				</div>
+			</section>
 
-			<div style="margin-top:16px;display:flex;gap:12px;align-items:center">
-				<button id="submit-payment" class="btn" style="padding:12px 18px;background:var(--accent);color:#fff;border:none;border-radius:8px">Pay</button>
-				<div id="checkout-message" style="color:#666"></div>
-			</div>
-		</section>
+			<!-- Right: Order Summary -->
+			<aside class="checkout-summary" style="background:#fff;padding:20px;border-radius:10px;border:1px solid #eee">
+				<h3 style="margin-top:0">Order Summary</h3>
+				<div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px">
+					<div id="summary-package-name">Package</div>
+					<div id="summary-package-price">£0.00</div>
+				</div>
+				<hr style="margin:12px 0">
+				<div style="display:flex;justify-content:space-between;align-items:center;font-weight:700">
+					<div>Total</div>
+					<div id="summary-total">£0.00</div>
+				</div>
+				<div style="margin-top:16px">
+					<button id="submit-payment-duplicate" class="btn" style="width:100%;padding:12px;background:var(--accent);color:#fff;border:none;border-radius:8px">Pay</button>
+				</div>
+			</aside>
+
+		</div>
 	</main>
 
 	<footer class="footer">
 		<div class="container">
-			<div style="border-top:1px solid #333;padding-top:20px">
+			<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:40px;margin-bottom:24px">
+				<div>
+					<h4 style="color:var(--green);margin-bottom:8px;font-size:16px">Fast Graphic Design</h4>
+					<p style="color:#ccc;font-size:14px;margin:0">Professional white-label outsourcing solutions for small businesses.</p>
+				</div>
+				<div>
+					<h4 style="color:var(--green);margin-bottom:8px">Quick Links</h4>
+					<a href="index.html">Home</a><br>
+					<a href="packages.html">Packages</a><br>
+					<a href="contact.html">Contact</a>
+				</div>
+				<div>
+					<h4 style="color:var(--green);margin-bottom:8px">Legal</h4>
+					<a href="terms.html">Terms</a><br>
+					<a href="privacy.html">Privacy</a>
+				</div>
+			</div>
+			<div style="border-top:1px solid #333;padding-top:12px">
 				<div style="color:#888;font-size:13px">© 2025 Fast Graphic Design. All rights reserved.</div>
 			</div>
 		</div>
