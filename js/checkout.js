@@ -27,11 +27,8 @@ const elementOptions = {
 
 // Handle form submission
 const submitButton = document.getElementById('submit-payment');
-const submitButtonMobile = document.getElementById('submit-payment-mobile');
 const buttonText = document.getElementById('button-text');
-const buttonTextMobile = document.getElementById('button-text-mobile');
 const spinner = document.getElementById('spinner');
-const spinnerMobile = document.getElementById('spinner-mobile');
 
 // Track selected package id so metadata is accurate when creating PaymentIntent
 // Attempt to load package from URL or sessionStorage EARLY (before DOMContentLoaded)
@@ -72,7 +69,8 @@ function extractPackageIdEarly() {
 // Extract and store immediately
 SELECTED_PACKAGE_ID = extractPackageIdEarly();
 
-// Function to attach click handler to both buttons
+// Function to attach click handler to button
+
 function attachPaymentHandler(btn, btnText, spin) {
 	if (btn) {
 		btn.addEventListener('click', async function(event) {
@@ -106,7 +104,6 @@ function attachPaymentHandler(btn, btnText, spin) {
 }
 
 attachPaymentHandler(submitButton, buttonText, spinner);
-attachPaymentHandler(submitButtonMobile, buttonTextMobile, spinnerMobile);
 
 // Ensure Payment Element is created and mounted (creates PaymentIntent via server)
 async function ensurePaymentElement(name, email) {
@@ -172,9 +169,18 @@ async function processPayment(name, email, btn, btnText, spin) {
 		}
 
 		// Confirm the payment using the Payment Element. redirect:'if_required' keeps handling inline when possible
+		// Since we set billingDetails: 'never' in the Payment Element, we must pass billing details in confirmParams
 		const confirmResult = await stripe.confirmPayment({
 			elements,
-			confirmParams: { return_url: window.location.origin + '/success.html' },
+			confirmParams: {
+				return_url: window.location.origin + '/success.html',
+				payment_method_data: {
+					billing_details: {
+						name: name,
+						email: email
+					}
+				}
+			},
 			redirect: 'if_required'
 		});
 

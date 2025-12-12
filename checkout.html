@@ -125,9 +125,8 @@
 				<h3><i class="fa-solid fa-credit-card"></i> Payment Details</h3>
 				<div class="form-field">
 					<label for="card-element">Card Information</label>
-					<div id="payment-request-button" style="margin-bottom:16px"></div>
 					<div id="card-element" class="stripe-element">
-						<!-- Stripe Card Element will be inserted here -->
+						<!-- Stripe Payment Element will be inserted here -->
 					</div>
 					<div class="payment-methods">
 						<img src="https://img.shields.io/badge/Visa-1A1F71?style=flat&logo=visa&logoColor=white" alt="Visa" style="height:24px">
@@ -148,16 +147,16 @@
 				</div>
 			</div>
 
-			<!-- Pay Button (mobile) -->
-			<button type="submit" id="submit-payment-mobile" class="btn-checkout" style="width:100%;margin-top:24px">
-				<span id="button-text-mobile">
+			<!-- Single Pay Button -->
+			<button type="submit" id="submit-payment" class="btn-checkout" style="width:100%;margin-top:24px">
+				<span id="button-text">
 					<i class="fa-solid fa-lock"></i>
 					Pay Securely
 				</span>
-				<div id="spinner-mobile" class="spinner hidden"></div>
+				<div id="spinner" class="spinner hidden"></div>
 			</button>
 
-			<p class="checkout-terms" style="text-align:center;font-size:12px;margin-top:12px;display:none" id="checkout-terms-mobile">
+			<p class="checkout-terms" style="text-align:center;font-size:12px;margin-top:12px">
 				By completing this purchase, you agree to our 
 				<a href="terms.html">Terms of Service</a> and 
 				<a href="privacy.html">Privacy Policy</a>.
