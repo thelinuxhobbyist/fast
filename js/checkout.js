@@ -199,7 +199,10 @@ function getSelectedPackageId() {
 	// Fallback to sessionStorage (set when navigating from packages list)
 	try {
 		const stored = sessionStorage.getItem('fast_selected_package');
-		if (stored) return stored;
+		if (stored) {
+			// try returning decoded value if appropriate
+			try { return decodeURIComponent(stored); } catch (e) { return stored; }
+		}
 	} catch (e) {}
 	// Fallback to parsing referrer (if user clicked link from another page)
 	try {
