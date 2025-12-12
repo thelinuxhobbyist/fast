@@ -146,11 +146,9 @@ async function ensurePaymentElement(name, email) {
 	};
 	elements = stripe.elements({ clientSecret, appearance });
 	paymentElement = elements.create('payment', {
-		// Only show card and link; exclude other wallets (Apple Pay, Google Pay, Amazon Pay, Revolut, etc.)
-		wallets: {
-			googlePay: 'never',
-			applePay: 'never'
-		},
+		// Explicitly allow only card and link payment methods
+		// This excludes Klarna, Amazon Pay, Revolut Pay, Apple Pay, Google Pay, etc.
+		restrictPaymentMethods: ['card', 'link'],
 		fields: {
 			billingDetails: 'never'  // Don't collect billing details in Payment Element; we collect them separately
 		}
