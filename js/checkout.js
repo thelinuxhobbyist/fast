@@ -16,50 +16,14 @@ document.addEventListener('DOMContentLoaded', function() {
 // Initialize Stripe with your publishable key
 const stripe = Stripe('pk_test_51STTem2KkObKPVCjWYundub4WiyxnWFMZZvulyXPNQSrpe8LfO89doMDHZXy6bg02BAOZyGDllziDTGVFcnhEYkU00QCdNmDJ3');
 
-// Create an instance of Elements
-const elements = stripe.elements({
-	fonts: [
-		{
-			cssSrc: 'https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap',
-		},
-	],
-});
+// We'll create Elements & the Payment Element dynamically after we receive a client secret
+let elements = null;
+let paymentElement = null;
 
-// Custom styling to match the site design
-const style = {
-	base: {
-		color: '#111',
-		fontFamily: 'Inter, system-ui, Arial, sans-serif',
-		fontSmoothing: 'antialiased',
-		fontSize: '15px',
-		'::placeholder': {
-			color: '#999',
-		},
-		lineHeight: '1.45',
-	},
-	invalid: {
-		color: '#dc3545',
-		iconColor: '#dc3545',
-	},
+// Minimal Element styling (avoid using lineHeight to prevent Stripe warning)
+const elementOptions = {
+	// appearance and other options can be added here
 };
-
-// Create an instance of the card Element
-const cardElement = elements.create('card', { style: style });
-
-// Add an instance of the card Element into the `card-element` div
-cardElement.mount('#card-element');
-
-// Handle real-time validation errors from the card Element
-cardElement.on('change', function(event) {
-	const displayError = document.getElementById('card-errors');
-	if (event.error) {
-		displayError.textContent = event.error.message;
-		displayError.classList.add('visible');
-	} else {
-		displayError.textContent = '';
-		displayError.classList.remove('visible');
-	}
-});
 
 // Handle form submission
 const submitButton = document.getElementById('submit-payment');
@@ -108,54 +72,73 @@ function attachPaymentHandler(btn, btnText, spin) {
 attachPaymentHandler(submitButton, buttonText, spinner);
 attachPaymentHandler(submitButtonMobile, buttonTextMobile, spinnerMobile);
 
-// Process payment with Stripe
+// Ensure Payment Element is created and mounted (creates PaymentIntent via server)
+async function ensurePaymentElement(name, email) {
+	// If already mounted and elements exists, no-op
+	if (paymentElement && elements) return true;
+
+	// Create PaymentIntent on server
+	const totalAmount = Math.round(getOrderTotal() * 100);
+	const response = await fetch('/api/create-payment-intent', {
+		method: 'POST',
+		headers: { 'Content-Type': 'application/json' },
+		body: JSON.stringify({
+			amount: totalAmount,
+			currency: 'gbp',
+			customerEmail: email,
+			customerName: name,
+			package_id: SELECTED_PACKAGE_ID || getSelectedPackageId(),
+			order_type: 'checkout'
+		}),
+	});
+
+	const data = await response.json();
+	if (data.error) {
+		return { error: data.error };
+	}
+
+	const { clientSecret } = data;
+
+	// Create Elements with clientSecret and mount Payment Element
+	elements = stripe.elements({ clientSecret });
+	paymentElement = elements.create('payment', elementOptions);
+	const mountPoint = document.getElementById('card-element');
+	if (mountPoint) {
+		mountPoint.innerHTML = '';
+		paymentElement.mount('#card-element');
+	}
+
+	return { clientSecret };
+}
+
+// Process payment with Stripe using the Payment Element
 async function processPayment(name, email, btn, btnText, spin) {
 	try {
-		// Get the order amount (convert to cents/pence)
-		const totalAmount = Math.round(getOrderTotal() * 100);
-		
-		// Create Payment Intent on server
-		const response = await fetch('/api/create-payment-intent', {
-			method: 'POST',
-			headers: { 'Content-Type': 'application/json' },
-			body: JSON.stringify({
-				amount: totalAmount,
-				currency: 'gbp',
-				customerEmail: email,
-				customerName: name,
-				package_id: SELECTED_PACKAGE_ID || getSelectedPackageId(),
-				order_type: 'checkout'
-			}),
-		});
-		
-		const data = await response.json();
-		
-		if (data.error) {
-			showError(data.error, btn, btnText, spin);
+		const ensure = await ensurePaymentElement(name, email);
+		if (ensure && ensure.error) {
+			showError(ensure.error, btn, btnText, spin);
 			return;
 		}
-		
-		const { clientSecret } = data;
-		
-		// Confirm the payment with Stripe
-		const result = await stripe.confirmCardPayment(clientSecret, {
-			payment_method: {
-				card: cardElement,
-				billing_details: {
-					name: name,
-					email: email,
-				},
-			},
+
+		// Confirm the payment using the Payment Element. redirect:'if_required' keeps handling inline when possible
+		const confirmResult = await stripe.confirmPayment({
+			elements,
+			confirmParams: { return_url: window.location.origin + '/success.html' },
+			redirect: 'if_required'
 		});
-		
-		if (result.error) {
-			showError(result.error.message, btn, btnText, spin);
-		} else {
-			if (result.paymentIntent.status === 'succeeded') {
-				window.location.href = 'success.html?payment_intent=' + result.paymentIntent.id;
-			}
+
+		if (confirmResult && confirmResult.error) {
+			showError(confirmResult.error.message || 'Payment failed', btn, btnText, spin);
+			return;
 		}
-		
+
+		if (confirmResult && confirmResult.paymentIntent && confirmResult.paymentIntent.status === 'succeeded') {
+			window.location.href = 'success.html?payment_intent=' + confirmResult.paymentIntent.id;
+			return;
+		}
+
+		// If the confirm result didn't include a paymentIntent (redirect pending), the browser will redirect automatically.
+
 	} catch (error) {
 		showError('An error occurred. Please try again.', btn, btnText, spin);
 		console.error('Payment error:', error);
