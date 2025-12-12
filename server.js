@@ -8,7 +8,7 @@ const Stripe = require('stripe');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-const stripe = new Stripe(process.env.STRIPE_SECRET || '', { apiVersion: '2022-11-15' });
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '', { apiVersion: '2022-11-15' });
 const crypto = require('crypto');
 
 // Simple in-memory rate limiter (IP => {count, firstRequestAt})

@@ -14,7 +14,7 @@ document.addEventListener('DOMContentLoaded', function() {
 // Replace 'pk_test_...' with your actual Stripe Publishable Key when ready
 
 // Initialize Stripe with your publishable key and set UK locale so address labels use postcode
-const stripe = Stripe('pk_test_51STTem2KkObKPVCjWYundub4WiyxnWFMZZvulyXPNQSrpe8LfO89doMDHZXy6bg02BAOZyGDllziDTGVFcnhEYkU00QCdNmDJ3', { locale: 'en-GB' });
+const stripe = Stripe('pk_live_51SdUxFKW0ODTEuVznk6fvKbtzMFIiZj8ODDj2RlF7x4gKgaHCPfqp1xnJmVtcMfV18tvEPclcL6ZuSwokAvhxXpF00ONqbhJRT', { locale: 'en-GB' });
 
 // We'll create Elements & the Payment Element dynamically after we receive a client secret
 let elements = null;
