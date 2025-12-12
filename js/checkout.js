@@ -34,7 +34,43 @@ const spinner = document.getElementById('spinner');
 const spinnerMobile = document.getElementById('spinner-mobile');
 
 // Track selected package id so metadata is accurate when creating PaymentIntent
-var SELECTED_PACKAGE_ID = getSelectedPackageId();
+// Attempt to load package from URL or sessionStorage EARLY (before DOMContentLoaded)
+var SELECTED_PACKAGE_ID = null;
+
+// Try to extract package id from multiple sources
+function extractPackageIdEarly() {
+	// Try URL param first
+	const urlParams = new URLSearchParams(window.location.search);
+	const param = urlParams.get('package');
+	if (param) {
+		console.debug('extractPackageIdEarly: found in URL =', param);
+		return param;
+	}
+	// Try sessionStorage (set by the "Order Your Design Now" click in details page)
+	try {
+		const stored = sessionStorage.getItem('fast_selected_package');
+		if (stored) {
+			console.debug('extractPackageIdEarly: found in sessionStorage =', stored);
+			try { return decodeURIComponent(stored); } catch (e) { return stored; }
+		}
+	} catch (e) {}
+	// Try referrer
+	try {
+		if (document.referrer) {
+			const refUrl = new URL(document.referrer);
+			const p = new URLSearchParams(refUrl.search).get('package');
+			if (p) {
+				console.debug('extractPackageIdEarly: found in referrer =', p);
+				return p;
+			}
+		}
+	} catch (e) {}
+	console.debug('extractPackageIdEarly: defaulting to logo-basic');
+	return 'logo-basic';
+}
+
+// Extract and store immediately
+SELECTED_PACKAGE_ID = extractPackageIdEarly();
 
 // Function to attach click handler to both buttons
 function attachPaymentHandler(btn, btnText, spin) {
@@ -204,31 +240,8 @@ paymentRequest.canMakePayment().then(function(result) {
 
 // Helper functions for package selection (can be expanded)
 function getSelectedPackageId() {
-	// Prefer the runtime-selected package id (set by loadPackageDetails)
-	if (typeof SELECTED_PACKAGE_ID !== 'undefined' && SELECTED_PACKAGE_ID) return SELECTED_PACKAGE_ID;
-	// Fallback to URL parameter
-	const urlParams = new URLSearchParams(window.location.search);
-	const param = urlParams.get('package');
-	if (param) return param;
-	// Fallback to sessionStorage (set when navigating from packages list)
-	try {
-		const stored = sessionStorage.getItem('fast_selected_package');
-		if (stored) {
-			// try returning decoded value if appropriate
-			try { return decodeURIComponent(stored); } catch (e) { return stored; }
-		}
-	} catch (e) {}
-	// Fallback to parsing referrer (if user clicked link from another page)
-	try {
-		if (document.referrer) {
-			try {
-				const refUrl = new URL(document.referrer);
-				const p = new URLSearchParams(refUrl.search).get('package');
-				if (p) return p;
-			} catch (e) {}
-		}
-	} catch (e) {}
-	return 'logo-basic';
+	// Return the package id extracted early in the script
+	return SELECTED_PACKAGE_ID || 'logo-basic';
 }
 
 function getOrderTotal() {
@@ -272,15 +285,40 @@ function getOrderTotal() {
 
 // Optional: Load package details from URL parameters
 window.addEventListener('DOMContentLoaded', function() {
-	const urlParams = new URLSearchParams(window.location.search);
-	const packageId = urlParams.get('package');
-	
-	if (packageId) {
-		loadPackageDetails(packageId);
-	}
+	// By this point, js/services.js should be loaded, so SERVICES and findService are available
+	// Call loadPackageDetails to populate the package info in the DOM
+	const pkgId = SELECTED_PACKAGE_ID || 'logo-basic';
+	console.debug('DOMContentLoaded: loading package details for', pkgId);
+	loadPackageDetails(pkgId);
 	// Ensure summaries refresh on load
 	try { updateSummaries(); } catch (e) {}
 });
+
+// Retry sync at multiple intervals to ensure SERVICES is available and DOM is ready
+let retries = 0;
+function retryUpdateSummaries() {
+	retries++;
+	console.debug('retryUpdateSummaries attempt', retries);
+	try {
+		// Check if SERVICES is available
+		if (typeof SERVICES === 'undefined' || !SERVICES.length) {
+			if (retries < 5) {
+				setTimeout(retryUpdateSummaries, 100);
+			}
+			return;
+		}
+		// SERVICES is available; update summaries
+		updateSummaries();
+	} catch (e) {
+		console.error('retryUpdateSummaries error', e);
+		if (retries < 5) {
+			setTimeout(retryUpdateSummaries, 100);
+		}
+	}
+}
+
+// Start retrying immediately (don't wait for DOMContentLoaded)
+retryUpdateSummaries();
 
 // Also try a short delayed sync in case other scripts modify the DOM after load
 setTimeout(function(){
