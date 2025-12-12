@@ -167,25 +167,39 @@ const paymentRequest = stripe.paymentRequest({
   requestPayerName: true,
   requestPayerEmail: true,
 });
-
-const prButton = elements.create('paymentRequestButton', {
-  paymentRequest: paymentRequest,
-  style: {
-    paymentRequestButton: {
-      type: 'default',
-      theme: 'light',
-      height: '44px',
-    },
-  },
-});
+// Create a separate Elements instance for the Payment Request Button so
+// we don't call `.create` on the global `elements` variable which may be
+// null until a Payment Element is mounted with a clientSecret.
+let prButton = null;
+try {
+	const prElements = stripe.elements();
+	prButton = prElements.create('paymentRequestButton', {
+		paymentRequest: paymentRequest,
+		style: {
+			paymentRequestButton: {
+				type: 'default',
+				theme: 'light',
+				height: '44px',
+			},
+		},
+	});
+} catch (e) {
+	console.debug('Payment Request Button not available:', e);
+}
 
 paymentRequest.canMakePayment().then(function(result) {
-  if (result) {
-    prButton.mount('#payment-request-button');
-    document.getElementById('payment-request-button').style.display = 'block';
-  } else {
-    document.getElementById('payment-request-button').style.display = 'none';
-  }
+	const prContainer = document.getElementById('payment-request-button');
+	try {
+		if (result && prButton && prContainer) {
+			prButton.mount('#payment-request-button');
+			prContainer.style.display = 'block';
+		} else if (prContainer) {
+			prContainer.style.display = 'none';
+		}
+	} catch (e) {
+		console.debug('Error mounting payment request button:', e);
+		if (prContainer) prContainer.style.display = 'none';
+	}
 });
 
 // Helper functions for package selection (can be expanded)
