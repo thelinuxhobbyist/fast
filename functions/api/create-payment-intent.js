@@ -5,8 +5,8 @@ export async function onRequestPost(context) {
 	try {
 		const { amount, currency = 'gbp', customerEmail, customerName, package_id, order_type } = await request.json();
 		
-		// Validate the request
-		if (!amount || amount < 50) {
+		// Validate the request (Stripe GBP minimum is 1 pence = 1)
+		if (!amount || amount < 1) {
 			return new Response(JSON.stringify({ error: 'Invalid amount' }), {
 				status: 400,
 				headers: { 'Content-Type': 'application/json' }
