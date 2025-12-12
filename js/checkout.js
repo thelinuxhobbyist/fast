@@ -281,8 +281,16 @@ function loadPackageDetails(packageId) {
 		document.getElementById('package-name').textContent = pkg.title;
 		document.getElementById('package-desc').textContent = pkg.shortDescription || pkg.longDescription || '';
 		document.getElementById('package-price').textContent = pkg.price;
-		document.getElementById('summary-package-name').textContent = pkg.title;
-		document.getElementById('summary-package-price').textContent = pkg.price + '.00';
-		document.getElementById('summary-total').textContent = pkg.price + '.00';
+
+		// Update desktop summary
+		var formatted = formatCurrency(getOrderTotal());
+		var spn = document.getElementById('summary-package-name'); if (spn) spn.textContent = pkg.title;
+		var spp = document.getElementById('summary-package-price'); if (spp) spp.textContent = formatted;
+		var st = document.getElementById('summary-total'); if (st) st.textContent = formatted;
+
+		// Update mobile summary elements as well
+		var spnM = document.getElementById('summary-package-name-mobile'); if (spnM) spnM.textContent = pkg.title;
+		var sppM = document.getElementById('summary-package-price-mobile'); if (sppM) sppM.textContent = formatted;
+		var stM = document.getElementById('summary-total-mobile'); if (stM) stM.textContent = formatted;
 	}
 }
