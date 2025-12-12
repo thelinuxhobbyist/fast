@@ -196,6 +196,21 @@ function getSelectedPackageId() {
 	const urlParams = new URLSearchParams(window.location.search);
 	const param = urlParams.get('package');
 	if (param) return param;
+	// Fallback to sessionStorage (set when navigating from packages list)
+	try {
+		const stored = sessionStorage.getItem('fast_selected_package');
+		if (stored) return stored;
+	} catch (e) {}
+	// Fallback to parsing referrer (if user clicked link from another page)
+	try {
+		if (document.referrer) {
+			try {
+				const refUrl = new URL(document.referrer);
+				const p = new URLSearchParams(refUrl.search).get('package');
+				if (p) return p;
+			} catch (e) {}
+		}
+	} catch (e) {}
 	return 'logo-basic';
 }
 
@@ -280,7 +295,9 @@ function updateSummaries(){
 			var dbg = document.getElementById('debug-banner');
 			if(dbg){
 				dbg.style.display = 'block';
-				dbg.textContent = 'Parsed package: ' + (getSelectedPackageId() || '(none)') + ' — Total: ' + formatted;
+				var ref = document.referrer || '(none)';
+				var stored = '(none)'; try{ stored = sessionStorage.getItem('fast_selected_package') || '(none)'; }catch(e){}
+				dbg.textContent = 'Parsed package: ' + (getSelectedPackageId() || '(none)') + ' — Total: ' + formatted + ' — URL: ' + window.location.href + ' — referrer: ' + ref + ' — session: ' + stored;
 			}
 		}catch(e){}
 	}catch(e){console.error('updateSummaries error', e)}
@@ -299,6 +316,7 @@ function loadPackageDetails(packageId) {
 	if (pkg) {
 		// remember selected package id for metadata
 		SELECTED_PACKAGE_ID = packageId;
+		try { sessionStorage.setItem('fast_selected_package', packageId); } catch (e) {}
 		// Update main package card
 		var pn = document.getElementById('package-name'); if (pn) pn.textContent = pkg.title;
 		var pd = document.getElementById('package-desc'); if (pd) pd.textContent = pkg.shortDescription || pkg.longDescription || '';
