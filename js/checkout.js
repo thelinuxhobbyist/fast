@@ -87,6 +87,19 @@ function updatePayButtonAmount(){
 	if (bt) bt.innerHTML = '<i class="fa-solid fa-lock"></i> Pay ' + amt;
 	if (btm) btm.innerHTML = '<i class="fa-solid fa-lock"></i> Pay ' + amt;
 }
+
+function updateSummaries(){
+	var total = getOrderTotal();
+	var formatted = formatCurrency(total);
+	// desktop
+	var spn = document.getElementById('summary-package-name'); if (spn && typeof findService === 'function') { var pkg = findService(getSelectedPackageId()); if(pkg) spn.textContent = pkg.title; }
+	var spp = document.getElementById('summary-package-price'); if (spp) spp.textContent = formatted;
+	var st = document.getElementById('summary-total'); if (st) st.textContent = formatted;
+	// mobile
+	var spnM = document.getElementById('summary-package-name-mobile'); if (spnM && typeof findService === 'function') { var pkg2 = findService(getSelectedPackageId()); if(pkg2) spnM.textContent = pkg2.title; }
+	var sppM = document.getElementById('summary-package-price-mobile'); if (sppM) sppM.textContent = formatted;
+	var stM = document.getElementById('summary-total-mobile'); if (stM) stM.textContent = formatted;
+}
 function attachPaymentHandler(btn, btnText, spin) {
 	if (btn) {
 		btn.addEventListener('click', async function(event) {
