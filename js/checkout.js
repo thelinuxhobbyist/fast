@@ -18,50 +18,7 @@ document.addEventListener('DOMContentLoaded', function() {
 // Initialize Stripe with your publishable key
 const stripe = Stripe('pk_test_51STTem2KkObKPVCjWYundub4WiyxnWFMZZvulyXPNQSrpe8LfO89doMDHZXy6bg02BAOZyGDllziDTGVFcnhEYkU00QCdNmDJ3');
 
-// Create an instance of Elements
-const elements = stripe.elements({
-	fonts: [
-		{
-			cssSrc: 'https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap',
-		},
-	],
-});
-
-// Custom styling to match the site design
-const style = {
-	base: {
-		color: '#111',
-		fontFamily: 'Inter, system-ui, Arial, sans-serif',
-		fontSmoothing: 'antialiased',
-		fontSize: '15px',
-		'::placeholder': {
-			color: '#999',
-		},
-		lineHeight: '1.45',
-	},
-	invalid: {
-		color: '#dc3545',
-		iconColor: '#dc3545',
-	},
-};
-
-// Create an instance of the card Element
-const cardElement = elements.create('card', { style: style });
-
-// Add an instance of the card Element into the `card-element` div
-cardElement.mount('#card-element');
-
-// Handle real-time validation errors from the card Element
-cardElement.on('change', function(event) {
-	const displayError = document.getElementById('card-errors');
-	if (event.error) {
-		displayError.textContent = event.error.message;
-		displayError.classList.add('visible');
-	} else {
-		displayError.textContent = '';
-		displayError.classList.remove('visible');
-	}
-});
+// We'll create Elements & the Payment Element dynamically after we receive a client secret
 
 // Handle form submission
 const submitButton = document.getElementById('submit-payment');
@@ -163,25 +120,40 @@ async function processPayment(name, email, btn, btnText, spin) {
 			showError(data.error, btn, btnText, spin);
 			return;
 		}
-		
 		const { clientSecret } = data;
-		
-		// Confirm the payment with Stripe
-		const result = await stripe.confirmCardPayment(clientSecret, {
-			payment_method: {
-				card: cardElement,
-				billing_details: {
-					name: name,
-					email: email,
-				},
+
+		// Create Elements with the clientSecret so Payment Element can be mounted
+		const elements = stripe.elements({ clientSecret: clientSecret });
+		const paymentElement = elements.create('payment', { layout: 'tabs' });
+		// Ensure the container exists
+		var mountPoint = document.getElementById('payment-element');
+		if (mountPoint) {
+			// clear any previous content
+			mountPoint.innerHTML = '';
+			paymentElement.mount('#payment-element');
+		}
+
+		// Confirm the payment using the Payment Element. Use redirect:'if_required' so we handle inline where possible.
+		const confirmResult = await stripe.confirmPayment({
+			elements,
+			confirmParams: {
+				// We won't rely on Stripe to redirect; handle confirmation result here.
+				return_url: window.location.origin + '/success.html'
 			},
+			redirect: 'if_required'
 		});
-		
-		if (result.error) {
-			showError(result.error.message, btn, btnText, spin);
+
+		if (confirmResult.error) {
+			showError(confirmResult.error.message || 'Payment failed', btn, btnText, spin);
+		} else if (confirmResult.paymentIntent && confirmResult.paymentIntent.status === 'succeeded') {
+			// Payment succeeded — redirect to the protected success flow with the PaymentIntent id
+			window.location.href = 'success.html?payment_intent=' + confirmResult.paymentIntent.id;
 		} else {
-			if (result.paymentIntent.status === 'succeeded') {
-				window.location.href = 'success.html?payment_intent=' + result.paymentIntent.id;
+			// If Stripe redirected or returned an unexpected state, try to handle gracefully
+			if (confirmResult.paymentIntent) {
+				window.location.href = 'success.html?payment_intent=' + confirmResult.paymentIntent.id;
+			} else {
+				showError('Unable to confirm payment', btn, btnText, spin);
 			}
 		}
 		
@@ -202,37 +174,7 @@ function showError(message, btn, btnText, spin) {
 	spin.classList.add('hidden');
 }
 
-// Payment Request Button for Apple Pay, Google Pay, etc.
-const paymentRequest = stripe.paymentRequest({
-  country: 'GB',
-  currency: 'gbp',
-  total: {
-    label: 'Fast Graphic Design',
-    amount: Math.round(getOrderTotal() * 100),
-  },
-  requestPayerName: true,
-  requestPayerEmail: true,
-});
-
-const prButton = elements.create('paymentRequestButton', {
-  paymentRequest: paymentRequest,
-  style: {
-    paymentRequestButton: {
-      type: 'default',
-      theme: 'light',
-      height: '44px',
-    },
-  },
-});
-
-paymentRequest.canMakePayment().then(function(result) {
-  if (result) {
-    prButton.mount('#payment-request-button');
-    document.getElementById('payment-request-button').style.display = 'block';
-  } else {
-    document.getElementById('payment-request-button').style.display = 'none';
-  }
-});
+// We'll mount a Payment Element into #payment-element after creating a PaymentIntent.
 
 // Helper functions for package selection (can be expanded)
 function getSelectedPackageId() {
