@@ -247,7 +247,32 @@ window.addEventListener('DOMContentLoaded', function() {
 	if (packageId) {
 		loadPackageDetails(packageId);
 	}
+	// Ensure summaries refresh on load
+	try { updateSummaries(); } catch (e) {}
 });
+
+function formatCurrency(n){
+	if (isNaN(n)) return '£0.00';
+	return '£' + Number(n).toFixed(2);
+}
+
+function updateSummaries(){
+	try{
+		const total = getOrderTotal();
+		const formatted = formatCurrency(total);
+		// desktop
+		var spName = document.getElementById('summary-package-name'); if (spName && typeof findService === 'function') { var pkg = findService(getSelectedPackageId()); if (pkg) spName.textContent = pkg.title; }
+		var spPrice = document.getElementById('summary-package-price'); if (spPrice) spPrice.textContent = formatted;
+		var st = document.getElementById('summary-total'); if (st) st.textContent = formatted;
+		// mobile
+		var spNameM = document.getElementById('summary-package-name-mobile'); if (spNameM && typeof findService === 'function') { var pkg2 = findService(getSelectedPackageId()); if (pkg2) spNameM.textContent = pkg2.title; }
+		var spPriceM = document.getElementById('summary-package-price-mobile'); if (spPriceM) spPriceM.textContent = formatted;
+		var stM = document.getElementById('summary-total-mobile'); if (stM) stM.textContent = formatted;
+		var stMbot = document.getElementById('summary-total-mobile-bottom'); if (stMbot) stMbot.textContent = formatted;
+		// update any toggle label
+		var toggleLabel = document.querySelector('.summary-total-label span'); if (toggleLabel) toggleLabel.textContent = formatted;
+	}catch(e){console.error('updateSummaries error', e)}
+}
 
 function loadPackageDetails(packageId) {
 	// In production, fetch package details from your data source
@@ -262,11 +287,11 @@ function loadPackageDetails(packageId) {
 	if (pkg) {
 		// remember selected package id for metadata
 		SELECTED_PACKAGE_ID = packageId;
-		document.getElementById('package-name').textContent = pkg.title;
-		document.getElementById('package-desc').textContent = pkg.shortDescription || pkg.longDescription || '';
-		document.getElementById('package-price').textContent = pkg.price;
-		document.getElementById('summary-package-name').textContent = pkg.title;
-		document.getElementById('summary-package-price').textContent = pkg.price + '.00';
-		document.getElementById('summary-total').textContent = pkg.price + '.00';
+		// Update main package card
+		var pn = document.getElementById('package-name'); if (pn) pn.textContent = pkg.title;
+		var pd = document.getElementById('package-desc'); if (pd) pd.textContent = pkg.shortDescription || pkg.longDescription || '';
+		var pp = document.getElementById('package-price'); if (pp) pp.textContent = pkg.price;
+		// Update summaries (desktop + mobile)
+		updateSummaries();
 	}
 }
