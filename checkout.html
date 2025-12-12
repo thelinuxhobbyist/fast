@@ -6,72 +6,40 @@
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-MVKRK0TSRL');
-</script>
-<!-- Facebook SDK for JavaScript -->
-</script>
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width,initial-scale=1">
-	<title>Checkout | Fast Graphic Design</title>
-	<meta name="description" content="Secure checkout for Fast Graphic Design. Complete your order for professional graphic design services.">
-	<link rel="canonical" href="https://fastgraphicdesign.co.uk/checkout.html">
-	<meta property="og:title" content="Checkout | Fast Graphic Design">
-	<meta property="og:description" content="Secure checkout for professional graphic design services.">
-	<meta property="og:url" content="https://fastgraphicdesign.co.uk/checkout.html">
-	<meta property="og:type" content="website">
-	<meta property="og:image" content="https://fastgraphicdesign.co.uk/assets/logo.png">
-	<meta name="twitter:card" content="summary_large_image">
-	<meta name="twitter:title" content="Checkout | Fast Graphic Design">
-	<meta name="twitter:description" content="Secure checkout for professional graphic design services.">
-	<meta name="twitter:image" content="https://fastgraphicdesign.co.uk/assets/logo.png">
-	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-	<link rel="stylesheet" href="css/style.css">
-	<script src="https://js.stripe.com/v3/"></script>
-</head>
-<body>
-<header>
-	<div class="container header-inner">
-		<div class="brand">
-			<img src="assets/logo.png" alt="Fast logo">
-		</div>
-		<button class="menu-toggle" id="menuToggle" aria-label="Open menu">
-			<i class="fa fa-bars"></i>
-		</button>
-		<nav class="nav" id="nav">
-			<a href="index.html">Home</a>
-			<a href="packages.html">Packages</a>
-			<a href="contact.html">Contact</a>
-		</nav>
-	</div>
-</header>
-
 <main class="container">
-	<div class="checkout-layout">
-		<!-- Left: Checkout form -->
-		<div class="checkout-main">
-			<h1 style="margin-top:0;color:var(--accent);font-size:32px">Complete Your Order</h1>
-			<p style="color:var(--muted);margin-bottom:32px">Secure checkout powered by Stripe. Your payment information is encrypted and secure.</p>
+	<section style="max-width:760px;margin:32px auto;padding:20px">
+		<h1 style="margin-top:0;color:var(--accent);font-size:28px">Secure Checkout</h1>
+		<p style="color:#666">Complete your order. Your payment is processed securely by Stripe.</p>
 
-		<!-- Package Selection -->
-		<div class="checkout-section checkout-package-section" style="background: #232F3E; border: 2px solid #2a3a4f; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3); padding: 24px; margin-bottom: 24px; border-radius: 12px;">
-			<h3 style="color: #fff; font-size: 18px; margin-top: 0; margin-bottom: 16px;"><i class="fa-solid fa-box"></i> Selected Package</h3>
-			<div id="selected-package" class="selected-package-card" style="background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.15); padding: 20px; border-radius: 8px; margin-bottom: 12px;">
-				<div class="package-info">
-					<strong id="package-name" style="color: #fff; font-size: 26px; display: block; margin-bottom: 10px; font-weight: 900; text-shadow: 0 2px 4px rgba(0,0,0,0.3);">Logo Design - Basic</strong>
-					<p id="package-desc" style="color: #e0e0e0; margin: 0; font-size: 16px;">Professional logo with 2 concepts</p>
+		<div style="margin-top:18px;padding:18px;border-radius:10px;border:1px solid #eee">
+			<div style="display:flex;justify-content:space-between;align-items:center">
+				<div>
+					<div id="package-name" style="font-weight:800;font-size:18px">Package</div>
+					<div id="package-desc" style="color:#666;font-size:14px">Description</div>
 				</div>
-				<div class="package-price" id="package-price" style="color: #F58731; font-size: 32px; font-weight: bold; text-shadow: 0 2px 4px rgba(0,0,0,0.3);">£199</div>
+				<div id="package-price" style="font-weight:800;color:var(--green);font-size:18px">£0.00</div>
 			</div>
-			<a href="packages.html" class="text-link" style="font-size:13px; display:inline-block; color: #F58731; font-weight: 600;">
-				<i class="fa-solid fa-arrow-left"></i> Choose a different package
-			</a>
-		</div>			<!-- Collapsible Order Summary (mobile only, at top) -->
-			<div class="order-summary-mobile collapsible-summary">
-				<button class="summary-toggle" type="button" aria-expanded="false">
-					<span>Order Summary</span>
-					<span class="summary-total-label">— Total <span id="summary-total-mobile">£199.00</span></span>
+		</div>
+
+		<div style="margin-top:18px">
+			<label for="customer-name">Full name</label>
+			<input id="customer-name" type="text" placeholder="Your name" style="width:100%;padding:10px;margin-top:6px;border:1px solid #ddd;border-radius:6px">
+		</div>
+		<div style="margin-top:12px">
+			<label for="customer-email">Email</label>
+			<input id="customer-email" type="email" placeholder="you@example.com" style="width:100%;padding:10px;margin-top:6px;border:1px solid #ddd;border-radius:6px">
+		</div>
+
+		<div id="payment-element" style="margin-top:18px;padding:14px;border:1px solid #eee;border-radius:8px">
+			<!-- Stripe Payment Element mounts here -->
+		</div>
+
+		<div style="margin-top:16px;display:flex;gap:12px;align-items:center">
+			<button id="submit-payment" class="btn" style="padding:12px 18px;background:var(--accent);color:#fff;border:none;border-radius:8px">Pay</button>
+			<div id="checkout-message" style="color:#666"></div>
+		</div>
+	</section>
+</main>
 					<span class="summary-toggle-icon" aria-hidden="true">&#x25BC;</span>
 				</button>
 				<div class="collapsible-content" style="display:none">

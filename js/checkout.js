@@ -15,7 +15,7 @@ document.addEventListener('DOMContentLoaded', function() {
 // Stripe Checkout Integration
 // Replace 'pk_test_...' with your actual Stripe Publishable Key when ready
 
-// Initialize Stripe with your publishable key
+// Initialize Stripe with your publishable key (kept from previous config)
 const stripe = Stripe('pk_test_51STTem2KkObKPVCjWYundub4WiyxnWFMZZvulyXPNQSrpe8LfO89doMDHZXy6bg02BAOZyGDllziDTGVFcnhEYkU00QCdNmDJ3');
 
 // We'll create Elements & the Payment Element dynamically after we receive a client secret
@@ -123,38 +123,30 @@ async function processPayment(name, email, btn, btnText, spin) {
 		const { clientSecret } = data;
 
 		// Create Elements with the clientSecret so Payment Element can be mounted
-		const elements = stripe.elements({ clientSecret: clientSecret });
-		const paymentElement = elements.create('payment', { layout: 'tabs' });
-		// Ensure the container exists
+		const elements = stripe.elements({ clientSecret });
+		const paymentElement = elements.create('payment');
 		var mountPoint = document.getElementById('payment-element');
 		if (mountPoint) {
-			// clear any previous content
 			mountPoint.innerHTML = '';
 			paymentElement.mount('#payment-element');
 		}
 
-		// Confirm the payment using the Payment Element. Use redirect:'if_required' so we handle inline where possible.
+		// Confirm the payment using the Payment Element. redirect:'if_required' keeps handling inline when possible
 		const confirmResult = await stripe.confirmPayment({
 			elements,
-			confirmParams: {
-				// We won't rely on Stripe to redirect; handle confirmation result here.
-				return_url: window.location.origin + '/success.html'
-			},
+			confirmParams: { return_url: window.location.origin + '/success.html' },
 			redirect: 'if_required'
 		});
 
 		if (confirmResult.error) {
 			showError(confirmResult.error.message || 'Payment failed', btn, btnText, spin);
 		} else if (confirmResult.paymentIntent && confirmResult.paymentIntent.status === 'succeeded') {
-			// Payment succeeded — redirect to the protected success flow with the PaymentIntent id
+			window.location.href = 'success.html?payment_intent=' + confirmResult.paymentIntent.id;
+		} else if (confirmResult.paymentIntent) {
+			// fallback redirect
 			window.location.href = 'success.html?payment_intent=' + confirmResult.paymentIntent.id;
 		} else {
-			// If Stripe redirected or returned an unexpected state, try to handle gracefully
-			if (confirmResult.paymentIntent) {
-				window.location.href = 'success.html?payment_intent=' + confirmResult.paymentIntent.id;
-			} else {
-				showError('Unable to confirm payment', btn, btnText, spin);
-			}
+			showError('Unable to confirm payment', btn, btnText, spin);
 		}
 		
 	} catch (error) {
@@ -220,6 +212,25 @@ window.addEventListener('DOMContentLoaded', function() {
 	}
 	// sync UI summaries and pay buttons even if no package param
 	try { updateSummaries(); updatePayButtonAmount(); } catch(e){}
+});
+
+// In some mobile browsers the DOM or another script may overwrite the summary after load.
+// Try a few times shortly after load to ensure our computed totals win.
+document.addEventListener('DOMContentLoaded', function(){
+	try {
+		var attempts = 0;
+		var maxAttempts = 8;
+		var interval = setInterval(function(){
+			attempts++;
+			try { updateSummaries(); updatePayButtonAmount(); } catch(e){}
+			var formatted = formatCurrency(getOrderTotal());
+			var mobileTotalEl = document.getElementById('summary-total-mobile');
+			if (mobileTotalEl && mobileTotalEl.textContent.trim() === formatted) {
+				clearInterval(interval);
+			}
+			if (attempts >= maxAttempts) clearInterval(interval);
+		}, 250);
+	} catch(e){}
 });
 
 function loadPackageDetails(packageId) {
