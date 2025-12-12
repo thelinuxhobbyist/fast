@@ -136,8 +136,28 @@ async function ensurePaymentElement(name, email) {
 	const { clientSecret } = data;
 
 	// Create Elements with clientSecret and mount Payment Element
-	elements = stripe.elements({ clientSecret });
-	paymentElement = elements.create('payment', elementOptions);
+	// Configure with UK-specific defaults (no postal code requirement)
+	const appearance = {
+		theme: 'stripe',
+		variables: {
+			colorPrimary: '#F58731',
+			fontFamily: 'system-ui, -apple-system, sans-serif',
+		}
+	};
+	elements = stripe.elements({ clientSecret, appearance });
+	paymentElement = elements.create('payment', {
+		// Disable postal code for UK
+		defaultValues: {
+			billingDetails: {
+				address: {
+					country: 'GB'
+				}
+			}
+		},
+		fields: {
+			billingDetails: 'never'  // Don't collect billing details in Payment Element; we'll collect them separately
+		}
+	});
 	const mountPoint = document.getElementById('card-element');
 	if (mountPoint) {
 		mountPoint.innerHTML = '';
@@ -292,6 +312,13 @@ window.addEventListener('DOMContentLoaded', function() {
 	loadPackageDetails(pkgId);
 	// Ensure summaries refresh on load
 	try { updateSummaries(); } catch (e) {}
+	
+	// Pre-mount the Payment Element so the user sees the card input immediately
+	// Get contact info or use defaults for initial mount
+	const name = document.getElementById('customer-name')?.value?.trim() || 'Guest';
+	const email = document.getElementById('customer-email')?.value?.trim() || 'guest@example.com';
+	console.debug('DOMContentLoaded: pre-mounting Payment Element');
+	ensurePaymentElement(name, email).catch(e => console.error('Failed to pre-mount Payment Element:', e));
 });
 
 // Retry sync at multiple intervals to ensure SERVICES is available and DOM is ready
