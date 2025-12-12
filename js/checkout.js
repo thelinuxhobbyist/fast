@@ -9,6 +9,8 @@ document.addEventListener('DOMContentLoaded', function() {
 			content.style.display = expanded ? 'none' : 'block';
 		});
 	}
+	// Ensure summaries reflect the computed package on first paint
+	try { if (typeof updateSummaries === 'function') updateSummaries(); } catch(e){}
 });
 // Stripe Checkout Integration
 // Replace 'pk_test_...' with your actual Stripe Publishable Key when ready
@@ -274,6 +276,8 @@ window.addEventListener('DOMContentLoaded', function() {
 	if (packageId) {
 		loadPackageDetails(packageId);
 	}
+	// sync UI summaries and pay buttons even if no package param
+	try { updateSummaries(); updatePayButtonAmount(); } catch(e){}
 });
 
 function loadPackageDetails(packageId) {
@@ -305,5 +309,12 @@ function loadPackageDetails(packageId) {
 		var spnM = document.getElementById('summary-package-name-mobile'); if (spnM) spnM.textContent = pkg.title;
 		var sppM = document.getElementById('summary-package-price-mobile'); if (sppM) sppM.textContent = formatted;
 		var stM = document.getElementById('summary-total-mobile'); if (stM) stM.textContent = formatted;
+
+		// Update Stripe paymentRequest total if available
+		try {
+			if (typeof paymentRequest !== 'undefined' && paymentRequest && paymentRequest.update) {
+				paymentRequest.update({ total: { label: 'Fast Graphic Design', amount: Math.round(getOrderTotal() * 100) } });
+			}
+		} catch(e){}
 	}
 }
