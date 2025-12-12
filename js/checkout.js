@@ -220,22 +220,38 @@ function getOrderTotal() {
 	// Prefer reading the numeric price from the selected SERVICE object
 	try {
 		const pkgId = getSelectedPackageId();
+		console.debug('getOrderTotal: pkgId=', pkgId);
 		if (typeof findService === 'function') {
 			const pkg = findService(pkgId);
+			console.debug('getOrderTotal: findService ->', pkg);
 			if (pkg && pkg.price) {
 				// price may be like "£199" or "£0.30" — strip non-numeric except dot and parse
-				const num = pkg.price.replace(/[^0-9.]/g, '');
+				const num = String(pkg.price).replace(/[^0-9.]/g, '');
 				const val = parseFloat(num);
+				console.debug('getOrderTotal: parsed from pkg.price ->', val);
 				if (!isNaN(val)) return val;
 			}
 		}
 	} catch (e) { /* fallback below */ }
 	// Fallback: Parse from the summary DOM element
-	const el = document.getElementById('summary-total');
-	if (el) {
-		const totalText = el.textContent || el.innerText || '';
-		return parseFloat(totalText.replace(/[^0-9.]/g, '')) || 0;
+	// Try to read the primary package price element if available
+	const priceElCandidates = [
+		document.getElementById('package-price'),
+		document.getElementById('summary-total'),
+		document.getElementById('summary-total-mobile'),
+		document.getElementById('summary-total-mobile-bottom'),
+	];
+	for (const el of priceElCandidates) {
+		if (el && el.textContent) {
+			const totalText = el.textContent || el.innerText || '';
+			const parsed = parseFloat(totalText.replace(/[^0-9.]/g, ''));
+			if (!isNaN(parsed)) {
+				console.debug('getOrderTotal: parsed from DOM', parsed, el.id || el);
+				return parsed;
+			}
+		}
 	}
+	console.debug('getOrderTotal: unable to determine total, returning 0');
 	return 0;
 }
 
@@ -250,6 +266,11 @@ window.addEventListener('DOMContentLoaded', function() {
 	// Ensure summaries refresh on load
 	try { updateSummaries(); } catch (e) {}
 });
+
+// Also try a short delayed sync in case other scripts modify the DOM after load
+setTimeout(function(){
+	try { updateSummaries(); } catch(e){}
+}, 500);
 
 function formatCurrency(n){
 	if (isNaN(n)) return '£0.00';
