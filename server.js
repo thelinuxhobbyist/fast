@@ -64,6 +64,40 @@ app.use(express.static(path.join(__dirname)));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
+// POST /api/create-payment-intent - Create a Stripe Payment Intent
+app.post('/api/create-payment-intent', async (req, res) => {
+  try {
+    const { amount, currency = 'gbp', customerEmail, customerName, package_id, order_type } = req.body;
+    
+    // Validate the request (Stripe GBP minimum is 1 pence = 1)
+    if (!amount || amount < 1) {
+      return res.status(400).json({ error: 'Invalid amount' });
+    }
+    
+    // Create Payment Intent with Stripe
+    const paymentIntent = await stripe.paymentIntents.create({
+      amount: Math.round(amount),
+      currency: currency,
+      automatic_payment_methods: { enabled: true },
+      receipt_email: customerEmail || '',
+      description: `Payment from ${customerName || 'Customer'}`,
+      metadata: {
+        package: package_id || '',
+        order_type: order_type || '',
+        email: customerEmail || '',
+        site: process.env.SITE_IDENTIFIER || 'fastgraphicdesign'
+      }
+    });
+    
+    res.json({ clientSecret: paymentIntent.client_secret });
+  } catch (error) {
+    console.error('Error creating payment intent:', error.message);
+    res.status(500).json({ 
+      error: error.message || 'Internal server error' 
+    });
+  }
+});
+
 // Raw body for webhook signature verification
 app.post('/webhook', bodyParser.raw({ type: 'application/json' }), (req, res) => {
   const sig = req.headers['stripe-signature'];
