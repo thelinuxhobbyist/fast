@@ -64,19 +64,31 @@ app.use(express.static(path.join(__dirname)));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
+// CORS middleware for API endpoints
+app.use('/api/', (req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Methods', 'POST, GET, OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  if (req.method === 'OPTIONS') {
+    return res.sendStatus(200);
+  }
+  next();
+});
+
 // POST /api/create-payment-intent - Create a Stripe Payment Intent
 app.post('/api/create-payment-intent', async (req, res) => {
   try {
     const { amount, currency = 'gbp', customerEmail, customerName, package_id, order_type } = req.body;
     
     // Validate the request (Stripe GBP minimum is 1 pence = 1)
+    // Amount should already be in pence from frontend (multiply by 100)
     if (!amount || amount < 1) {
       return res.status(400).json({ error: 'Invalid amount' });
     }
     
     // Create Payment Intent with Stripe
     const paymentIntent = await stripe.paymentIntents.create({
-      amount: Math.round(amount),
+      amount: Math.round(amount), // Amount is already in smallest currency unit (pence)
       currency: currency,
       automatic_payment_methods: { enabled: true },
       receipt_email: customerEmail || '',

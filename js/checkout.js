@@ -112,62 +112,91 @@ async function ensurePaymentElement(name, email) {
 
 	// Create PaymentIntent on server
 	const totalAmount = Math.round(getOrderTotal() * 100);
-	const response = await fetch('/api/create-payment-intent', {
-		method: 'POST',
-		headers: { 'Content-Type': 'application/json' },
-		body: JSON.stringify({
-			amount: totalAmount,
-			currency: 'gbp',
-			customerEmail: email,
-			customerName: name,
-			package_id: SELECTED_PACKAGE_ID || getSelectedPackageId(),
-			order_type: 'checkout'
-		}),
+	
+	console.log('Creating PaymentIntent with:', {
+		amount: totalAmount,
+		currency: 'gbp',
+		customerEmail: email,
+		customerName: name,
+		package_id: SELECTED_PACKAGE_ID || getSelectedPackageId()
 	});
 
-	const data = await response.json();
-	if (data.error) {
-		return { error: data.error };
-	}
+	try {
+		const response = await fetch('/api/create-payment-intent', {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify({
+				amount: totalAmount,
+				currency: 'gbp',
+				customerEmail: email,
+				customerName: name,
+				package_id: SELECTED_PACKAGE_ID || getSelectedPackageId(),
+				order_type: 'checkout'
+			}),
+		});
 
-	const { clientSecret } = data;
-
-	// Create Elements with clientSecret and mount Payment Element
-	// Configure with UK-specific defaults (no postal code requirement)
-	const appearance = {
-		theme: 'stripe',
-		variables: {
-			colorPrimary: '#F58731',
-			fontFamily: 'system-ui, -apple-system, sans-serif',
+		if (!response.ok) {
+			const errorData = await response.json();
+			console.error('API Error Response:', response.status, errorData);
+			return { error: errorData.error || `Server error: ${response.status}` };
 		}
-	};
-	elements = stripe.elements({ clientSecret, appearance });
-	paymentElement = elements.create('payment', {
-		// Explicitly allow only card and link payment methods
-		// This excludes Klarna, Amazon Pay, Revolut Pay, Apple Pay, Google Pay, etc.
-		restrictPaymentMethods: ['card', 'link'],
-		fields: {
-			billingDetails: 'never'  // Don't collect billing details in Payment Element; we collect them separately
-		}
-	});
-	const mountPoint = document.getElementById('card-element');
-	if (mountPoint) {
-		mountPoint.innerHTML = '';
-		paymentElement.mount('#card-element');
-	}
 
-	return { clientSecret };
+		const data = await response.json();
+		
+		if (data.error) {
+			console.error('PaymentIntent Error:', data.error);
+			return { error: data.error };
+		}
+
+		const { clientSecret } = data;
+		console.log('PaymentIntent created successfully:', clientSecret.substring(0, 20) + '...');
+
+		// Create Elements with clientSecret and mount Payment Element
+		// Configure with UK-specific defaults (no postal code requirement)
+		const appearance = {
+			theme: 'stripe',
+			variables: {
+				colorPrimary: '#F58731',
+				fontFamily: 'system-ui, -apple-system, sans-serif',
+			}
+		};
+		elements = stripe.elements({ clientSecret, appearance });
+		paymentElement = elements.create('payment', {
+			// Explicitly allow only card and link payment methods
+			// This excludes Klarna, Amazon Pay, Revolut Pay, Apple Pay, Google Pay, etc.
+			restrictPaymentMethods: ['card', 'link'],
+			fields: {
+				billingDetails: 'never'  // Don't collect billing details in Payment Element; we collect them separately
+			}
+		});
+		const mountPoint = document.getElementById('card-element');
+		if (mountPoint) {
+			mountPoint.innerHTML = '';
+			paymentElement.mount('#card-element');
+			console.log('Payment Element mounted successfully');
+		}
+
+		return { clientSecret };
+	} catch (error) {
+		console.error('ensurePaymentElement error:', error);
+		return { error: error.message || 'Failed to create payment element' };
+	}
 }
 
 // Process payment with Stripe using the Payment Element
 async function processPayment(name, email, btn, btnText, spin) {
 	try {
+		console.log('processPayment: Starting payment process');
+		
 		const ensure = await ensurePaymentElement(name, email);
 		if (ensure && ensure.error) {
+			console.error('Payment Element error:', ensure.error);
 			showError(ensure.error, btn, btnText, spin);
 			return;
 		}
 
+		console.log('Confirming payment with Stripe...');
+		
 		// Confirm the payment using the Payment Element. redirect:'if_required' keeps handling inline when possible
 		// Since we set billingDetails: 'never' in the Payment Element, we must pass billing details in confirmParams
 		const confirmResult = await stripe.confirmPayment({
@@ -184,21 +213,31 @@ async function processPayment(name, email, btn, btnText, spin) {
 			redirect: 'if_required'
 		});
 
+		console.log('confirmPayment result:', confirmResult);
+
 		if (confirmResult && confirmResult.error) {
-			showError(confirmResult.error.message || 'Payment failed', btn, btnText, spin);
+			const errorMsg = confirmResult.error.message || 'Payment failed';
+			console.error('Stripe error:', errorMsg, confirmResult.error);
+			showError(errorMsg, btn, btnText, spin);
 			return;
 		}
 
-		if (confirmResult && confirmResult.paymentIntent && confirmResult.paymentIntent.status === 'succeeded') {
-			window.location.href = 'success.html?payment_intent=' + confirmResult.paymentIntent.id;
-			return;
+		if (confirmResult && confirmResult.paymentIntent) {
+			console.log('Payment status:', confirmResult.paymentIntent.status);
+			
+			if (confirmResult.paymentIntent.status === 'succeeded') {
+				console.log('Payment succeeded! Redirecting to success page...');
+				window.location.href = 'success.html?payment_intent=' + confirmResult.paymentIntent.id;
+				return;
+			}
 		}
 
 		// If the confirm result didn't include a paymentIntent (redirect pending), the browser will redirect automatically.
+		console.log('Payment processing - redirect may occur');
 
 	} catch (error) {
+		console.error('Payment processing error:', error);
 		showError('An error occurred. Please try again.', btn, btnText, spin);
-		console.error('Payment error:', error);
 	}
 }
 
@@ -206,6 +245,7 @@ function showError(message, btn, btnText, spin) {
 	const displayError = document.getElementById('card-errors');
 	displayError.textContent = message;
 	displayError.classList.add('visible');
+	console.error('Payment error displayed to user:', message);
 	
 	// Re-enable button
 	btn.disabled = false;
@@ -318,8 +358,16 @@ window.addEventListener('DOMContentLoaded', function() {
 	// Get contact info or use defaults for initial mount
 	const name = document.getElementById('customer-name')?.value?.trim() || 'Guest';
 	const email = document.getElementById('customer-email')?.value?.trim() || 'guest@example.com';
-	console.debug('DOMContentLoaded: pre-mounting Payment Element');
-	ensurePaymentElement(name, email).catch(e => console.error('Failed to pre-mount Payment Element:', e));
+	console.debug('DOMContentLoaded: pre-mounting Payment Element with name:', name, 'email:', email);
+	ensurePaymentElement(name, email).catch(e => {
+		console.error('Failed to pre-mount Payment Element:', e);
+		// Show error to user
+		const displayError = document.getElementById('card-errors');
+		if (displayError) {
+			displayError.textContent = 'Failed to load payment form. Please refresh the page.';
+			displayError.classList.add('visible');
+		}
+	});
 });
 
 // Retry sync at multiple intervals to ensure SERVICES is available and DOM is ready
