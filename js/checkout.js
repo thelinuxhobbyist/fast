@@ -26,9 +26,18 @@ const elementOptions = {
 };
 
 // Handle form submission
-const submitButton = document.getElementById('submit_payment');
-const buttonText = document.getElementById('button-text');
-const spinner = document.getElementById('spinner');
+let submitButton = null;
+let buttonText = null;
+let spinner = null;
+
+function getFormElements() {
+	if (!submitButton) {
+		submitButton = document.getElementById('submit_payment');
+		buttonText = document.getElementById('button-text');
+		spinner = document.getElementById('spinner');
+	}
+	return { submitButton, buttonText, spinner };
+}
 
 // Track selected package id so metadata is accurate when creating PaymentIntent
 // Attempt to load package from URL or sessionStorage EARLY (before DOMContentLoaded)
@@ -117,7 +126,13 @@ function attachPaymentHandler(btn, btnText, spin) {
 	}
 }
 
-attachPaymentHandler(submitButton, buttonText, spinner);
+// Attach handler when DOM is ready
+function initializePaymentForm() {
+	const { submitButton: btn, buttonText: btnText, spinner: spin } = getFormElements();
+	if (btn) {
+		attachPaymentHandler(btn, btnText, spin);
+	}
+}
 
 // Ensure Payment Element is created and mounted (creates PaymentIntent via server)
 async function ensurePaymentElement(name, email) {
@@ -188,6 +203,21 @@ async function ensurePaymentElement(name, email) {
 			mountPoint.innerHTML = '';
 			paymentElement.mount('#payment_element');
 			console.log('Payment Element mounted successfully');
+			
+			// Enable submit button when Payment Element is ready
+			const { submitButton } = getFormElements();
+			if (submitButton) {
+				submitButton.disabled = false;
+				console.log('Submit button enabled');
+			}
+			
+			// Listen for Payment Element state changes to enable/disable button
+			elements.on('change', function(event) {
+				const { submitButton: btn } = getFormElements();
+				if (btn) {
+					btn.disabled = event.error || !event.complete;
+				}
+			});
 		}
 
 		return { clientSecret };
@@ -367,6 +397,9 @@ window.addEventListener('DOMContentLoaded', function() {
 	loadPackageDetails(pkgId);
 	// Ensure summaries refresh on load
 	try { updateSummaries(); } catch (e) {}
+	
+	// Initialize payment form with submit handler
+	initializePaymentForm();
 	
 	// Pre-mount the Payment Element so the user sees the card input immediately
 	// Get contact info or use defaults for initial mount
