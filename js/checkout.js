@@ -69,6 +69,20 @@ function extractPackageIdEarly() {
 // Extract and store immediately
 SELECTED_PACKAGE_ID = extractPackageIdEarly();
 
+// Load package details immediately so price is available for retryUpdateSummaries
+function loadPackageDetailsImmediate(packageId) {
+	if (typeof SERVICES === 'undefined') {
+		return; // Will be retried
+	}
+	const pkg = SERVICES.find(s => s.id === packageId);
+	if (pkg) {
+		var pn = document.getElementById('package-name'); if (pn) pn.textContent = pkg.title;
+		var pd = document.getElementById('package-desc'); if (pd) pd.textContent = pkg.shortDescription || pkg.longDescription || '';
+		var pp = document.getElementById('package-price'); if (pp) pp.textContent = pkg.price;
+	}
+}
+loadPackageDetailsImmediate(SELECTED_PACKAGE_ID);
+
 // Function to attach click handler to button
 
 function attachPaymentHandler(btn, btnText, spin) {
@@ -383,6 +397,8 @@ function retryUpdateSummaries() {
 			}
 			return;
 		}
+		// Ensure package details are loaded
+		loadPackageDetailsImmediate(SELECTED_PACKAGE_ID);
 		// SERVICES is available; update summaries
 		updateSummaries();
 	} catch (e) {
