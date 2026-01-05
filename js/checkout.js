@@ -26,7 +26,7 @@ const elementOptions = {
 };
 
 // Handle form submission
-const submitButton = document.getElementById('submit-payment');
+const submitButton = document.getElementById('submit_payment');
 const buttonText = document.getElementById('button-text');
 const spinner = document.getElementById('spinner');
 
@@ -91,8 +91,8 @@ function attachPaymentHandler(btn, btnText, spin) {
 			event.preventDefault();
 			
 			// Validate contact information
-			const customerName = document.getElementById('customer-name').value.trim();
-			const customerEmail = document.getElementById('customer-email').value.trim();
+			const customerName = document.getElementById('customer_name').value.trim();
+			const customerEmail = document.getElementById('customer_email').value.trim();
 			
 			if (!customerName || !customerEmail) {
 				alert('Please fill in all required fields.');
@@ -183,10 +183,10 @@ async function ensurePaymentElement(name, email) {
 				billingDetails: 'never'  // Don't collect billing details in Payment Element; we collect them separately
 			}
 		});
-		const mountPoint = document.getElementById('card-element');
+		const mountPoint = document.getElementById('payment_element');
 		if (mountPoint) {
 			mountPoint.innerHTML = '';
-			paymentElement.mount('#card-element');
+			paymentElement.mount('#payment_element');
 			console.log('Payment Element mounted successfully');
 		}
 
@@ -370,13 +370,13 @@ window.addEventListener('DOMContentLoaded', function() {
 	
 	// Pre-mount the Payment Element so the user sees the card input immediately
 	// Get contact info or use defaults for initial mount
-	const name = document.getElementById('customer-name')?.value?.trim() || 'Guest';
-	const email = document.getElementById('customer-email')?.value?.trim() || 'guest@example.com';
+	const name = document.getElementById('customer_name')?.value?.trim() || 'Guest';
+	const email = document.getElementById('customer_email')?.value?.trim() || 'guest@example.com';
 	console.debug('DOMContentLoaded: pre-mounting Payment Element with name:', name, 'email:', email);
 	ensurePaymentElement(name, email).catch(e => {
 		console.error('Failed to pre-mount Payment Element:', e);
 		// Show error to user
-		const displayError = document.getElementById('card-errors');
+		const displayError = document.getElementById('payment_error_message');
 		if (displayError) {
 			displayError.textContent = 'Failed to load payment form. Please refresh the page.';
 			displayError.classList.add('visible');

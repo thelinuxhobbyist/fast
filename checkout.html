@@ -73,98 +73,103 @@
 				<i class="fa-solid fa-arrow-left"></i> Choose a different package
 			</a>
 		</div>			<!-- Collapsible Order Summary (mobile only, at top) -->
-			<div class="order-summary-mobile collapsible-summary">
-				<button class="summary-toggle" type="button" aria-expanded="false">
-					<span>Order Summary</span>
-					<span class="summary-total-label">— Total <span id="summary-total-mobile">£0.00</span></span>
-					<span class="summary-toggle-icon" aria-hidden="true">&#x25BC;</span>
-				</button>
-				<div class="collapsible-content" style="display:none">
-					<div class="summary-item">
-						<span id="summary-package-name-mobile">Package</span>
-						<span id="summary-package-price-mobile">£0.00</span>
+		<div class="order-summary-mobile collapsible-summary">
+			<button class="summary-toggle" type="button" aria-expanded="false">
+				<span>Order Summary</span>
+				<span class="summary-total-label">— Total <span id="summary-total-mobile">£0.00</span></span>
+				<span class="summary-toggle-icon" aria-hidden="true">&#x25BC;</span>
+			</button>
+			<div class="collapsible-content" style="display:none">
+				<div class="summary-item">
+					<span id="summary-package-name-mobile">Package</span>
+					<span id="summary-package-price-mobile">£0.00</span>
+				</div>
+				<div class="summary-divider"></div>
+				<div class="summary-item summary-total">
+					<strong>Total</strong>
+					<strong id="summary-total-mobile-bottom">£0.00</strong>
+				</div>
+				<div class="trust-items">
+					<div class="trust-item-small">
+						<i class="fa-solid fa-clock"></i>
+						<span>Fast 2-5 day turnaround</span>
 					</div>
-					<div class="summary-divider"></div>
-					<div class="summary-item summary-total">
-						<strong>Total</strong>
-						<strong id="summary-total-mobile-bottom">£0.00</strong>
+					<div class="trust-item-small">
+						<i class="fa-solid fa-shield-halved"></i>
+						<span>100% satisfaction guarantee</span>
 					</div>
-					<div class="trust-items">
-						<div class="trust-item-small">
-							<i class="fa-solid fa-clock"></i>
-							<span>Fast 2-5 day turnaround</span>
-						</div>
-						<div class="trust-item-small">
-							<i class="fa-solid fa-shield-halved"></i>
-							<span>100% satisfaction guarantee</span>
-						</div>
-						<div class="trust-item-small">
-							<i class="fa-solid fa-rotate"></i>
-							<span>Unlimited revisions</span>
-						</div>
+					<div class="trust-item-small">
+						<i class="fa-solid fa-rotate"></i>
+						<span>Unlimited revisions</span>
 					</div>
-					<div class="payment-methods">
-						<!-- payment-methods removed from summary, will be placed in payment section -->
+				</div>
+			</div>
+		</div>
+
+		<!-- Payment Form -->
+		<form id="payment_form">
+			<!-- Customer Information -->
+			<div class="checkout-section">
+				<h3><i class="fa-solid fa-user"></i> Customer Information</h3>
+				<div class="form-grid">
+					<div class="form-field">
+						<label for="customer_name">Full Name <span style="color: #fa755a;">*</span></label>
+						<input type="text" id="customer_name" name="customer_name" required placeholder="John Smith">
+					</div>
+					<div class="form-field">
+						<label for="customer_email">Email Address <span style="color: #fa755a;">*</span></label>
+						<input type="email" id="customer_email" name="customer_email" required placeholder="john@example.com">
 					</div>
 				</div>
 			</div>
 
-
-		<!-- Billing Information -->
-		<div class="checkout-section checkout-contact-section">
-			<h3><i class="fa-solid fa-user"></i> Billing Details</h3>
-			<div class="form-grid">
-				<div class="form-field">
-					<label for="customer-name">Full Name *</label>
-					<input type="text" id="customer-name" required placeholder="John Smith">
-				</div>
-				<div class="form-field">
-					<label for="customer-email">Email Address *</label>
-					<input type="email" id="customer-email" required placeholder="john@example.com">
+			<!-- Billing Information (Recommended) -->
+			<div class="checkout-section">
+				<h3><i class="fa-solid fa-map-location-dot"></i> Billing Information (Recommended)</h3>
+				<div class="form-grid">
+					<div class="form-field">
+						<label for="billing_line1">Address Line 1</label>
+						<input type="text" id="billing_line1" name="billing_line1" placeholder="123 Main Street">
+					</div>
+					<div class="form-field">
+						<label for="billing_city">City</label>
+						<input type="text" id="billing_city" name="billing_city" placeholder="London">
+					</div>
+					<div class="form-field">
+						<label for="billing_postal_code">Postcode</label>
+						<input type="text" id="billing_postal_code" name="billing_postal_code" placeholder="SW1A 1AA">
+					</div>
 				</div>
 			</div>
-		</div>			<!-- Payment Information (moved after contact for mobile) -->
-			<div class="checkout-section checkout-payment-section">
+
+			<!-- Payment Details -->
+			<div class="checkout-section">
 				<h3><i class="fa-solid fa-credit-card"></i> Payment Details</h3>
 				<div class="form-field">
-					<label for="card-element">Card Information</label>
-					<div id="card-element" class="stripe-element">
-						<!-- Stripe Payment Element will be inserted here -->
+					<label for="payment_element">Card Information <span style="color: #fa755a;">*</span></label>
+					<div id="payment_element" class="stripe-element"></div>
+					<div style="margin-top: 8px; font-size: 12px; color: #666;">
+						<img src="https://img.shields.io/badge/Visa-1A1F71?style=flat&logo=visa&logoColor=white" alt="Visa" style="height: 20px; margin-right: 8px;">
+						<img src="https://img.shields.io/badge/Mastercard-EB001B?style=flat&logo=mastercard&logoColor=white" alt="Mastercard" style="height: 20px;">
 					</div>
-					<div class="payment-methods">
-						<img src="https://img.shields.io/badge/Visa-1A1F71?style=flat&logo=visa&logoColor=white" alt="Visa" style="height:24px">
-						<img src="https://img.shields.io/badge/Mastercard-EB001B?style=flat&logo=mastercard&logoColor=white" alt="Mastercard" style="height:24px">
-					</div>
-					<div id="card-errors" role="alert" class="error-message"></div>
-				</div>
-
-			<!-- Security badges (under form) -->
-			<div class="security-badges">
-				<div class="security-badge">
-					<i class="fa-solid fa-lock"></i>
-					<span>Secure 256-bit SSL encryption</span>
-				</div>
-				<div class="security-badge">
-					<i class="fa-brands fa-cc-stripe"></i>
-					<span>Powered by Stripe</span>
+					<div id="payment_error_message" role="alert" class="error-message" style="margin-top: 8px; color: #fa755a; font-size: 13px;"></div>
 				</div>
 			</div>
 
-			<!-- Single Pay Button -->
-			<button type="submit" id="submit-payment" class="btn-checkout" style="width:100%;margin-top:24px">
+			<!-- Submit Button -->
+			<button type="submit" id="submit_payment" class="btn-checkout" style="width: 100%; margin-top: 24px;" disabled>
 				<span id="button-text">
-					<i class="fa-solid fa-lock"></i>
-					Pay Securely
+					<i class="fa-solid fa-lock"></i> Pay Now
 				</span>
 				<div id="spinner" class="spinner hidden"></div>
 			</button>
 
-			<p class="checkout-terms" style="text-align:center;font-size:12px;margin-top:12px">
+			<p style="text-align: center; font-size: 12px; margin-top: 12px; color: #666;">
 				By completing this purchase, you agree to our 
 				<a href="terms.html">Terms of Service</a> and 
 				<a href="privacy.html">Privacy Policy</a>.
 			</p>
-			</div>
+		</form>
 		</div>
 
 		<!-- Right: Order Summary + Pay Button (desktop) -->
