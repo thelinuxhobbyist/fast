@@ -135,9 +135,21 @@ function initializePaymentForm() {
 }
 
 // Ensure Payment Element is created and mounted (creates PaymentIntent via server)
-async function ensurePaymentElement(name, email) {
-	// If already mounted and elements exists, no-op
-	if (paymentElement && elements) return true;
+async function ensurePaymentElement(name, email, forceRefresh = false) {
+	// If already mounted and elements exists, no-op (unless forceRefresh is true)
+	if (!forceRefresh && paymentElement && elements) return true;
+
+	// If forceRefresh, unmount and clean up old elements
+	if (forceRefresh && paymentElement) {
+		try {
+			paymentElement.unmount();
+			paymentElement = null;
+			elements = null;
+			console.log('Cleaned up old Payment Element');
+		} catch (e) {
+			console.warn('Error cleaning up old Payment Element:', e);
+		}
+	}
 
 	// Create PaymentIntent on server
 	const totalAmount = Math.round(getOrderTotal() * 100);
@@ -232,7 +244,8 @@ async function processPayment(name, email, btn, btnText, spin) {
 	try {
 		console.log('processPayment: Starting payment process');
 		
-		const ensure = await ensurePaymentElement(name, email);
+		// Force refresh of Payment Element to ensure fresh PaymentIntent for this transaction
+		const ensure = await ensurePaymentElement(name, email, true);
 		if (ensure && ensure.error) {
 			console.error('Payment Element error:', ensure.error);
 			showError(ensure.error, btn, btnText, spin);
@@ -240,6 +253,12 @@ async function processPayment(name, email, btn, btnText, spin) {
 		}
 
 		console.log('Confirming payment with Stripe...');
+		
+		// Set a timeout for payment confirmation (30 seconds)
+		let paymentTimeout = setTimeout(() => {
+			console.error('Payment confirmation timeout after 30 seconds');
+			showError('Payment processing took too long. Please try again.', btn, btnText, spin);
+		}, 30000);
 		
 		// Confirm the payment using the Payment Element. redirect:'if_required' keeps handling inline when possible
 		// Since we set billingDetails: 'never' in the Payment Element, we must pass billing details in confirmParams
@@ -257,21 +276,34 @@ async function processPayment(name, email, btn, btnText, spin) {
 			redirect: 'if_required'
 		});
 
+		clearTimeout(paymentTimeout);
 		console.log('confirmPayment result:', confirmResult);
 
-		if (confirmResult && confirmResult.error) {
+		if (!confirmResult) {
+			console.error('confirmPayment returned undefined');
+			showError('Payment processing error: No response from Stripe', btn, btnText, spin);
+			return;
+		}
+
+		if (confirmResult.error) {
 			const errorMsg = confirmResult.error.message || 'Payment failed';
 			console.error('Stripe error:', errorMsg, confirmResult.error);
 			showError(errorMsg, btn, btnText, spin);
 			return;
 		}
 
-		if (confirmResult && confirmResult.paymentIntent) {
+		if (confirmResult.paymentIntent) {
 			console.log('Payment status:', confirmResult.paymentIntent.status);
 			
 			if (confirmResult.paymentIntent.status === 'succeeded') {
 				console.log('Payment succeeded! Redirecting to success page...');
 				window.location.href = 'success.html?payment_intent=' + confirmResult.paymentIntent.id;
+				return;
+			}
+			
+			if (confirmResult.paymentIntent.status === 'processing') {
+				console.log('Payment is processing...');
+				showError('Payment is processing. Please wait and do not refresh the page.', btn, btnText, spin);
 				return;
 			}
 		}
