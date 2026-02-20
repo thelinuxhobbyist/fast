@@ -225,6 +225,15 @@ async function ensurePaymentElement(name, email, forceRefresh = false) {
 			paymentElement.mount('#payment_element');
 			console.log('Payment Element mounted successfully');
 
+			// Enable visible debug banner for troubleshooting (shows helpful state)
+			try {
+				const dbg = document.getElementById('debug-banner');
+				if (dbg) {
+					dbg.style.display = 'block';
+					dbg.textContent = 'Payment Element mounted';
+				}
+			} catch (e) { console.debug('debug-banner not available', e); }
+
 			// Mark readiness. Stripe Payment Element emits a 'ready' event in many builds;
 			// if it isn't available we'll assume readiness after a short delay.
 			paymentElementReady = false;
@@ -253,6 +262,12 @@ async function ensurePaymentElement(name, email, forceRefresh = false) {
 					if (btn) {
 						btn.disabled = event.error || !event.complete;
 					}
+					// Detailed debug output for troubleshooting incomplete-field issues
+					try {
+						console.log('Payment Element change event:', event);
+						const dbg = document.getElementById('debug-banner');
+						if (dbg) dbg.textContent = 'Payment Element change - complete=' + !!event.complete + (event.error ? ' error=' + (event.error.message||event.error.type) : '');
+					} catch (e) { console.debug('debug update failed', e); }
 				});
 			}
 		}
