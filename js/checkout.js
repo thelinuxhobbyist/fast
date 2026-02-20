@@ -332,6 +332,7 @@ async function processPayment(name, email, btn, btnText, spin) {
 		// Confirm the payment using the Payment Element. redirect:'if_required' keeps handling inline when possible
 		// Since we set billingDetails: 'never' in the Payment Element, we must pass billing details in confirmParams
 		console.log('Calling stripe.confirmPayment()');
+		const countryDefault = (navigator.language && navigator.language.toLowerCase().includes('en-gb')) ? 'GB' : 'GB';
 		const confirmResult = await stripe.confirmPayment({
 			elements,
 			confirmParams: {
@@ -344,6 +345,9 @@ async function processPayment(name, email, btn, btnText, spin) {
 						// Payment Element to satisfy Stripe's requirement. Use empty string
 						// when not collected to avoid IntegrationError.
 						phone: ''
+						// Include minimal address with country to satisfy Stripe when
+						// `fields.billing_details` was set to 'never' on the Payment Element.
+						,address: { country: countryDefault }
 					}
 				}
 			},
