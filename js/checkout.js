@@ -21,6 +21,8 @@ let elements = null;
 let paymentElement = null;
 // Flag that becomes true once the Payment Element is mounted and ready
 let paymentElementReady = false;
+// Flag that becomes true when the Payment Element reports all fields complete
+let paymentElementComplete = false;
 
 // Minimal Element styling (avoid using lineHeight to prevent Stripe warning)
 const elementOptions = {
@@ -146,6 +148,7 @@ async function ensurePaymentElement(name, email, forceRefresh = false) {
 		try {
 			paymentElement.unmount();
 			paymentElement = null;
+			paymentElementComplete = false;
 			elements = null;
 			console.log('Cleaned up old Payment Element');
 		} catch (e) {
@@ -156,11 +159,10 @@ async function ensurePaymentElement(name, email, forceRefresh = false) {
 	// Create PaymentIntent on server
 	const totalAmount = Math.round(getOrderTotal() * 100);
 	
-	console.log('Creating PaymentIntent with:', {
+	// Log only non-PII details to avoid exposing emails/names in console
+	console.log('Creating PaymentIntent:', {
 		amount: totalAmount,
 		currency: 'gbp',
-		customerEmail: email,
-		customerName: name,
 		package_id: SELECTED_PACKAGE_ID || getSelectedPackageId()
 	});
 
@@ -196,11 +198,8 @@ async function ensurePaymentElement(name, email, forceRefresh = false) {
 			console.error('No clientSecret returned from /api/create-payment-intent', data);
 			return { error: 'No client secret from server' };
 		}
-		try {
-			console.log('PaymentIntent created successfully:', (clientSecret && clientSecret.substring ? clientSecret.substring(0, 20) + '...' : clientSecret));
-		} catch (e) {
-			console.debug('Could not log clientSecret safely', e);
-		}
+		// Do not log client secret or other sensitive data to console
+		console.log('PaymentIntent created successfully');
 
 		// Create Elements with clientSecret and mount Payment Element
 		// Configure with UK-specific defaults (no postal code requirement)
@@ -247,12 +246,15 @@ async function ensurePaymentElement(name, email, forceRefresh = false) {
 			}
 			
 			// Listen for Payment Element state changes to enable/disable button
-			elements.on('change', function(event) {
-				const { submitButton: btn } = getFormElements();
-				if (btn) {
-					btn.disabled = event.error || !event.complete;
-				}
-			});
+			if (paymentElement && typeof paymentElement.on === 'function') {
+				paymentElement.on('change', function(event) {
+					paymentElementComplete = !!event.complete;
+					const { submitButton: btn } = getFormElements();
+					if (btn) {
+						btn.disabled = event.error || !event.complete;
+					}
+				});
+			}
 		}
 
 		return { clientSecret };
@@ -286,6 +288,14 @@ async function processPayment(name, email, btn, btnText, spin) {
 			showError('Payment form not ready. Please refresh the page.', btn, btnText, spin);
 			return;
 		}
+
+		// Ensure user has completed entering card details (avoid incomplete field errors)
+		const completeReady = await waitUntil(()=>paymentElementComplete === true, 5000);
+		if (!completeReady) {
+			console.error('Payment Element fields incomplete before confirm');
+			showError('Please complete your card details before submitting.', btn, btnText, spin);
+			return;
+		}
 		
 		// Set a timeout for payment confirmation (30 seconds)
 		let paymentTimeout = setTimeout(() => {
@@ -310,7 +320,8 @@ async function processPayment(name, email, btn, btnText, spin) {
 		});
 
 		clearTimeout(paymentTimeout);
-		console.log('confirmPayment result:', confirmResult);
+		// Avoid dumping the full Stripe response (may contain PII/payment details)
+		console.log('confirmPayment completed');
 
 		if (!confirmResult) {
 			console.error('confirmPayment returned undefined');
