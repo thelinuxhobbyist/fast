@@ -333,26 +333,19 @@ async function processPayment(name, email, btn, btnText, spin) {
 		// Since we set billingDetails: 'never' in the Payment Element, we must pass billing details in confirmParams
 		console.log('Calling stripe.confirmPayment()');
 		const countryDefault = (navigator.language && navigator.language.toLowerCase().includes('en-gb')) ? 'GB' : 'GB';
-		const confirmResult = await stripe.confirmPayment({
-			elements,
-			confirmParams: {
-				return_url: window.location.origin + '/success.html',
-				payment_method_data: {
-					billing_details: {
-						name: name,
-						email: email,
-						// Include phone when we opted out of collecting billingDetails in the
-						// Payment Element to satisfy Stripe's requirement. Use empty string
-						// when not collected to avoid IntegrationError.
-						phone: ''
-						// Include minimal address with country to satisfy Stripe when
-						// `fields.billing_details` was set to 'never' on the Payment Element.
-						,address: { country: countryDefault }
-					}
+		const confirmParams = {
+			return_url: window.location.origin + '/success.html',
+			payment_method_data: {
+				billing_details: {
+					name: name,
+					email: email,
+					phone: '',
+					address: { country: countryDefault }
 				}
-			},
-			redirect: 'if_required'
-		});
+			}
+		};
+		console.log('confirmParams being sent to stripe.confirmPayment (no secrets):', confirmParams);
+		const confirmResult = await stripe.confirmPayment({ elements, confirmParams, redirect: 'if_required' });
 
 		clearTimeout(paymentTimeout);
 		const confirmDuration = Date.now() - confirmStart;
