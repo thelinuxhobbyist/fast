@@ -269,8 +269,9 @@ async function processPayment(name, email, btn, btnText, spin) {
 	try {
 		console.log('processPayment: Starting payment process');
 		
-		// Force refresh of Payment Element to ensure fresh PaymentIntent for this transaction
-		const ensure = await ensurePaymentElement(name, email, true);
+		// Ensure a Payment Element is mounted for this transaction (do NOT force-refresh
+		// on submit as that can unmount the element and clear user-entered card data)
+		const ensure = await ensurePaymentElement(name, email, false);
 		if (ensure && ensure.error) {
 			console.error('Payment Element error:', ensure.error);
 			showError(ensure.error, btn, btnText, spin);
