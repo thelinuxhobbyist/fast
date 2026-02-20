@@ -339,7 +339,11 @@ async function processPayment(name, email, btn, btnText, spin) {
 				payment_method_data: {
 					billing_details: {
 						name: name,
-						email: email
+						email: email,
+						// Include phone when we opted out of collecting billingDetails in the
+						// Payment Element to satisfy Stripe's requirement. Use empty string
+						// when not collected to avoid IntegrationError.
+						phone: ''
 					}
 				}
 			},
@@ -386,7 +390,8 @@ async function processPayment(name, email, btn, btnText, spin) {
 
 	} catch (error) {
 		console.error('Payment processing error:', error);
-		showError('An error occurred. Please try again.', btn, btnText, spin);
+		const msg = (error && error.message) ? error.message : 'An error occurred. Please try again.';
+		showError(msg, btn, btnText, spin);
 	}
 }
 
