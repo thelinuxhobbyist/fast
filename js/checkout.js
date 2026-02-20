@@ -340,7 +340,7 @@ async function processPayment(name, email, btn, btnText, spin) {
 					name: name,
 					email: email,
 					phone: '',
-					address: { country: countryDefault }
+					address: { country: countryDefault, postal_code: '' }
 				}
 			}
 		};
