@@ -19,6 +19,8 @@ const stripe = Stripe('pk_live_51SdUxFKW0ODTEuVznk6fvKbtzMFIiZj8ODDj2RlF7x4gKgaH
 // We'll create Elements & the Payment Element dynamically after we receive a client secret
 let elements = null;
 let paymentElement = null;
+// Flag that becomes true once the Payment Element is mounted and ready
+let paymentElementReady = false;
 
 // Minimal Element styling (avoid using lineHeight to prevent Stripe warning)
 const elementOptions = {
@@ -223,6 +225,19 @@ async function ensurePaymentElement(name, email, forceRefresh = false) {
 			mountPoint.innerHTML = '';
 			paymentElement.mount('#payment_element');
 			console.log('Payment Element mounted successfully');
+
+			// Mark readiness. Stripe Payment Element emits a 'ready' event in many builds;
+			// if it isn't available we'll assume readiness after a short delay.
+			paymentElementReady = false;
+			try {
+				if (paymentElement && typeof paymentElement.on === 'function') {
+					paymentElement.on('ready', function(){ paymentElementReady = true; console.log('Payment Element ready'); });
+					// Some versions may already be ready immediately after mount
+					setTimeout(function(){ if (!paymentElementReady) { paymentElementReady = true; console.log('Payment Element assumed ready after mount'); }}, 300);
+				} else {
+					setTimeout(function(){ paymentElementReady = true; console.log('Payment Element assumed ready (no ready event)'); }, 250);
+				}
+			} catch (e) { paymentElementReady = true; console.debug('ready listener failed', e); }
 			
 			// Enable submit button when Payment Element is ready
 			const { submitButton } = getFormElements();
@@ -261,6 +276,16 @@ async function processPayment(name, email, btn, btnText, spin) {
 		}
 
 		console.log('Confirming payment with Stripe...');
+
+		// Wait for Payment Element readiness (avoid IntegrationError when element not yet ready)
+		function waitFor(ms){return new Promise(r=>setTimeout(r,ms));}
+		async function waitUntil(predicate, timeout=5000, interval=50){const start=Date.now(); while(!predicate()){ if(Date.now()-start>timeout) return false; await waitFor(interval);} return true;}
+		const ready = await waitUntil(()=>paymentElementReady, 5000);
+		if (!ready) {
+			console.error('Payment Element not ready after waiting');
+			showError('Payment form not ready. Please refresh the page.', btn, btnText, spin);
+			return;
+		}
 		
 		// Set a timeout for payment confirmation (30 seconds)
 		let paymentTimeout = setTimeout(() => {
@@ -326,15 +351,19 @@ async function processPayment(name, email, btn, btnText, spin) {
 }
 
 function showError(message, btn, btnText, spin) {
-	const displayError = document.getElementById('card-errors');
-	displayError.textContent = message;
-	displayError.classList.add('visible');
+	const displayError = document.getElementById('payment_error_message') || document.getElementById('card-errors') || document.getElementById('payment_error');
+	if (displayError) {
+		displayError.textContent = message;
+		displayError.classList.add('visible');
+	} else {
+		// Fallback to alert if no DOM target
+		try { alert(message); } catch(e) { console.error('Unable to show error to user', e); }
+	}
 	console.error('Payment error displayed to user:', message);
-	
-	// Re-enable button
-	btn.disabled = false;
-	btnText.style.display = 'flex';
-	spin.classList.add('hidden');
+	// Re-enable button safely
+	try { if (btn) btn.disabled = false; } catch (e){}
+	try { if (btnText) btnText.style.display = 'flex'; } catch (e){}
+	try { if (spin) spin.classList.add('hidden'); } catch (e){}
 }
 
 // Payment Request Button for Apple Pay, Google Pay, etc.
