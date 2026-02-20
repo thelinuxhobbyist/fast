@@ -189,8 +189,16 @@ async function ensurePaymentElement(name, email, forceRefresh = false) {
 			return { error: data.error };
 		}
 
-		const { clientSecret } = data;
-		console.log('PaymentIntent created successfully:', clientSecret.substring(0, 20) + '...');
+		const { clientSecret } = data || {};
+		if (!clientSecret) {
+			console.error('No clientSecret returned from /api/create-payment-intent', data);
+			return { error: 'No client secret from server' };
+		}
+		try {
+			console.log('PaymentIntent created successfully:', (clientSecret && clientSecret.substring ? clientSecret.substring(0, 20) + '...' : clientSecret));
+		} catch (e) {
+			console.debug('Could not log clientSecret safely', e);
+		}
 
 		// Create Elements with clientSecret and mount Payment Element
 		// Configure with UK-specific defaults (no postal code requirement)
@@ -287,7 +295,7 @@ async function processPayment(name, email, btn, btnText, spin) {
 
 		if (confirmResult.error) {
 			const errorMsg = confirmResult.error.message || 'Payment failed';
-			console.error('Stripe error:', errorMsg, confirmResult.error);
+			console.error('Stripe error:', errorMsg, 'type=', confirmResult.error.type, 'code=', confirmResult.error.code, confirmResult.error);
 			showError(errorMsg, btn, btnText, spin);
 			return;
 		}
