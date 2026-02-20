@@ -297,14 +297,16 @@ async function processPayment(name, email, btn, btnText, spin) {
 			return;
 		}
 		
-		// Set a timeout for payment confirmation (30 seconds)
+		// Set a timeout for payment confirmation (60 seconds)
+		const confirmStart = Date.now();
 		let paymentTimeout = setTimeout(() => {
-			console.error('Payment confirmation timeout after 30 seconds');
-			showError('Payment processing took too long. Please try again.', btn, btnText, spin);
-		}, 30000);
+			console.error('Payment confirmation timeout after 60 seconds');
+			showError('Payment processing took too long. Please try again. Check the browser console for details.', btn, btnText, spin);
+		}, 60000);
 		
 		// Confirm the payment using the Payment Element. redirect:'if_required' keeps handling inline when possible
 		// Since we set billingDetails: 'never' in the Payment Element, we must pass billing details in confirmParams
+		console.log('Calling stripe.confirmPayment()');
 		const confirmResult = await stripe.confirmPayment({
 			elements,
 			confirmParams: {
@@ -320,6 +322,8 @@ async function processPayment(name, email, btn, btnText, spin) {
 		});
 
 		clearTimeout(paymentTimeout);
+		const confirmDuration = Date.now() - confirmStart;
+		console.log('stripe.confirmPayment() completed in', confirmDuration, 'ms');
 		// Avoid dumping the full Stripe response (may contain PII/payment details)
 		console.log('confirmPayment completed');
 
