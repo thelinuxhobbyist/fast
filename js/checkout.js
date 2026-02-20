@@ -211,14 +211,23 @@ async function ensurePaymentElement(name, email, forceRefresh = false) {
 			}
 		};
 		elements = stripe.elements({ clientSecret, appearance });
-		paymentElement = elements.create('payment', {
+		// For debugging: allow falling back to the legacy `card` Element by
+		// adding `?use_card_element=1` to the URL. This helps determine if
+		// the Payment Element iframe is being hidden by CSS or browser settings.
+		const useCardElement = (new URLSearchParams(window.location.search).get('use_card_element') === '1');
+
+		if (useCardElement) {
+			paymentElement = elements.create('card', { hidePostalCode: true });
+		} else {
+			paymentElement = elements.create('payment', {
 			// Explicitly allow only card and link payment methods
 			// This excludes Klarna, Amazon Pay, Revolut Pay, Apple Pay, Google Pay, etc.
 			restrictPaymentMethods: ['card', 'link'],
 			fields: {
 				billingDetails: 'never'  // Don't collect billing details in Payment Element; we collect them separately
 			}
-		});
+			});
+		}
 		const mountPoint = document.getElementById('payment_element');
 		if (mountPoint) {
 			mountPoint.innerHTML = '';
