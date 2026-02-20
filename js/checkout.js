@@ -219,13 +219,11 @@ async function ensurePaymentElement(name, email, forceRefresh = false) {
 		if (useCardElement) {
 			paymentElement = elements.create('card', { hidePostalCode: true });
 		} else {
+			// Allow Payment Element to collect billing details automatically (default behavior).
+			// This avoids IntegrationError when confirming payments because Stripe will
+			// handle required billing fields like address/state/postal_code.
 			paymentElement = elements.create('payment', {
-			// Explicitly allow only card and link payment methods
-			// This excludes Klarna, Amazon Pay, Revolut Pay, Apple Pay, Google Pay, etc.
-			restrictPaymentMethods: ['card', 'link'],
-			fields: {
-				billingDetails: 'never'  // Don't collect billing details in Payment Element; we collect them separately
-			}
+				restrictPaymentMethods: ['card', 'link']
 			});
 		}
 		const mountPoint = document.getElementById('payment_element');
