@@ -219,11 +219,12 @@ async function ensurePaymentElement(name, email, forceRefresh = false) {
 		if (useCardElement) {
 			paymentElement = elements.create('card', { hidePostalCode: true });
 		} else {
-			// Allow Payment Element to collect billing details automatically (default behavior).
-			// This avoids IntegrationError when confirming payments because Stripe will
-			// handle required billing fields like address/state/postal_code.
+			// Explicitly ask the Payment Element to collect billing details.
+			// Setting to 'auto' ensures Stripe will include required fields
+			// (state/postal_code/etc.) and avoids IntegrationError.
 			paymentElement = elements.create('payment', {
-				restrictPaymentMethods: ['card', 'link']
+				restrictPaymentMethods: ['card', 'link'],
+				fields: { billingDetails: 'auto' }
 			});
 		}
 		const mountPoint = document.getElementById('payment_element');
