@@ -89,6 +89,12 @@
         if (paymentIntent) {
           var st = document.getElementById('status');
           if (st) st.innerText = 'Payment verified — thank you!';
+
+          // Remove the query params from the URL to avoid re-processing on reload
+          // Wait a short moment so the user (and analytics) can see the param briefly.
+          setTimeout(function(){
+            try { history.replaceState(null, '', window.location.pathname); } catch(e) { /* ignore */ }
+          }, 1200);
         }
       } catch (e) { /* ignore URL parsing errors */ }
     })();
