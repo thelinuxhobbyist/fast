@@ -43,12 +43,11 @@
 
 <main class="container">
 	<section class="card">
-			<h1>Tell Us About Your Project</h1>
+			<h1>Thank you — payment received</h1>
 
-			<!-- Status area populated when Stripe returns a payment_intent in the URL -->
-			<div id="status" style="margin-bottom:18px;color:var(--green);font-weight:700"></div>
-		<p style="color:#666;margin-bottom:24px">Thank you for your payment! To help our team get started, please answer a few general questions about your business and project. We'll review your responses and follow up with any specific questions needed to complete your design.</p>
-		
+			<div id="status" style="margin-bottom:12px;color:var(--green);font-weight:700">Payment verified</div>
+			<p style="color:#666;margin-bottom:18px">Your payment was successful. Please answer the short project form below so our team can begin work.</p>
+
 		<form id="projectForm" action="https://formspree.io/f/xldkyoqz" method="POST">
 			<input type="hidden" name="_next" value="https://fastgraphicdesign.co.uk/success.html?submitted=true">
 			<input type="hidden" name="_subject" value="New Project Inquiry">
@@ -57,19 +56,15 @@
 				<input type="text" id="fullname" name="fullname" required>
 			</div>
 
-			<div class="form-field">
-				<label for="company">Company / Business Name</label>
-				<input type="text" id="company" name="company" placeholder="(Leave blank if not applicable.)">
-			</div>
-
-			<div class="form-field">
-				<label for="email">Email Address</label>
-				<input type="email" id="email" name="email" required>
-			</div>
-
-			<div class="form-field">
-				<label for="phone">Phone Number</label>
-				<input type="tel" id="phone" name="phone">
+			<div class="form-grid">
+				<div class="form-field">
+					<label for="fullname">Full Name</label>
+					<input type="text" id="fullname" name="fullname" required>
+				</div>
+				<div class="form-field">
+					<label for="email">Email Address</label>
+					<input type="email" id="email" name="email" required>
+				</div>
 			</div>
 
 			<div class="form-field">

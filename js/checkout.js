@@ -181,8 +181,17 @@ async function ensurePaymentElement(name, email, forceRefresh = false) {
 		});
 
 		if (!response.ok) {
-			const errorData = await response.json();
+			let errorData = {};
+			try { errorData = await response.json(); } catch(e) { errorData = { error: 'Unknown server error' }; }
 			console.error('API Error Response:', response.status, errorData);
+			// Surface error to the user in the payment area so the cause is obvious
+			try {
+				const peg = document.getElementById('payment_element');
+				if (peg) {
+					peg.innerHTML = '<div style="padding:16px;border:1px solid #f2dede;background:#fff6f6;border-radius:8px;color:#b00020">Payment temporarily unavailable. Server error: ' + (errorData && errorData.error ? (errorData.error+'') : response.status) + '. Please contact support.</div>';
+				}
+				const dbg = document.getElementById('debug-banner'); if (dbg) { dbg.style.display='block'; dbg.textContent = 'API error: ' + (errorData && errorData.error ? errorData.error : 'Server error'); }
+			} catch (e) { console.debug('Could not update payment UI with server error', e); }
 			return { error: errorData.error || `Server error: ${response.status}` };
 		}
 
@@ -196,6 +205,7 @@ async function ensurePaymentElement(name, email, forceRefresh = false) {
 		const { clientSecret } = data || {};
 		if (!clientSecret) {
 			console.error('No clientSecret returned from /api/create-payment-intent', data);
+			try { const peg = document.getElementById('payment_element'); if (peg) peg.innerHTML = '<div style="padding:16px;border:1px solid #f2dede;background:#fff6f6;border-radius:8px;color:#b00020">Payment setup failed (no client secret). Please try again or contact support.</div>'; } catch(e){}
 			return { error: 'No client secret from server' };
 		}
 		// Do not log client secret or other sensitive data to console
@@ -224,7 +234,10 @@ async function ensurePaymentElement(name, email, forceRefresh = false) {
 			// (state/postal_code/etc.) and avoids IntegrationError.
 			paymentElement = elements.create('payment', {
 				restrictPaymentMethods: ['card', 'link'],
-				fields: { billingDetails: 'auto' }
+				// Hide billing detail collection in the Payment Element to keep
+				// the checkout form minimal. We pass billing details explicitly
+				// in the confirm call (name/email) so Stripe has required info.
+				fields: { billingDetails: 'never' }
 			});
 		}
 		const mountPoint = document.getElementById('payment_element');
@@ -333,7 +346,9 @@ async function processPayment(name, email, btn, btnText, spin) {
 		console.log('Calling stripe.confirmPayment()');
 		const countryDefault = (navigator.language && navigator.language.toLowerCase().includes('en-gb')) ? 'GB' : 'GB';
 		const confirmParams = {
-			return_url: window.location.origin + '/success.html',
+			// Return directly to the server-side success route to avoid
+			// an extra client-side redirect that can cause a visible flicker.
+			return_url: window.location.origin + '/success',
 			payment_method_data: {
 				billing_details: {
 					name: name,
@@ -370,7 +385,8 @@ async function processPayment(name, email, btn, btnText, spin) {
 			
 			if (confirmResult.paymentIntent.status === 'succeeded') {
 				console.log('Payment succeeded! Redirecting to success page...');
-				window.location.href = 'success.html?payment_intent=' + confirmResult.paymentIntent.id;
+				// Navigate directly to the server-side success endpoint (no intermediate static page)
+				window.location.href = '/success?payment_intent=' + confirmResult.paymentIntent.id;
 				return;
 			}
 			

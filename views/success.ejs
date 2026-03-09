@@ -9,42 +9,35 @@
 <body>
   <main class="container">
   <section class="card">
-    <h1>Tell Us About Your Project</h1>
-    <p style="color:#666;margin-bottom:24px">Thank you for your payment! To help our team get started, please answer a few general questions about your business and project.</p>
+    <h1>Thank you — payment received</h1>
+    <p style="color:#666;margin-bottom:18px">Your payment was successful. Please tell us about your project below so our team can begin work.</p>
 
-    <!-- Simple status area populated when Stripe returns a payment_intent query param -->
-    <div id="status" style="margin-bottom:18px;color:var(--green);font-weight:700"></div>
+    <div id="status" style="margin-bottom:12px;color:var(--green);font-weight:700">Payment verified</div>
 
-    <form id="projectForm" action="/success" method="POST">
+    <div class="details-layout" style="gap:28px">
+      <div class="details-main">
+        <form id="projectForm" action="/success" method="POST">
       <input type="hidden" name="payment_intent" value="<%= payment_intent %>">
       <input type="hidden" name="csrf_token" value="<%= csrfToken %>">
-      <% if (packageTitle) { %>
-      <div style="margin-bottom:12px;padding:12px;border-radius:8px;background:#f3f7fb;border:1px solid #e1eef9">
-        <strong>Purchased package:</strong>
-        <div style="margin-top:6px;font-weight:700"><%= packageTitle %></div>
-      </div>
-      <input type="hidden" name="package_id" value="<%= packageId %>">
-      <input type="hidden" name="package_title" value="<%= packageTitle %>">
-      <% } %>
+          <% if (packageTitle) { %>
+          <input type="hidden" name="package_id" value="<%= packageId %>">
+          <input type="hidden" name="package_title" value="<%= packageTitle %>">
+          <% } %>
 
       <div class="form-field">
         <label for="fullname">Full Name</label>
         <input type="text" id="fullname" name="fullname" required>
       </div>
 
-      <div class="form-field">
-        <label for="company">Company / Business Name</label>
-        <input type="text" id="company" name="company" placeholder="(Leave blank if not applicable.)">
-      </div>
-
-      <div class="form-field">
-        <label for="email">Email Address</label>
-        <input type="email" id="email" name="email" value="<%= prefill.email %>" required>
-      </div>
-
-      <div class="form-field">
-        <label for="phone">Phone Number</label>
-        <input type="tel" id="phone" name="phone">
+      <div class="form-grid">
+        <div class="form-field">
+          <label for="fullname">Full Name</label>
+          <input type="text" id="fullname" name="fullname" required>
+        </div>
+        <div class="form-field">
+          <label for="email">Email Address</label>
+          <input type="email" id="email" name="email" value="<%= prefill.email %>" required>
+        </div>
       </div>
 
       <div class="form-field">
@@ -67,10 +60,28 @@
         <input type="date" id="deadline" name="deadline" required>
       </div>
 
-      <div class="form-actions">
-        <button class="cta" type="submit">Submit Project Details</button>
+          <div class="form-actions">
+            <button class="cta" type="submit">Submit Project Details</button>
+          </div>
+        </form>
       </div>
-    </form>
+
+      <div class="details-price">
+        <% if (packageTitle) { %>
+        <div class="price-card" style="padding:16px;border-radius:8px">
+          <div style="font-size:13px;color:var(--muted);">Purchased package</div>
+          <div style="font-weight:800;margin-top:6px;font-size:18px"><%= packageTitle %></div>
+          <div style="margin-top:12px;font-size:13px;color:var(--muted)">We will contact you at:</div>
+          <div style="margin-top:6px;font-weight:700"><%= prefill.email %></div>
+        </div>
+        <% } else { %>
+        <div class="price-card" style="padding:16px;border-radius:8px">
+          <div style="font-weight:700">Order summary</div>
+          <div style="margin-top:12px;color:var(--muted)">No package data available.</div>
+        </div>
+        <% } %>
+      </div>
+    </div>
   </section>
   </main>
   <script>
