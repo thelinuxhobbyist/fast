@@ -12,6 +12,9 @@
     <h1>Tell Us About Your Project</h1>
     <p style="color:#666;margin-bottom:24px">Thank you for your payment! To help our team get started, please answer a few general questions about your business and project.</p>
 
+    <!-- Simple status area populated when Stripe returns a payment_intent query param -->
+    <div id="status" style="margin-bottom:18px;color:var(--green);font-weight:700"></div>
+
     <form id="projectForm" action="/success" method="POST">
       <input type="hidden" name="payment_intent" value="<%= payment_intent %>">
       <input type="hidden" name="csrf_token" value="<%= csrfToken %>">
@@ -77,6 +80,18 @@
       function toISODate(x){return x.getFullYear()+'-'+String(x.getMonth()+1).padStart(2,'0')+'-'+String(x.getDate()).padStart(2,'0');}
       var el = document.getElementById('deadline'); if (el) el.min = toISODate(d);
     });
+
+    // Show a simple success status when Stripe returns a payment_intent query param
+    (function(){
+      try {
+        var url = new URL(window.location.href);
+        var paymentIntent = url.searchParams.get('payment_intent');
+        if (paymentIntent) {
+          var st = document.getElementById('status');
+          if (st) st.innerText = 'Payment verified — thank you!';
+        }
+      } catch (e) { /* ignore URL parsing errors */ }
+    })();
   </script>
 </body>
 </html>
