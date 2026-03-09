@@ -318,6 +318,14 @@ textarea{min-height:120px}
 .form-field input,.form-field select,.form-field textarea{width:100%;padding:12px 14px;border:1px solid #e6e6e6;border-radius:8px;font-size:15px;transition:border-color .2s ease}
 .form-field input:focus,.form-field select:focus,.form-field textarea:focus{outline:none;border-color:var(--green)}
 
+/* Compact form styles for the checkout two-column layout */
+.checkout-form-grid .checkout-section{padding:0;margin-bottom:0;border-bottom:none}
+.checkout-form-grid .form-grid{gap:10px}
+.checkout-form-grid .form-field{margin-bottom:10px}
+.checkout-form-grid .form-field input,.checkout-form-grid .form-field textarea{padding:10px 12px;font-size:14px}
+.checkout-form-grid h3{display:none}
+.checkout-form-grid .btn-checkout{width:100%;padding:12px;font-size:15px}
+
 /* Stripe Elements */
 .stripe-element{padding:14px;border:1px solid #e6e6e6;border-radius:8px;background:#fff;transition:border-color .2s ease}
 .stripe-element:focus-within{border-color:var(--green);box-shadow:0 0 0 3px rgba(245,135,49,0.1)}

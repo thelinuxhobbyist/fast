@@ -108,9 +108,8 @@
 				<form id="payment_form">
 					<div class="checkout-form-grid">
 						<div>
-							<!-- Customer Information -->
+							<!-- Customer Information (compact - no visible section headings) -->
 							<div class="checkout-section">
-								<h3><i class="fa-solid fa-user"></i> Contact & Billing</h3>
 								<div class="form-grid">
 									<div class="form-field">
 										<label for="customer_name">Full Name <span style="color: #fa755a;">*</span></label>
@@ -126,7 +125,6 @@
 						<div>
 							<!-- Payment element + submit placed on the right column -->
 							<div class="checkout-section">
-								<h3><i class="fa-solid fa-credit-card"></i> Payment</h3>
 								<div class="form-field">
 									<label for="payment_element">Card Information <span style="color: #fa755a;">*</span></label>
 									<div id="payment_element" class="stripe-element"></div>
@@ -136,7 +134,7 @@
 									</div>
 									<div id="payment_error_message" role="alert" class="error-message" style="margin-top: 8px; color: #fa755a; font-size: 13px;"></div>
 								</div>
-								<div style="margin-top:18px">
+								<div style="margin-top:12px">
 									<button type="button" id="submit_payment" class="btn-checkout" disabled>
 										<span id="button-text"><i class="fa-solid fa-lock"></i> Pay Now</span>
 										<div id="spinner" class="spinner hidden"></div>
