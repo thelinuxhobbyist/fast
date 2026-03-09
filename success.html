@@ -36,20 +36,17 @@
 	</div>
 </header>
 
-<script>
-	// Redirect to server-side success endpoint which verifies Stripe payments.
-	(function(){
-		try {
-			var search = window.location.search || '';
-			var href = '/success' + search;
-			window.location.replace(href);
-		} catch(e) { console.error('Redirect failed', e); }
-	})();
-</script>
+<!-- This page previously redirected to /success automatically. That client-side
+	 redirect has been removed to avoid double-navigation and flicker when Stripe
+	 returns to the site. The server-side route `/success` will render the
+	 verified success view directly when appropriate. -->
 
 <main class="container">
 	<section class="card">
-		<h1>Tell Us About Your Project</h1>
+			<h1>Tell Us About Your Project</h1>
+
+			<!-- Status area populated when Stripe returns a payment_intent in the URL -->
+			<div id="status" style="margin-bottom:18px;color:var(--green);font-weight:700"></div>
 		<p style="color:#666;margin-bottom:24px">Thank you for your payment! To help our team get started, please answer a few general questions about your business and project. We'll review your responses and follow up with any specific questions needed to complete your design.</p>
 		
 		<form id="projectForm" action="https://formspree.io/f/xldkyoqz" method="POST">
@@ -184,6 +181,30 @@ document.addEventListener('DOMContentLoaded', function() {
 <script>
 // Formspree: submit the project form via fetch and show inline success/error
 document.addEventListener('DOMContentLoaded', function() {
+	// If Stripe redirected back with a payment_intent, show a simple success panel
+	(function(){
+		try {
+			var url = new URL(window.location.href);
+			var pi = url.searchParams.get('payment_intent');
+			if (!pi) return;
+
+			var seenKey = 'seen_pi_' + pi;
+			if (sessionStorage.getItem(seenKey)) {
+				try { history.replaceState(null, '', window.location.pathname); } catch(e) {}
+				return;
+			}
+			try { sessionStorage.setItem(seenKey, '1'); } catch(e) {}
+
+			var card = document.querySelector('section.card');
+			if (card) {
+				card.innerHTML = '\n            <div style="text-align:center;padding:40px 20px">\n              <div style="font-size:48px;color:var(--green);margin-bottom:12px">\u2714</div>\n              <h2 style="margin:0 0 12px 0">Payment verified — thank you</h2>\n              <p style="color:#666;max-width:720px;margin:0 auto 18px">Your payment was successful. Please submit your project details below so our team can begin work.</p>\n              <p style="margin-top:18px"><a href="/" class="cta" style="padding:10px 18px">Return to Home</a></p>\n            </div>';
+			}
+
+			// Remove query params from the URL after a short delay to avoid re-processing
+			setTimeout(function(){ try { history.replaceState(null, '', window.location.pathname); } catch(e){} }, 800);
+		} catch (e) { /* ignore */ }
+	})();
+
 	var form = document.getElementById('projectForm');
 	if (!form) return;
 
