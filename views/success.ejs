@@ -86,16 +86,26 @@
       try {
         var url = new URL(window.location.href);
         var paymentIntent = url.searchParams.get('payment_intent');
-        if (paymentIntent) {
-          var st = document.getElementById('status');
-          if (st) st.innerText = 'Payment verified — thank you!';
+        if (!paymentIntent) return;
 
-          // Remove the query params from the URL to avoid re-processing on reload
-          // Wait a short moment so the user (and analytics) can see the param briefly.
-          setTimeout(function(){
-            try { history.replaceState(null, '', window.location.pathname); } catch(e) { /* ignore */ }
-          }, 1200);
+        // If we've already handled this payment intent in this browser session,
+        // strip the query param immediately to avoid re-processing/loops.
+        var seenKey = 'seen_pi_' + paymentIntent;
+        if (sessionStorage.getItem(seenKey)) {
+          try { history.replaceState(null, '', window.location.pathname); } catch(e) {}
+          return;
         }
+
+        // Mark as seen for this session and show a success status
+        try { sessionStorage.setItem(seenKey, '1'); } catch(e) {}
+        var st = document.getElementById('status');
+        if (st) st.innerText = 'Payment verified — thank you!';
+
+        // Remove the query params from the URL after a short delay so analytics
+        // and any expired observers can still access the param on first load.
+        setTimeout(function(){
+          try { history.replaceState(null, '', window.location.pathname); } catch(e) { /* ignore */ }
+        }, 800);
       } catch (e) { /* ignore URL parsing errors */ }
     })();
   </script>
