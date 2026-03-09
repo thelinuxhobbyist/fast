@@ -357,10 +357,12 @@ async function processPayment(name, email, btn, btnText, spin) {
 					address: {
 						country: countryDefault,
 						postal_code: '',
-						// Include state key when the Payment Element is configured
-						// with fields.billingDetails = 'never'. Stripe requires the
-						// presence of an address.state property for some cards/countries.
-						state: ''
+						// Include commonly-required address fields when the Payment
+						// Element is configured with fields.billingDetails = 'never'.
+						// Stripe requires these for some cards/regions.
+						city: '',
+						state: '',
+						line1: ''
 					}
 				}
 			}
