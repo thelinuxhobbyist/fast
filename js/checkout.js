@@ -354,7 +354,14 @@ async function processPayment(name, email, btn, btnText, spin) {
 					name: name,
 					email: email,
 					phone: '',
-					address: { country: countryDefault, postal_code: '' }
+					address: {
+						country: countryDefault,
+						postal_code: '',
+						// Include state key when the Payment Element is configured
+						// with fields.billingDetails = 'never'. Stripe requires the
+						// presence of an address.state property for some cards/countries.
+						state: ''
+					}
 				}
 			}
 		};
