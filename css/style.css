@@ -192,6 +192,33 @@ textarea{min-height:120px}
 @media(max-width:880px){.hero{flex-direction:column}.menu-toggle{display:block;padding:8px;z-index:101}.nav{display:none;position:absolute;top:72px;right:0;left:auto;background:#fff;flex-direction:column;gap:0;padding:12px;box-shadow:0 4px 12px rgba(0,0,0,0.1);z-index:100;min-width:240px;border-radius:8px;margin-right:12px}.nav.active{display:flex}.nav a{padding:12px 16px;border-bottom:none;border-radius:6px;text-decoration:none;color:#111;font-weight:600;transition:background .18s ease;margin:4px 0}.nav a:last-child{border-bottom:none}.nav a:hover{background:#f7f8fb}.nav a.cta{display:block;background:var(--green);color:#fff;border-bottom:none;margin:8px 0;border-radius:6px}} 
 @media(max-width:480px){.hero{flex-direction:column;padding:40px 24px;gap:24px}.hero h1{font-size:32px;margin-bottom:12px}.hero .hero-sub{font-size:16px;margin-bottom:16px}.mock-rotator{max-width:100%;height:220px}}
 
+/* Refined header and hero styles for stronger visual hierarchy */
+.header-inner{padding:10px 14px}
+.brand img{height:64px}
+.nav a{padding:10px 12px}
+.nav a:hover{background:rgba(245,135,49,0.08);border-radius:8px;transform:translateY(-1px);transition:all .12s ease}
+
+.hero{padding:48px 28px;border-radius:12px;background:linear-gradient(180deg,rgba(245,135,49,0.06),rgba(255,255,255,0));box-shadow:0 12px 40px rgba(10,10,10,0.06);border:none}
+.hero h1{font-size:56px !important;line-height:1.06 !important;margin-bottom:12px !important}
+.hero h2{font-size:22px !important;color:#444 !important;font-weight:700 !important;margin-bottom:18px !important}
+
+.hero-actions{gap:14px}
+.hero-actions .cta, .hero-actions .btn{padding:14px 22px;font-size:16px;border-radius:10px}
+.hero-actions .hero-primary{background:var(--accent);color:#fff;box-shadow:0 10px 30px rgba(245,135,49,0.18);border:none}
+.hero-actions .hero-secondary{background:#fff;border:2px solid rgba(10,10,10,0.06);color:#111}
+.hero-actions .cta:hover, .hero-actions .btn:hover{transform:translateY(-3px);box-shadow:0 14px 36px rgba(0,0,0,0.08)}
+
+.support-points{margin-top:22px}
+.support-points li{display:inline-flex;align-items:center;gap:10px;padding:10px 14px;background:#fff;border:1px solid rgba(10,10,10,0.04);color:var(--green);border-radius:999px;box-shadow:0 6px 18px rgba(10,10,10,0.04)}
+
+/* Slightly tighter header overall */
+header{padding-top:6px;padding-bottom:6px}
+
+/* Make hero narrower on very wide screens for better readability */
+@media(min-width:1400px){
+	.hero > div { max-width:1100px; margin:0 auto; }
+}
+
 /* DETAILS PAGE LAYOUT */
 .details-layout{display:grid;grid-template-columns:1fr 340px;grid-template-rows:auto auto;gap:32px;align-items:start;margin-top:20px}
 .details-main{grid-column:1;grid-row:1}
