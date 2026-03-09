@@ -52,22 +52,20 @@
 
 <main class="container">
 	<div class="checkout-layout">
-			<!-- Debug banner (visible only when JS sets it) -->
-			<div id="debug-banner" style="display:none;background:#222;color:#fff;padding:8px;border-radius:6px;margin-bottom:12px;font-size:13px"></div>
 		<!-- Left: Checkout form -->
 		<div class="checkout-main">
 			<h1 style="margin-top:0;color:var(--accent);font-size:32px">Complete Your Order</h1>
 			<p style="color:var(--muted);margin-bottom:32px">Secure checkout powered by Stripe. Your payment information is encrypted and secure.</p>
 
 		<!-- Package Selection -->
-		<div class="checkout-section checkout-package-section" style="background: #232F3E; border: 2px solid #2a3a4f; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3); padding: 24px; margin-bottom: 24px; border-radius: 12px;">
-			<h3 style="color: #fff; font-size: 18px; margin-top: 0; margin-bottom: 16px;"><i class="fa-solid fa-box"></i> Selected Package</h3>
-			<div id="selected-package" class="selected-package-card" style="background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.15); padding: 20px; border-radius: 8px; margin-bottom: 12px; display: flex; flex-direction: row; justify-content: space-between; align-items: flex-start;">
+		<div class="checkout-section checkout-package-section" style="padding: 20px; margin-bottom: 20px; border-radius: 8px; border: 1px solid var(--muted); background: var(--card);">
+			<h3 style="font-size: 18px; margin-top: 0; margin-bottom: 12px;"><i class="fa-solid fa-box"></i> Selected Package</h3>
+			<div id="selected-package" class="selected-package-card" style="padding: 16px; border-radius: 8px; display: flex; flex-direction: row; justify-content: space-between; align-items: center;">
 				<div class="package-info" style="flex: 1;">
-					<strong id="package-name" style="color: #fff; font-size: 26px; display: block; margin-bottom: 10px; font-weight: 900; text-shadow: 0 2px 4px rgba(0,0,0,0.3);">Package</strong>
-					<p id="package-desc" style="color: #e0e0e0; margin: 0; font-size: 16px;">Selected package description</p>
+					<strong id="package-name" style="font-size: 22px; display: block; margin-bottom: 8px; font-weight: 800;">Package</strong>
+					<p id="package-desc" style="color: #666; margin: 0; font-size: 15px;">Selected package description</p>
 				</div>
-				<div class="package-price" id="package-price" style="color: #F58731; font-size: 32px; font-weight: bold; text-shadow: 0 2px 4px rgba(0,0,0,0.3); margin-left: 16px; white-space: nowrap;">£0.00</div>
+				<div class="package-price" id="package-price" style="color: var(--green); font-size: 28px; font-weight: 800; margin-left: 16px; white-space: nowrap;">£0.00</div>
 			</div>
 			<a href="packages.html" class="text-link" style="font-size:13px; display:inline-block; color: #F58731; font-weight: 600;">
 				<i class="fa-solid fa-arrow-left"></i> Choose a different package
@@ -106,54 +104,49 @@
 			</div>
 		</div>
 
-		<!-- Payment Form -->
-		<form id="payment_form">
-			<!-- Customer Information -->
-			<div class="checkout-section">
-				<h3><i class="fa-solid fa-user"></i> Customer Information</h3>
-				<div class="form-grid">
-					<div class="form-field">
-						<label for="customer_name">Full Name <span style="color: #fa755a;">*</span></label>
-						<input type="text" id="customer_name" name="customer_name" required placeholder="John Smith">
+				<!-- Payment Form (compact layout: customer fields left, payment & submit right) -->
+				<form id="payment_form">
+					<div class="checkout-form-grid">
+						<div>
+							<!-- Customer Information -->
+							<div class="checkout-section">
+								<h3><i class="fa-solid fa-user"></i> Contact & Billing</h3>
+								<div class="form-grid">
+									<div class="form-field">
+										<label for="customer_name">Full Name <span style="color: #fa755a;">*</span></label>
+										<input type="text" id="customer_name" name="customer_name" required placeholder="John Smith">
+									</div>
+									<div class="form-field">
+										<label for="customer_email">Email Address <span style="color: #fa755a;">*</span></label>
+										<input type="email" id="customer_email" name="customer_email" required placeholder="john@example.com">
+									</div>
+								</div>
+							</div>
+						</div>
+						<div>
+							<!-- Payment element + submit placed on the right column -->
+							<div class="checkout-section">
+								<h3><i class="fa-solid fa-credit-card"></i> Payment</h3>
+								<div class="form-field">
+									<label for="payment_element">Card Information <span style="color: #fa755a;">*</span></label>
+									<div id="payment_element" class="stripe-element"></div>
+									<div style="margin-top: 8px; font-size: 12px; color: #666;">
+										<img src="https://img.shields.io/badge/Visa-1A1F71?style=flat&logo=visa&logoColor=white" alt="Visa" style="height: 20px; margin-right: 8px;">
+										<img src="https://img.shields.io/badge/Mastercard-EB001B?style=flat&logo=mastercard&logoColor=white" alt="Mastercard" style="height: 20px;">
+									</div>
+									<div id="payment_error_message" role="alert" class="error-message" style="margin-top: 8px; color: #fa755a; font-size: 13px;"></div>
+								</div>
+								<div style="margin-top:18px">
+									<button type="button" id="submit_payment" class="btn-checkout" disabled>
+										<span id="button-text"><i class="fa-solid fa-lock"></i> Pay Now</span>
+										<div id="spinner" class="spinner hidden"></div>
+									</button>
+								</div>
+								<p class="checkout-terms">By completing this purchase, you agree to our <a href="terms.html">Terms of Service</a> and <a href="privacy.html">Privacy Policy</a>.</p>
+							</div>
+						</div>
 					</div>
-					<div class="form-field">
-						<label for="customer_email">Email Address <span style="color: #fa755a;">*</span></label>
-						<input type="email" id="customer_email" name="customer_email" required placeholder="john@example.com">
-					</div>
-				</div>
-			</div>
-
-			<!-- Billing Information (Recommended) -->
-			<!-- Billing information removed for simplified checkout; collect only name & email here and request details on the onboarding page -->
-
-			<!-- Payment Details -->
-			<div class="checkout-section">
-				<h3><i class="fa-solid fa-credit-card"></i> Payment Details</h3>
-				<div class="form-field">
-					<label for="payment_element">Card Information <span style="color: #fa755a;">*</span></label>
-					<div id="payment_element" class="stripe-element"></div>
-					<div style="margin-top: 8px; font-size: 12px; color: #666;">
-						<img src="https://img.shields.io/badge/Visa-1A1F71?style=flat&logo=visa&logoColor=white" alt="Visa" style="height: 20px; margin-right: 8px;">
-						<img src="https://img.shields.io/badge/Mastercard-EB001B?style=flat&logo=mastercard&logoColor=white" alt="Mastercard" style="height: 20px;">
-					</div>
-					<div id="payment_error_message" role="alert" class="error-message" style="margin-top: 8px; color: #fa755a; font-size: 13px;"></div>
-				</div>
-			</div>
-
-			<!-- Submit Button -->
-			<button type="submit" id="submit_payment" class="btn-checkout" style="width: 100%; margin-top: 24px;" disabled>
-				<span id="button-text">
-					<i class="fa-solid fa-lock"></i> Pay Now
-				</span>
-				<div id="spinner" class="spinner hidden"></div>
-			</button>
-
-			<p style="text-align: center; font-size: 12px; margin-top: 12px; color: #666;">
-				By completing this purchase, you agree to our 
-				<a href="terms.html">Terms of Service</a> and 
-				<a href="privacy.html">Privacy Policy</a>.
-			</p>
-		</form>
+				</form>
 		</div>
 
 		<!-- Right: Order Summary + Pay Button (desktop) -->

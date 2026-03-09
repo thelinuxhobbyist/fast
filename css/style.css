@@ -377,12 +377,16 @@ textarea{min-height:120px}
 
 .security-badges { display: block; }
 
-@media(max-width:1024px){
+@media(max-width:880px){
 	.checkout-layout{grid-template-columns:1fr;gap:32px}
 	.checkout-sidebar{position:relative;top:0;display:none}
 	.order-summary{margin-bottom:0}
 	.security-badges { display: block; }
 }
+
+/* Compact checkout form grid: left = contact fields, right = payment + submit */
+.checkout-form-grid{display:grid;grid-template-columns:1fr 360px;gap:24px;align-items:start}
+@media(max-width:640px){.checkout-form-grid{grid-template-columns:1fr;gap:16px}}
 /* Mobile/Desktop Order Summary Toggle */
 .order-summary-mobile { display: none; }
 .order-summary-desktop { display: block; }
