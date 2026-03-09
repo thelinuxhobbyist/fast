@@ -229,15 +229,12 @@ async function ensurePaymentElement(name, email, forceRefresh = false) {
 		if (useCardElement) {
 			paymentElement = elements.create('card', { hidePostalCode: true });
 		} else {
-			// Explicitly ask the Payment Element to collect billing details.
-			// Setting to 'auto' ensures Stripe will include required fields
-			// (state/postal_code/etc.) and avoids IntegrationError.
+			// Let the Payment Element collect billing details automatically.
+			// Using 'auto' avoids needing to pass billing address fields
+			// manually when calling `stripe.confirmPayment()`.
 			paymentElement = elements.create('payment', {
 				restrictPaymentMethods: ['card', 'link'],
-				// Hide billing detail collection in the Payment Element to keep
-				// the checkout form minimal. We pass billing details explicitly
-				// in the confirm call (name/email) so Stripe has required info.
-				fields: { billingDetails: 'never' }
+				fields: { billingDetails: 'auto' }
 			});
 		}
 		const mountPoint = document.getElementById('payment_element');
@@ -348,24 +345,7 @@ async function processPayment(name, email, btn, btnText, spin) {
 		const confirmParams = {
 			// Return directly to the server-side success route to avoid
 			// an extra client-side redirect that can cause a visible flicker.
-			return_url: window.location.origin + '/success',
-			payment_method_data: {
-				billing_details: {
-					name: name,
-					email: email,
-					phone: '',
-					address: {
-						country: countryDefault,
-						postal_code: '',
-						// Include commonly-required address fields when the Payment
-						// Element is configured with fields.billingDetails = 'never'.
-						// Stripe requires these for some cards/regions.
-						city: '',
-						state: '',
-						line1: ''
-					}
-				}
-			}
+			return_url: window.location.origin + '/success'
 		};
 		console.log('confirmParams being sent to stripe.confirmPayment (no secrets):', confirmParams);
 		const confirmResult = await stripe.confirmPayment({ elements, confirmParams, redirect: 'if_required' });
