@@ -397,7 +397,12 @@ textarea{min-height:120px}
 @media(max-width:640px){
 	.checkout-form-grid{grid-template-columns:1fr;gap:16px}
 	/* Ensure nested form grids (like name/email) collapse to a single column on mobile */
-	.checkout-form-grid .form-grid { grid-template-columns: 1fr; }
+	.checkout-form-grid .form-grid { display:grid; grid-template-columns: 1fr !important; gap:10px; }
+	/* Make payment element and submit button full width on mobile */
+	.checkout-form-grid #payment_element, .checkout-form-grid .stripe-element { width: 100% !important; }
+	.checkout-form-grid .btn-checkout { max-width: 100% !important; }
+	/* Ensure each column in the checkout grid takes full width when stacked */
+	.checkout-form-grid > div { width: 100%; }
 }
 /* Mobile/Desktop Order Summary Toggle */
 .order-summary-mobile { display: none; }
