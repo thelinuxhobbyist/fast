@@ -280,11 +280,28 @@ header{padding-top:6px;padding-bottom:6px}
 .cross-grid .card p{margin:0;color:#666}
 @media(max-width:880px){.cross-services h2{font-size:26px}.cross-services{padding:20px}}
 @media(max-width:480px){.cross-services h2{font-size:22px}.cross-grid{gap:12px}}
-/* Homepage packages snapshot: 4-column grid on wide screens, responsive down */
-#packages-snapshot{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;margin-top:20px}
-@media (max-width:1100px){#packages-snapshot{grid-template-columns:repeat(3,1fr)}}
-@media (max-width:800px){#packages-snapshot{grid-template-columns:repeat(2,1fr)}}
-@media (max-width:480px){#packages-snapshot{grid-template-columns:1fr}}
+/* Homepage and packages page: 4-column grid on wide screens, responsive down */
+#packages-snapshot, #packages-list{display:grid;grid-template-columns:repeat(4,1fr);gap:28px;margin-top:20px;padding:0}
+@media (max-width:1100px){#packages-snapshot, #packages-list{grid-template-columns:repeat(3,1fr)}}
+@media (max-width:800px){#packages-snapshot, #packages-list{grid-template-columns:repeat(2,1fr)}}
+@media (max-width:480px){#packages-snapshot, #packages-list{grid-template-columns:1fr}}
+
+/* Package card internal spacing and typography for both snapshot and list */
+#packages-snapshot .card, #packages-list .card{
+	padding:44px 36px;
+	background:#fff;
+	border-radius:12px;
+	box-shadow:0 10px 30px rgba(0,0,0,0.06);
+	box-sizing:border-box;
+	min-height:260px;
+	display:flex;
+	flex-direction:column;
+	justify-content:space-between;
+}
+#packages-snapshot .card h3, #packages-list .card h3{margin:0 0 12px 0;font-size:18px}
+#packages-snapshot .card .package-price, #packages-list .card .package-price{margin-bottom:12px;font-size:22px}
+#packages-snapshot .card p, #packages-list .card p{margin-top:10px;color:#444;line-height:1.6}
+#packages-snapshot .card .card-actions, #packages-list .card .card-actions{margin-top:20px}
 
 /* Hide redundant hero 'Request Custom Work' button on smaller screens to avoid wrapping
 	 Mobile navigation already includes the CTA. Matches mobile breakpoint used elsewhere. */

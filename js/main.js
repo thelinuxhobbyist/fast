@@ -41,12 +41,11 @@ document.addEventListener('DOMContentLoaded', function(){
   if(snap && typeof SERVICES !== 'undefined'){
     SERVICES.slice(0,8).forEach(function(s){
       var card = document.createElement('div');
-      card.className = 'card rounded-lg p-6 shadow-sm hover:shadow-md transition';
-      // Title first, price on its own line underneath and emphasized
-      card.innerHTML = '<h3 class="text-lg font-bold mb-2" style="margin:0">'+s.title+'</h3>' +
-                       '<div class="package-price text-2xl font-extrabold mb-3" style="color:var(--green)">'+s.price+'</div>' +
-                       '<p class="text-sm text-[rgba(0,0,0,0.7)]">'+s.shortDescription+'</p>' +
-                       '<div class="card-actions mt-6"><a class="cta inline-block w-full text-center py-3 rounded-md" href="details.html?id='+encodeURIComponent(s.id)+'">View Details</a></div>';
+      card.className = 'card';
+      card.innerHTML = '<h3>'+s.title+'</h3>' +
+                       '<div class="package-price">'+s.price+'</div>' +
+                       '<p>'+s.shortDescription+'</p>' +
+                       '<div class="card-actions"><a class="cta" href="details.html?id='+encodeURIComponent(s.id)+'">View Details</a></div>';
       snap.appendChild(card);
     });
   }
@@ -60,12 +59,11 @@ document.addEventListener('DOMContentLoaded', function(){
       if(s.meta && typeof s.meta === 'object'){
         metaHtml = Object.entries(s.meta).map(function(kv){ return '<div><strong>'+ (formatMetaKey(kv[0]) )+':</strong> '+kv[1]+'</div>'; }).join('');
       }
-      // Place price under the title and make it more prominent
-  card.innerHTML = '<h3 style="margin:0 0 8px 0">'+s.title+'</h3>' +
-           '<div class="package-price" style="color:var(--green);font-weight:900;font-size:46px;margin-bottom:8px">'+s.price+'</div>' +
+      card.innerHTML = '<h3>'+s.title+'</h3>' +
+                       '<div class="package-price">'+s.price+'</div>' +
                        '<div class="meta">'+metaHtml+'</div>' +
-                       '<p style="color:#666;margin-top:8px">'+s.shortDescription+'</p>' +
-                       '<div class="card-actions" style="margin-top:auto;padding-top:16px"><a class="cta" href="details.html?id='+encodeURIComponent(s.id)+'" style="display:block;width:100%;text-align:center">View Details</a></div>';
+                       '<p>'+s.shortDescription+'</p>' +
+                       '<div class="card-actions"><a class="cta" href="details.html?id='+encodeURIComponent(s.id)+'">View Details</a></div>';
       list.appendChild(card);
     });
   }
@@ -106,3 +104,16 @@ document.addEventListener('DOMContentLoaded', function(){
   }
 
 });
+
+// GSAP animations: animate hero and package cards when GSAP is available
+try {
+  if (typeof gsap !== 'undefined') {
+    document.addEventListener('DOMContentLoaded', function(){
+      try {
+        gsap.from('.hero h1', { opacity: 0, y: 18, duration: 0.8, ease: 'power2.out' });
+        gsap.from('.hero p', { opacity: 0, y: 14, duration: 0.7, delay: 0.12, ease: 'power2.out' });
+        gsap.from('#packages-snapshot .card', { opacity: 0, y: 20, duration: 0.6, stagger: 0.09, delay: 0.25, ease: 'power2.out' });
+      } catch (e) { /* fail silently if animation errors */ }
+    });
+  }
+} catch (e) {}

@@ -27,7 +27,22 @@
 <meta name="twitter:image" content="https://fastgraphicdesign.co.uk/assets/logo.png">
 <script src="https://cdn.tailwindcss.com"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-<link rel="stylesheet" href="css/style.css"></head><body>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js" defer></script>
+<link rel="stylesheet" href="css/style.css">
+<style>
+/* Packages snapshot: fixed 4 columns on wide screens, responsive down */
+#packages-snapshot{display:grid;grid-template-columns:repeat(4,1fr);gap:28px;padding:28px 0}
+@media (max-width:1100px){#packages-snapshot{grid-template-columns:repeat(3,1fr)}}
+@media (max-width:800px){#packages-snapshot{grid-template-columns:repeat(2,1fr)}}
+@media (max-width:480px){#packages-snapshot{grid-template-columns:1fr}}
+.packages-snapshot .card, #packages-snapshot .card{padding:44px 36px;background:#fff;border-radius:12px;box-shadow:0 10px 30px rgba(0,0,0,0.06);box-sizing:border-box;min-height:260px;display:flex;flex-direction:column;justify-content:space-between}
+.packages-snapshot .card h3, #packages-snapshot .card h3{margin:0 0 12px 0;font-size:18px}
+.packages-snapshot .card .package-price, #packages-snapshot .card .package-price{margin-bottom:12px;font-size:22px}
+.packages-snapshot .card p, #packages-snapshot .card p{margin-top:10px;color:#444;line-height:1.6;padding-right:6px}
+.packages-snapshot .card .card-actions, #packages-snapshot .card .card-actions{margin-top:20px}
+.hero .value-item i{font-size:18px;color:var(--green);flex:0 0 18px}
+</style>
+</head><body>
 <!-- Facebook SDK for JavaScript -->
 </script>
 <header class="bg-white shadow-sm">
@@ -47,14 +62,55 @@
 </header>
 
 <main>
-  <section class="hero py-20" style="background: linear-gradient(135deg, rgba(245,135,49,0.14), rgba(245,135,49,0.04));">
+  <section class="hero py-20" style="background: linear-gradient(135deg, rgba(245,135,49,0.20), rgba(11,102,102,0.06));">
     <div class="max-w-6xl mx-auto px-6">
       <div class="rounded-2xl" style="background: rgba(255,255,255,0.06); backdrop-filter: blur(6px); padding:2rem 2.5rem; text-align:center;">
-        <h1 class="text-3xl md:text-5xl font-extrabold" style="color:var(--accent)">Quality design without the agency price tag.</h1>
-        <p class="mt-4 text-lg md:text-xl font-semibold" style="color:rgba(17,17,17,0.9)">Expert designers, clear packages and fast delivery tailored for small businesses.</p>
+        <h1 class="text-3xl md:text-5xl font-extrabold" style="color:var(--accent)">Quality Design Without Agency Prices</h1>
+        <p class="mt-4 text-lg md:text-xl font-semibold" style="color:rgba(17,17,17,0.9)">Professional logos, websites and marketing materials delivered fast.</p>
         <div class="mt-8 flex justify-center gap-4">
-          <a href="contact.html" class="inline-flex items-center gap-3 px-5 py-3 rounded-lg font-semibold shadow hover:shadow-lg" style="background:var(--card);color:var(--accent);box-shadow:0 6px 18px rgba(245,135,49,0.12)">Request Custom Work</a>
-          <a href="packages.html" class="inline-flex items-center gap-3 border px-5 py-3 rounded-lg" style="border-color:rgba(255,255,255,0.25);color:var(--card);background:transparent">View Packages</a>
+          <a href="packages.html" class="inline-flex items-center gap-3 px-6 py-3 rounded-lg font-semibold shadow hover:shadow-lg" style="background:var(--accent);color:#fff;box-shadow:0 8px 24px rgba(245,135,49,0.18)">View Packages</a>
+          <a href="contact.html" class="inline-flex items-center gap-3 px-5 py-3 rounded-lg" style="border:2px solid var(--accent);color:var(--accent);background:transparent;font-weight:700">Request Custom Work</a>
+        </div>
+        <div class="mt-6 flex flex-col md:flex-row items-center justify-center gap-4 text-sm text-gray-700" style="margin-top:16px">
+          <div class="value-item" style="display:flex;align-items:center;gap:8px">
+            <i class="fa-solid fa-tag" aria-hidden="true" style="color:var(--green)"></i>
+            <span>Fixed pricing</span>
+          </div>
+          <div class="value-item" style="display:flex;align-items:center;gap:8px">
+            <i class="fa-solid fa-clock" aria-hidden="true" style="color:var(--green)"></i>
+            <span>Fast turnaround</span>
+          </div>
+          <div class="value-item" style="display:flex;align-items:center;gap:8px">
+            <i class="fa-solid fa-people-arrows" aria-hidden="true" style="color:var(--green)"></i>
+            <span>White-label friendly</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- How It Works -->
+  <section class="how-it-works py-12">
+    <div class="max-w-6xl mx-auto px-6">
+      <div class="bg-white rounded-xl p-6 md:p-10 shadow-sm text-center">
+        <h2 class="text-2xl md:text-3xl font-extrabold" style="color:var(--accent)">How It Works</h2>
+        <p class="mt-3 text-gray-600">A simple 3-step process to get your design quickly.</p>
+        <div class="mt-6 grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div class="p-4">
+            <div class="text-3xl text-[var(--green)]">1</div>
+            <h3 class="mt-2 font-semibold">Choose a package</h3>
+            <p class="text-sm text-gray-600 mt-1">Pick the fixed-price package that fits your needs.</p>
+          </div>
+          <div class="p-4">
+            <div class="text-3xl text-[var(--green)]">2</div>
+            <h3 class="mt-2 font-semibold">Send your design brief</h3>
+            <p class="text-sm text-gray-600 mt-1">Tell us what you need — colours, examples and copy.</p>
+          </div>
+          <div class="p-4">
+            <div class="text-3xl text-[var(--green)]">3</div>
+            <h3 class="mt-2 font-semibold">Receive your design</h3>
+            <p class="text-sm text-gray-600 mt-1">Get your final files within 24–72 hours depending on the package.</p>
+          </div>
         </div>
       </div>
     </div>
@@ -62,19 +118,37 @@
 
   <div class="container">
     <section style="margin-top:40px;padding:60px;background:#232F3E;border-radius:16px;color:#fff;border:3px solid #2a3a4f;box-shadow:0 20px 40px rgba(0,0,0,0.3)">
-      <h2 style="color:#fff;margin-top:0;font-size:42px;font-weight:900;line-height:1.2">Small Business Friendly</h2>
-      <p style="color:#e0e0e0;font-size:20px;line-height:1.9;margin:20px 0">Many companies exploit small business owners when it comes to an online presence. We are different — we help as many companies as possible make the most of the internet's potential.</p>
-      <div class="grid">
-        <div class="card" style="text-align:center"><i class="fa-solid fa-tag" style="font-size:48px;color:var(--green);margin-bottom:16px;display:block"></i><h3 style="font-size:24px;margin:12px 0;color:#111">Clear Pricing</h3><p style="color:#666;font-size:16px;margin:0">Transparent, fixed-price packages.</p></div>
-        <div class="card" style="text-align:center"><i class="fa-solid fa-people-arrows" style="font-size:48px;color:var(--green);margin-bottom:16px;display:block"></i><h3 style="font-size:24px;margin:12px 0;color:#111">White-label</h3><p style="color:#666;font-size:16px;margin:0">Deliver work to your clients under your brand.</p></div>
-        <div class="card" style="text-align:center"><i class="fa-solid fa-bolt" style="font-size:48px;color:var(--green);margin-bottom:16px;display:block"></i><h3 style="font-size:24px;margin:12px 0;color:#111">Fast Turnaround</h3><p style="color:#666;font-size:16px;margin:0">We focus on quick, quality delivery.</p></div>
+      <h2 style="color:#fff;margin-top:0;font-size:42px;font-weight:900;line-height:1.2">Why Choose Us</h2>
+      <p style="color:#e0e0e0;font-size:20px;line-height:1.9;margin:20px 0">We focus on clear pricing, fast delivery and services tailored for small businesses and agencies.</p>
+      <div class="grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:20px;margin-top:20px">
+        <div class="card" style="text-align:center;background:#fff;padding:20px;border-radius:12px;color:#111">
+          <i class="fa-solid fa-tag" style="font-size:36px;color:var(--green);margin-bottom:12px;display:block"></i>
+          <h3 style="font-size:20px;margin:12px 0;color:#111">Fixed transparent pricing</h3>
+          <p style="color:#444;font-size:15px;margin:0">Simple, fixed packages so you always know the cost upfront.</p>
+        </div>
+        <div class="card" style="text-align:center;background:#fff;padding:20px;border-radius:12px;color:#111">
+          <i class="fa-solid fa-bolt" style="font-size:36px;color:var(--green);margin-bottom:12px;display:block"></i>
+          <h3 style="font-size:20px;margin:12px 0;color:#111">Fast turnaround</h3>
+          <p style="color:#444;font-size:15px;margin:0">Designs delivered quickly — most orders within 24–72 hours.</p>
+        </div>
+        <div class="card" style="text-align:center;background:#fff;padding:20px;border-radius:12px;color:#111">
+          <i class="fa-solid fa-user-friends" style="font-size:36px;color:var(--green);margin-bottom:12px;display:block"></i>
+          <h3 style="font-size:20px;margin:12px 0;color:#111">Small-business friendly</h3>
+          <p style="color:#444;font-size:15px;margin:0">Packages and support built specifically for small budgets and quick launches.</p>
+        </div>
+        <div class="card" style="text-align:center;background:#fff;padding:20px;border-radius:12px;color:#111">
+          <i class="fa-solid fa-people-arrows" style="font-size:36px;color:var(--green);margin-bottom:12px;display:block"></i>
+          <h3 style="font-size:20px;margin:12px 0;color:#111">White-label options</h3>
+          <p style="color:#444;font-size:15px;margin:0">Agencies can rebrand and deliver work to their clients under their own name.</p>
+        </div>
       </div>
     </section>
 
     <!-- Browse by Service Section -->
     <section style="margin:60px 0">
       <h2 style="text-align:center;font-size:36px;margin:0 0 12px 0;color:#111;font-weight:900">Services</h2>
-      <p style="text-align:center;color:#666;margin:0 0 40px 0;font-size:16px">Find exactly what you need from our design services</p>
+      <p style="text-align:center;color:#666;margin:0 0 12px 0;font-size:16px">Find exactly what you need from our design services</p>
+      <p style="text-align:center;color:#666;margin:0 0 40px 0;font-size:15px;max-width:900px;margin-left:auto;margin-right:auto">We provide logo design, flyers, websites, branding and social media assets — quality work focused on small businesses and agencies who need reliable, white-label design.</p>
       <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:20px">
         <div style="text-align:center;padding:24px;background:#fff;border-radius:12px;border:1px solid #f5e8e0">
           <div style="font-size:40px;margin-bottom:12px;color:var(--green)"><i class="fa-solid fa-pen-nib"></i></div>
@@ -103,11 +177,23 @@
       </div>
     </section>
 
+    <!-- Portfolio removed as requested -->
+
     <section style="margin-top:40px">
       <h2>Featured Packages</h2>
       <div id="packages-snapshot" class="grid"></div>
       <div style="text-align:center;margin-top:28px;margin-bottom:28px">
-        <a id="view-more-packages" class="cta" href="packages.html" style="font-size:16px;padding:14px 28px;background:var(--accent)">View more</a>
+        <a id="view-more-packages" class="cta" href="packages.html" style="font-size:16px;padding:14px 28px;background:var(--accent);color:#fff;border-radius:8px">View Packages</a>
+      </div>
+    </section>
+    
+    <!-- Final CTA -->
+    <section style="margin-top:40px;padding:40px;background:linear-gradient(90deg,rgba(245,135,49,0.08),rgba(245,135,49,0.02));border-radius:12px;text-align:center">
+      <h2 style="font-size:28px;margin:0 0 8px 0;font-weight:800">Ready to get started? Professional design without agency prices.</h2>
+      <p style="color:#666;margin:8px 0 16px 0">Choose a package or request a custom project — we'll deliver fast, affordable results.</p>
+      <div style="display:flex;gap:12px;justify-content:center">
+        <a href="packages.html" style="background:var(--accent);color:#fff;padding:12px 20px;border-radius:8px;font-weight:700">View Packages</a>
+        <a href="contact.html" style="border:1px solid rgba(0,0,0,0.08);padding:12px 20px;border-radius:8px">Request Custom Work</a>
       </div>
     </section>
   </div>
