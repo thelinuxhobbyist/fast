@@ -36,16 +36,17 @@ document.addEventListener('DOMContentLoaded', function(){
     return key.replace(/[-_]/g,' ').split(' ').map(function(w){ return w.charAt(0).toUpperCase()+w.slice(1); }).join(' ');
   }
 
-  // Render snapshot on index (first 6)
+  // Render snapshot on index (first 8)
   var snap = document.getElementById('packages-snapshot');
   if(snap && typeof SERVICES !== 'undefined'){
-    SERVICES.slice(0,6).forEach(function(s){
-      var card = document.createElement('div'); card.className = 'card';
+    SERVICES.slice(0,8).forEach(function(s){
+      var card = document.createElement('div');
+      card.className = 'card rounded-lg p-6 shadow-sm hover:shadow-md transition';
       // Title first, price on its own line underneath and emphasized
-  card.innerHTML = '<h3 style="margin:0 0 8px 0">'+s.title+'</h3>' +
-           '<div class="package-price" style="color:var(--green);font-weight:900;font-size:38px;margin-bottom:8px">'+s.price+'</div>' +
-                       '<p style="color:#666">'+s.shortDescription+'</p>' +
-                       '<div class="card-actions" style="margin-top:auto;padding-top:16px"><a class="cta" href="details.html?id='+encodeURIComponent(s.id)+'" style="display:block;width:100%;text-align:center">View Details</a></div>';
+      card.innerHTML = '<h3 class="text-lg font-bold mb-2" style="margin:0">'+s.title+'</h3>' +
+                       '<div class="package-price text-2xl font-extrabold mb-3" style="color:var(--green)">'+s.price+'</div>' +
+                       '<p class="text-sm text-[rgba(0,0,0,0.7)]">'+s.shortDescription+'</p>' +
+                       '<div class="card-actions mt-6"><a class="cta inline-block w-full text-center py-3 rounded-md" href="details.html?id='+encodeURIComponent(s.id)+'">View Details</a></div>';
       snap.appendChild(card);
     });
   }

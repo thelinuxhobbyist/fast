@@ -1,17 +1,5 @@
 const SERVICES = [
   {
-    "id": "test-min",
-    "title": "Test Charge — £0.30",
-    "price": "\u00a30.30",
-    "meta": {
-      "note": "Small test charge for verifying flow"
-    },
-    "shortDescription": "A tiny test charge to validate checkout and success flow.",
-    "longDescription": "Use this package to run end-to-end tests of the checkout and success form without processing a real order.",
-    "features": ["Test charge only"],
-    "stripe": "https://buy.stripe.com/placeholder-test"
-  },
-  {
     "id": "logo-basic",
     "title": "Logo \u2014 Basic",
     "price": "\u00a349",

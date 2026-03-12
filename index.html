@@ -25,27 +25,38 @@
 <meta name="twitter:title" content="Fast Graphic Design | Creative Outsourcing Agency">
 <meta name="twitter:description" content="Professional graphic design outsourcing for small businesses. Logos, websites, marketing materials, fast turnaround.">
 <meta name="twitter:image" content="https://fastgraphicdesign.co.uk/assets/logo.png">
+<script src="https://cdn.tailwindcss.com"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <link rel="stylesheet" href="css/style.css"></head><body>
 <!-- Facebook SDK for JavaScript -->
 </script>
-<header><div class="container header-inner"><div class="brand"><img src="assets/logo.png" alt="Fast logo"></div><button class="menu-toggle" id="menuToggle" aria-label="Open menu"><i class="fa fa-bars"></i></button><nav class="nav" id="nav"><a href="index.html">Home</a><a href="packages.html">Packages</a><a href="contact.html">Contact</a></nav></div></header>
+<header class="bg-white shadow-sm">
+  <div class="container header-inner flex items-center justify-between">
+    <div class="brand flex items-center gap-3">
+      <a href="index.html"><img src="assets/logo.png" alt="Fast logo" class="h-14"></a>
+    </div>
+    <div class="hidden md:flex items-center gap-6">
+      <nav class="nav flex gap-4 items-center" id="nav">
+        <a href="index.html" class="text-gray-800 hover:text-[var(--accent)] font-semibold">Home</a>
+        <a href="packages.html" class="text-gray-800 hover:text-[var(--accent)] font-semibold">Packages</a>
+        <a href="contact.html" class="text-gray-800 hover:text-[var(--accent)] font-semibold">Contact</a>
+      </nav>
+    </div>
+    <button class="menu-toggle md:hidden p-2" id="menuToggle" aria-label="Open menu"><i class="fa fa-bars"></i></button>
+  </div>
+</header>
 
 <main>
-  <section class="hero" style="text-align:center;padding:80px 20px;background:linear-gradient(135deg,rgba(245,135,49,0.1),rgba(245,135,49,0.05));border-radius:0;margin:0;max-width:100%">
-    <div style="max-width:1200px;margin:0 auto">
-      <h1 style="font-size:48px;margin:0 0 16px 0;color:var(--accent);font-weight:900">Quality design without the agency price tag.</h1>
-      <h2 style="font-size:32px;margin:0 0 24px 0;color:var(--accent);font-weight:900">Simple packages. Clear pricing. Fast turnaround.</h2>
-      <div class="hero-actions" style="margin:32px 0;justify-content:center">
-        <a class="cta hero-primary" href="contact.html" aria-label="Request custom work">Request Custom Work</a>
-        <a class="btn hero-secondary" href="packages.html" aria-label="View packages">View Packages</a>
+  <section class="hero py-20" style="background: linear-gradient(135deg, rgba(245,135,49,0.14), rgba(245,135,49,0.04));">
+    <div class="max-w-6xl mx-auto px-6">
+      <div class="rounded-2xl" style="background: rgba(255,255,255,0.06); backdrop-filter: blur(6px); padding:2rem 2.5rem; text-align:center;">
+        <h1 class="text-3xl md:text-5xl font-extrabold" style="color:var(--accent)">Quality design without the agency price tag.</h1>
+        <p class="mt-4 text-lg md:text-xl font-semibold" style="color:rgba(17,17,17,0.9)">Expert designers, clear packages and fast delivery tailored for small businesses.</p>
+        <div class="mt-8 flex justify-center gap-4">
+          <a href="contact.html" class="inline-flex items-center gap-3 px-5 py-3 rounded-lg font-semibold shadow hover:shadow-lg" style="background:var(--card);color:var(--accent);box-shadow:0 6px 18px rgba(245,135,49,0.12)">Request Custom Work</a>
+          <a href="packages.html" class="inline-flex items-center gap-3 border px-5 py-3 rounded-lg" style="border-color:rgba(255,255,255,0.25);color:var(--card);background:transparent">View Packages</a>
+        </div>
       </div>
-      <ul class="support-points" style="justify-content:center;gap:24px;margin-top:32px">
-        <li style="font-size:14px;padding:12px 16px;background:#fff;border:2px solid var(--green);color:var(--green)"><i class="fa-solid fa-bolt"></i> Fast turnaround (2–5 days)</li>
-        <li style="font-size:14px;padding:12px 16px;background:#fff;border:2px solid var(--green);color:var(--green)"><i class="fa-solid fa-tag"></i> Simple pricing</li>
-        <li style="font-size:14px;padding:12px 16px;background:#fff;border:2px solid var(--green);color:var(--green)"><i class="fa-solid fa-file-contract"></i> No long contracts</li>
-        <li style="font-size:14px;padding:12px 16px;background:#fff;border:2px solid var(--green);color:var(--green)"><i class="fa-solid fa-location-dot"></i> UK-led design team</li>
-      </ul>
     </div>
   </section>
 
@@ -92,40 +103,50 @@
       </div>
     </section>
 
-    <section style="margin-top:40px"><h2>Featured Packages</h2><div id="packages-snapshot" class="grid"></div><div style="text-align:center;margin-top:28px;margin-bottom:28px"><a class="cta" href="packages.html" style="font-size:16px;padding:14px 28px;background:var(--accent)">See all packages</a></div></section>
+    <section style="margin-top:40px">
+      <h2>Featured Packages</h2>
+      <div id="packages-snapshot" class="grid"></div>
+      <div style="text-align:center;margin-top:28px;margin-bottom:28px">
+        <a id="view-more-packages" class="cta" href="packages.html" style="font-size:16px;padding:14px 28px;background:var(--accent)">View more</a>
+      </div>
+    </section>
   </div>
 </main>
 
-<footer class="footer">
+<footer class="footer py-12">
   <div class="container">
-    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:40px;margin-bottom:40px">
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
       <div>
-        <h4 style="color:var(--green);margin-bottom:16px;font-size:18px">Fast Graphic Design</h4>
-        <p style="color:#ccc;font-size:16px;line-height:1.6">Professional white-label outsourcing solutions for small businesses. We deliver high-quality graphic design services that help your business stand out.</p>
+        <h4 class="text-[var(--green)] mb-3 text-lg font-bold">Fast Graphic Design</h4>
+        <p class="text-gray-300">Professional white-label outsourcing solutions for small businesses. We deliver high-quality graphic design services that help your business stand out.</p>
       </div>
       <div>
-        <h4 style="color:var(--green);margin-bottom:16px">Quick Links</h4>
-        <a href="index.html">Home</a>
-        <a href="packages.html">Packages</a>
-        <a href="contact.html">Contact</a>
-        <a href="resources/">Resources</a>
+        <h4 class="text-[var(--green)] mb-3 font-semibold">Quick Links</h4>
+        <nav class="flex flex-col gap-2">
+          <a href="index.html" class="text-white">Home</a>
+          <a href="packages.html" class="text-white">Packages</a>
+          <a href="contact.html" class="text-white">Contact</a>
+          <a href="resources/" class="text-white">Resources</a>
+        </nav>
       </div>
       <div>
-        <h4 style="color:var(--green);margin-bottom:16px">Legal</h4>
-        <a href="terms.html">Terms of Service</a>
-        <a href="privacy.html">Privacy Policy</a>
-        <a href="refund.html">Refund Policy</a>
+        <h4 class="text-[var(--green)] mb-3 font-semibold">Legal</h4>
+        <nav class="flex flex-col gap-2">
+          <a href="terms.html" class="text-white">Terms of Service</a>
+          <a href="privacy.html" class="text-white">Privacy Policy</a>
+          <a href="refund.html" class="text-white">Refund Policy</a>
+        </nav>
       </div>
       <div>
-        <h4 style="color:var(--green);margin-bottom:16px">Follow Us</h4>
-        <p style="color:#fff;margin:0">
-          <a href="https://www.facebook.com/fastgraphicdesign" style="color:#fff;font-size:28px;margin-right:16px;display:inline-block" title="Visit our Facebook"><i class="fa-brands fa-facebook"></i></a>
-          <a href="https://www.youtube.com/@fastgraphicdesign" style="color:#fff;font-size:28px;display:inline-block" title="Visit our YouTube"><i class="fa-brands fa-youtube"></i></a>
-        </p>
+        <h4 class="text-[var(--green)] mb-3 font-semibold">Follow Us</h4>
+        <div class="flex gap-4 items-center">
+          <a href="https://www.facebook.com/fastgraphicdesign" class="text-white text-2xl" title="Visit our Facebook"><i class="fa-brands fa-facebook"></i></a>
+          <a href="https://www.youtube.com/@fastgraphicdesign" class="text-white text-2xl" title="Visit our YouTube"><i class="fa-brands fa-youtube"></i></a>
+        </div>
       </div>
     </div>
-    <div style="border-top:1px solid #333;padding-top:20px">
-      <div style="color:#888;font-size:13px">© 2025 Fast Graphic Design. All rights reserved.</div>
+    <div class="border-t border-[#333] pt-6">
+      <div class="text-gray-400 text-sm">© 2025 Fast Graphic Design. All rights reserved.</div>
     </div>
   </div>
 </footer>
