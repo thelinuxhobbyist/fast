@@ -1,4 +1,80 @@
 
+function escapeHtml(str) {
+  return String(str || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
+function getMetaIcon(key) {
+  var k = String(key || '').toLowerCase();
+  if (/revis/.test(k)) return 'fa-pen-fancy';
+  if (/format|file|type/.test(k)) return 'fa-file-lines';
+  if (/turnaround|time|days|hour/.test(k)) return 'fa-clock';
+  if (/platform|platforms/.test(k)) return 'fa-layer-group';
+  if (/page/.test(k)) return 'fa-copy';
+  if (/size/.test(k)) return 'fa-ruler-combined';
+  if (/product|count/.test(k)) return 'fa-box';
+  if (/photo|image/.test(k)) return 'fa-image';
+  if (/tool|service|edit/.test(k)) return 'fa-wrench';
+  return 'fa-circle-check';
+}
+
+function formatMetaKey(k) {
+  var key = String(k || '');
+  var lower = key.toLowerCase();
+  if (/revis/.test(lower)) return 'Revisions';
+  if (/format/.test(lower)) return 'Format';
+  if (/turnaround|time|days/.test(lower)) return 'Turnaround';
+  if (/platform/.test(lower)) return 'Platform';
+  if (/page/.test(lower)) return 'Pages';
+  if (/size/.test(lower)) return 'Size';
+  if (/product/.test(lower)) return 'Products';
+  if (/count/.test(lower)) return 'Includes';
+  if (/service/.test(lower)) return 'Service';
+  if (/tool/.test(lower)) return 'Tools';
+  if (/edit/.test(lower)) return 'Edits';
+  if (/photo/.test(lower)) return 'Photos';
+  if (/type/.test(lower)) return 'Type';
+  return key.replace(/[-_]/g, ' ').split(' ').map(function (w) {
+    return w.charAt(0).toUpperCase() + w.slice(1);
+  }).join(' ');
+}
+
+function buildPackageCard(s, options) {
+  options = options || {};
+  var maxFeatures = options.maxFeatures != null ? options.maxFeatures : 4;
+  var maxMeta = options.maxMeta != null ? options.maxMeta : 4;
+
+  var metaHtml = '';
+  if (s.meta && typeof s.meta === 'object') {
+    metaHtml = Object.entries(s.meta).slice(0, maxMeta).map(function (kv) {
+      var label = formatMetaKey(kv[0]);
+      var icon = getMetaIcon(kv[0]);
+      return '<li class="package-card__meta-item"><i class="fa-solid ' + icon + '" aria-hidden="true"></i><span><strong>' + escapeHtml(label) + ':</strong> ' + escapeHtml(kv[1]) + '</span></li>';
+    }).join('');
+  }
+
+  var featuresHtml = '';
+  if (s.features && s.features.length) {
+    featuresHtml = s.features.slice(0, maxFeatures).map(function (f) {
+      return '<li class="package-card__feature"><i class="fa-solid fa-check" aria-hidden="true"></i><span>' + escapeHtml(f) + '</span></li>';
+    }).join('');
+  }
+
+  var card = document.createElement('article');
+  card.className = 'package-card';
+  card.innerHTML =
+    '<div class="package-card__body">' +
+      '<h3 class="package-card__title">' + escapeHtml(s.title) + '</h3>' +
+      '<div class="package-card__price">' + escapeHtml(s.price) + '</div>' +
+      (metaHtml ? '<ul class="package-card__meta">' + metaHtml + '</ul>' : '') +
+      (featuresHtml ? '<ul class="package-card__features">' + featuresHtml + '</ul>' : '') +
+      (s.shortDescription ? '<p class="package-card__desc">' + escapeHtml(s.shortDescription) + '</p>' : '') +
+    '</div>' +
+    '<div class="package-card__footer">' +
+      '<a class="package-card__cta" href="details.html?id=' + encodeURIComponent(s.id) + '">View Details <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>' +
+    '</div>';
+  return card;
+}
+
 document.addEventListener('DOMContentLoaded', function(){
   // Mobile nav toggles
   var toggles = document.querySelectorAll('.menu-toggle');
@@ -26,45 +102,19 @@ document.addEventListener('DOMContentLoaded', function(){
     });
   });
 
-  // helper to format meta keys (e.g. 'revis' -> 'Revisions')
-  function formatMetaKey(k){
-    var key = String(k||'');
-    var lower = key.toLowerCase();
-    if(/revis/.test(lower)) return 'Revisions';
-    if(/format/.test(lower)) return 'Format';
-    if(/turnaround|time|days/.test(lower)) return 'Turnaround';
-    return key.replace(/[-_]/g,' ').split(' ').map(function(w){ return w.charAt(0).toUpperCase()+w.slice(1); }).join(' ');
-  }
-
   // Render snapshot on index (first 8)
   var snap = document.getElementById('packages-snapshot');
-  if(snap && typeof SERVICES !== 'undefined'){
-    SERVICES.slice(0,8).forEach(function(s){
-      var card = document.createElement('div');
-      card.className = 'card';
-      card.innerHTML = '<h3>'+s.title+'</h3>' +
-                       '<div class="package-price">'+s.price+'</div>' +
-                       '<p>'+s.shortDescription+'</p>' +
-                       '<div class="card-actions"><a class="cta" href="details.html?id='+encodeURIComponent(s.id)+'">View Details</a></div>';
-      snap.appendChild(card);
+  if (snap && typeof SERVICES !== 'undefined') {
+    SERVICES.slice(0, 8).forEach(function (s) {
+      snap.appendChild(buildPackageCard(s, { maxFeatures: 3, maxMeta: 3 }));
     });
   }
 
   // Render full packages list on packages page
   var list = document.getElementById('packages-list');
-  if(list && typeof SERVICES !== 'undefined'){
-    SERVICES.forEach(function(s){
-      var card = document.createElement('div'); card.className = 'card';
-      var metaHtml = '';
-      if(s.meta && typeof s.meta === 'object'){
-        metaHtml = Object.entries(s.meta).map(function(kv){ return '<div><strong>'+ (formatMetaKey(kv[0]) )+':</strong> '+kv[1]+'</div>'; }).join('');
-      }
-      card.innerHTML = '<h3>'+s.title+'</h3>' +
-                       '<div class="package-price">'+s.price+'</div>' +
-                       '<div class="meta">'+metaHtml+'</div>' +
-                       '<p>'+s.shortDescription+'</p>' +
-                       '<div class="card-actions"><a class="cta" href="details.html?id='+encodeURIComponent(s.id)+'">View Details</a></div>';
-      list.appendChild(card);
+  if (list && typeof SERVICES !== 'undefined') {
+    SERVICES.forEach(function (s) {
+      list.appendChild(buildPackageCard(s));
     });
   }
 
@@ -112,7 +162,7 @@ try {
       try {
         gsap.from('.hero h1', { opacity: 0, y: 18, duration: 0.8, ease: 'power2.out' });
         gsap.from('.hero p', { opacity: 0, y: 14, duration: 0.7, delay: 0.12, ease: 'power2.out' });
-        gsap.from('#packages-snapshot .card', { opacity: 0, y: 20, duration: 0.6, stagger: 0.09, delay: 0.25, ease: 'power2.out' });
+        gsap.from('#packages-snapshot .package-card', { opacity: 0, y: 20, duration: 0.6, stagger: 0.09, delay: 0.25, ease: 'power2.out' });
       } catch (e) { /* fail silently if animation errors */ }
     });
   }
