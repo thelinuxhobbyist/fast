@@ -91,8 +91,12 @@ function loadPackageDetailsImmediate(packageId) {
 	if (pkg) {
 		var pn = document.getElementById('package-name'); if (pn) pn.textContent = pkg.title;
 		var pd = document.getElementById('package-desc'); if (pd) pd.textContent = pkg.shortDescription || pkg.longDescription || '';
+		var spnm = document.getElementById('summary-package-name-mobile'); if (spnm) spnm.textContent = pkg.title;
+		var sppm = document.getElementById('summary-package-price-mobile'); if (sppm) sppm.textContent = pkg.price;
 		var spd = document.getElementById('summary-package-desc-mobile'); if (spd) spd.textContent = pkg.shortDescription || pkg.longDescription || '';
+		var sn = document.getElementById('summary-package-name'); if (sn) sn.textContent = pkg.title;
 		var pp = document.getElementById('package-price'); if (pp) pp.textContent = pkg.price;
+		var spp = document.getElementById('summary-package-price'); if (spp) spp.textContent = pkg.price;
 	}
 }
 loadPackageDetailsImmediate(SELECTED_PACKAGE_ID);
@@ -218,7 +222,10 @@ async function ensurePaymentElement(name, email, forceRefresh = false) {
 			theme: 'stripe',
 			variables: {
 				colorPrimary: '#F58731',
-				fontFamily: 'system-ui, -apple-system, sans-serif',
+				fontFamily: '"Inter", system-ui, -apple-system, sans-serif',
+				fontSizeBase: '15px',
+				spacingUnit: '3px',
+				borderRadius: '8px',
 			}
 		};
 		elements = stripe.elements({ clientSecret, appearance });
@@ -234,6 +241,12 @@ async function ensurePaymentElement(name, email, forceRefresh = false) {
 			// Using 'auto' avoids needing to pass billing address fields
 			// manually when calling `stripe.confirmPayment()`.
 			paymentElement = elements.create('payment', {
+				layout: {
+					type: 'accordion',
+					defaultCollapsed: false,
+					radios: false,
+					spacedAccordionItems: false
+				},
 				restrictPaymentMethods: ['card', 'link'],
 				fields: { billingDetails: 'auto' }
 			});
@@ -575,14 +588,20 @@ function updateSummaries(){
 	try{
 		const total = getOrderTotal();
 		const formatted = formatCurrency(total);
+		const pkg = (typeof findService === 'function') ? findService(getSelectedPackageId()) : null;
+		const displayPrice = (pkg && pkg.price) ? pkg.price : formatted;
+
 		// desktop
-		var spName = document.getElementById('summary-package-name'); if (spName && typeof findService === 'function') { var pkg = findService(getSelectedPackageId()); if (pkg) spName.textContent = pkg.title; }
-		var spPrice = document.getElementById('summary-package-price'); if (spPrice) spPrice.textContent = formatted;
+		var spName = document.getElementById('summary-package-name'); if (spName && pkg) spName.textContent = pkg.title;
+		var spPrice = document.getElementById('summary-package-price'); if (spPrice) spPrice.textContent = displayPrice;
 		var st = document.getElementById('summary-total'); if (st) st.textContent = formatted;
+
 		// mobile
-		var spNameM = document.getElementById('summary-package-name-mobile'); if (spNameM && typeof findService === 'function') { var pkg2 = findService(getSelectedPackageId()); if (pkg2) spNameM.textContent = pkg2.title; }
+		var spNameM = document.getElementById('summary-package-name-mobile'); if (spNameM && pkg) spNameM.textContent = pkg.title;
+		var spPriceM = document.getElementById('summary-package-price-mobile'); if (spPriceM) spPriceM.textContent = displayPrice;
 		var stM = document.getElementById('summary-total-mobile'); if (stM) stM.textContent = formatted;
 		var stMbot = document.getElementById('summary-total-mobile-bottom'); if (stMbot) stMbot.textContent = formatted;
+		var ppHidden = document.getElementById('package-price'); if (ppHidden && pkg && pkg.price) ppHidden.textContent = pkg.price;
 		// Show debug info for troubleshooting (disabled by default)
 		try{
 			var dbg = document.getElementById('debug-banner');
@@ -614,8 +633,12 @@ function loadPackageDetails(packageId) {
 		// Update main package card
 		var pn = document.getElementById('package-name'); if (pn) pn.textContent = pkg.title;
 		var pd = document.getElementById('package-desc'); if (pd) pd.textContent = pkg.shortDescription || pkg.longDescription || '';
+		var spnm = document.getElementById('summary-package-name-mobile'); if (spnm) spnm.textContent = pkg.title;
+		var sppm = document.getElementById('summary-package-price-mobile'); if (sppm) sppm.textContent = pkg.price;
 		var spd = document.getElementById('summary-package-desc-mobile'); if (spd) spd.textContent = pkg.shortDescription || pkg.longDescription || '';
+		var sn = document.getElementById('summary-package-name'); if (sn) sn.textContent = pkg.title;
 		var pp = document.getElementById('package-price'); if (pp) pp.textContent = pkg.price;
+		var spp = document.getElementById('summary-package-price'); if (spp) spp.textContent = pkg.price;
 		// Update summaries (desktop + mobile)
 		updateSummaries();
 	}

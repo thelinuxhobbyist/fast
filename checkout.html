@@ -7,14 +7,11 @@
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
-
   gtag('config', 'G-MVKRK0TSRL');
 </script>
 <!-- Google AdSense -->
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-0399816370564181"
      crossorigin="anonymous"></script>
-<!-- Facebook SDK for JavaScript -->
-</script>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width,initial-scale=1">
 	<title>Checkout | Fast Graphic Design</title>
@@ -33,163 +30,156 @@
 	<link rel="stylesheet" href="css/style.css">
 	<script src="https://js.stripe.com/v3/"></script>
 </head>
-<body>
-<header>
-	<div class="container header-inner">
-		<div class="brand">
-			<img src="assets/logo.png" alt="Fast logo">
+<body class="checkout-page">
+
+<header class="checkout-header">
+	<div class="checkout-header__inner">
+		<a href="packages.html" class="checkout-header__back">
+			<i class="fa-solid fa-arrow-left" aria-hidden="true"></i>
+			<span>Packages</span>
+		</a>
+		<a href="index.html" class="checkout-header__brand">
+			<img src="assets/logo.png" alt="Fast Graphic Design">
+		</a>
+		<div class="checkout-header__secure">
+			<i class="fa-solid fa-lock" aria-hidden="true"></i>
+			<span>Secure checkout</span>
 		</div>
-		<button class="menu-toggle" id="menuToggle" aria-label="Open menu">
-			<i class="fa fa-bars"></i>
-		</button>
-		<nav class="nav" id="nav">
-			<a href="index.html">Home</a>
-			<a href="packages.html">Packages</a>
-			<a href="contact.html">Contact</a>
-		</nav>
 	</div>
 </header>
 
-<main class="container">
-	<div class="checkout-layout">
-		<!-- Left: Checkout form -->
-		<div class="checkout-main">
-			<h1 class="checkout-title">Complete Your Order</h1>
-			<p class="checkout-subtitle">Secure checkout powered by Stripe. Your payment information is encrypted and secure.</p>
+<main class="checkout-shell">
+	<div class="checkout-card">
 
-		<!-- Package Selection -->
-		<div class="checkout-section checkout-package-section">
-			<h3><i class="fa-solid fa-box"></i> Selected Package</h3>
-			<div id="selected-package" class="selected-package-card">
-				<div class="package-info">
-					<strong id="package-name">Package</strong>
-					<p id="package-desc">Selected package description</p>
-				</div>
-				<div class="package-price" id="package-price">£0.00</div>
-			</div>
-			<a href="packages.html" class="checkout-change-package">
-				<i class="fa-solid fa-arrow-left"></i> Choose a different package
-			</a>
-		</div>			<!-- Collapsible Order Summary (mobile only) -->
-		<div class="order-summary-mobile collapsible-summary">
-			<button class="summary-toggle" type="button" aria-expanded="false">
-				<div class="summary-toggle__inner">
-					<div class="summary-toggle__top">
-						<span class="summary-toggle__label"><i class="fa-solid fa-receipt"></i> Order Summary</span>
+		<!-- Form column -->
+		<div class="checkout-card__form">
+
+			<!-- Mobile order summary -->
+			<div class="order-summary-mobile collapsible-summary">
+				<button class="summary-toggle" type="button" aria-expanded="false">
+					<div class="summary-toggle__header">
+						<span class="summary-toggle__label">Order summary</span>
 						<span class="summary-toggle-icon" aria-hidden="true">&#x25BC;</span>
 					</div>
-					<div class="summary-toggle__preview">
-						<span id="summary-package-name-mobile" class="summary-toggle__package">Package</span>
-						<span id="summary-total-mobile" class="summary-toggle__total">£0.00</span>
+					<div class="checkout-invoice__product-row checkout-invoice__product-row--compact">
+						<span id="summary-package-name-mobile" class="checkout-invoice__product-name">Package</span>
+						<span id="summary-package-price-mobile" class="checkout-invoice__product-price">£0.00</span>
 					</div>
+				</button>
+				<div class="collapsible-content checkout-invoice checkout-invoice--mobile" style="display:none">
+					<p class="checkout-invoice__product-desc" id="summary-package-desc-mobile"></p>
+					<a href="packages.html" class="checkout-change-package checkout-change-package--mobile">
+						<i class="fa-solid fa-pen"></i> Change package
+					</a>
+					<hr class="checkout-invoice__divider">
+					<div class="checkout-invoice__row checkout-invoice__row--total">
+						<span>Total</span>
+						<strong id="summary-total-mobile">£0.00</strong>
+					</div>
+					<hr class="checkout-invoice__divider">
+					<ul class="checkout-trust">
+						<li><i class="fa-solid fa-check"></i> Secure SSL checkout</li>
+						<li><i class="fa-solid fa-check"></i> 100% satisfaction guarantee</li>
+						<li><i class="fa-solid fa-check"></i> 2–5 day turnaround</li>
+						<li><i class="fa-solid fa-check"></i> Unlimited revisions</li>
+					</ul>
 				</div>
-			</button>
-			<div class="collapsible-content" style="display:none">
-				<p class="summary-package-desc" id="summary-package-desc-mobile"></p>
-				<div class="summary-divider"></div>
-				<div class="summary-item summary-total">
-					<strong>Total due today</strong>
-					<strong id="summary-total-mobile-bottom">£0.00</strong>
-				</div>
-				<div class="trust-items">
-					<div class="trust-item-small">
-						<i class="fa-solid fa-clock"></i>
-						<span>Fast 2-5 day turnaround</span>
-					</div>
-					<div class="trust-item-small">
-						<i class="fa-solid fa-shield-halved"></i>
-						<span>100% satisfaction guarantee</span>
-					</div>
-					<div class="trust-item-small">
-						<i class="fa-solid fa-rotate"></i>
-						<span>Unlimited revisions</span>
-					</div>
-				</div>
-				<a href="packages.html" class="checkout-change-package checkout-change-package--mobile">
-					<i class="fa-solid fa-arrow-left"></i> Choose a different package
-				</a>
 			</div>
-		</div>
 
-				<!-- Payment Form (compact layout: customer fields left, payment & submit right) -->
-				<form id="payment_form">
-					<div class="checkout-form-grid">
-						<div>
-							<!-- Customer Information (compact - no visible section headings) -->
-							<div class="checkout-section">
-								<div class="form-grid">
-									<div class="form-field">
-										<label for="customer_name">Full Name <span class="required-mark">*</span></label>
-										<input type="text" id="customer_name" name="customer_name" required placeholder="John Smith">
-									</div>
-									<div class="form-field">
-										<label for="customer_email">Email Address <span class="required-mark">*</span></label>
-										<input type="email" id="customer_email" name="customer_email" required placeholder="john@example.com">
-									</div>
-								</div>
-							</div>
+			<div class="checkout-card__intro">
+				<h1 class="checkout-title">Complete your order</h1>
+				<p class="checkout-subtitle">Enter your details below. Your payment is encrypted and processed securely by Stripe.</p>
+			</div>
+
+			<form id="payment_form" class="checkout-form">
+				<fieldset class="checkout-fieldset">
+					<legend class="checkout-fieldset__title">Contact details</legend>
+					<div class="form-grid checkout-form__grid">
+						<div class="form-field">
+							<label for="customer_name">Full name <span class="required-mark">*</span></label>
+							<input type="text" id="customer_name" name="customer_name" required placeholder="John Smith" autocomplete="name">
 						</div>
-						<div>
-							<!-- Payment element + submit placed on the right column -->
-							<div class="checkout-section">
-								<div class="form-field">
-									<label for="payment_element">Card Information <span class="required-mark">*</span></label>
-									<div id="payment_element" class="stripe-element"></div>
-									<div class="checkout-card-brands">
-										<img src="https://img.shields.io/badge/Visa-1A1F71?style=flat&logo=visa&logoColor=white" alt="Visa">
-										<img src="https://img.shields.io/badge/Mastercard-EB001B?style=flat&logo=mastercard&logoColor=white" alt="Mastercard">
-									</div>
-									<div id="payment_error_message" role="alert" class="error-message"></div>
-								</div>
-								<div style="margin-top:12px">
-									<button type="button" id="submit_payment" class="btn-checkout" disabled>
-										<span id="button-text"><i class="fa-solid fa-lock"></i> Pay Now</span>
-										<div id="spinner" class="spinner hidden"></div>
-									</button>
-								</div>
-								<p class="checkout-terms">By completing this purchase, you agree to our <a href="terms.html">Terms of Service</a> and <a href="privacy.html">Privacy Policy</a>.</p>
-							</div>
+						<div class="form-field">
+							<label for="customer_email">Email address <span class="required-mark">*</span></label>
+							<input type="email" id="customer_email" name="customer_email" required placeholder="john@example.com" autocomplete="email">
 						</div>
 					</div>
-				</form>
+				</fieldset>
+
+				<fieldset class="checkout-fieldset checkout-fieldset--payment">
+					<legend class="checkout-fieldset__title">Payment</legend>
+					<div class="form-field">
+						<label for="payment_element">Card details <span class="required-mark">*</span></label>
+						<div id="payment_element" class="stripe-element"></div>
+						<div class="checkout-card-brands">
+							<img src="https://img.shields.io/badge/Visa-1A1F71?style=flat&logo=visa&logoColor=white" alt="Visa">
+							<img src="https://img.shields.io/badge/Mastercard-EB001B?style=flat&logo=mastercard&logoColor=white" alt="Mastercard">
+						</div>
+						<div id="payment_error_message" role="alert" class="error-message"></div>
+					</div>
+
+					<div class="checkout-pay-block">
+						<button type="button" id="submit_payment" class="btn-checkout" disabled>
+							<span id="button-text"><i class="fa-solid fa-lock"></i> Pay now</span>
+							<div id="spinner" class="spinner hidden"></div>
+						</button>
+						<p class="checkout-secure-note">
+							<span class="checkout-secure-note__item"><i class="fa-solid fa-shield-halved" aria-hidden="true"></i> 256-bit SSL encryption</span>
+							<span class="checkout-secure-note__sep" aria-hidden="true">·</span>
+							<span class="checkout-secure-note__item">Powered by Stripe</span>
+						</p>
+					</div>
+
+					<p class="checkout-terms">By completing this purchase, you agree to our <a href="terms.html">Terms of Service</a> and <a href="privacy.html">Privacy Policy</a>.</p>
+				</fieldset>
+			</form>
 		</div>
 
-		<!-- Right: Order Summary + Pay Button (desktop) -->
-		<div class="checkout-sidebar">
-			<div class="order-summary order-summary-desktop">
-				<h3>Order Summary</h3>
-					<div class="summary-item">
-					<span id="summary-package-name">Package</span>
-					<span id="summary-package-price">£0.00</span>
+		<!-- Summary column (desktop) -->
+		<aside class="checkout-card__summary order-summary-desktop">
+			<div class="checkout-summary checkout-invoice">
+				<h2 class="checkout-invoice__heading">Order summary</h2>
+
+				<div class="checkout-invoice__product">
+					<div class="checkout-invoice__product-row">
+						<strong class="checkout-invoice__product-name" id="package-name">Package</strong>
+						<span class="checkout-invoice__product-price" id="summary-package-price">£0.00</span>
+					</div>
+					<p class="checkout-invoice__product-desc" id="package-desc">Selected package description</p>
 				</div>
-				<div class="summary-divider"></div>
-				<div class="summary-item summary-total">
-					<strong>Total</strong>
+
+				<a href="packages.html" class="checkout-change-package">
+					<i class="fa-solid fa-pen"></i> Change package
+				</a>
+
+				<hr class="checkout-invoice__divider">
+
+				<div class="checkout-invoice__row checkout-invoice__row--total">
+					<span>Total</span>
 					<strong id="summary-total">£0.00</strong>
 				</div>
-				<div class="trust-items">
-					<div class="trust-item-small">
-						<i class="fa-solid fa-clock"></i>
-						<span>Fast 2-5 day turnaround</span>
-					</div>
-					<div class="trust-item-small">
-						<i class="fa-solid fa-shield-halved"></i>
-						<span>100% satisfaction guarantee</span>
-					</div>
-					<div class="trust-item-small">
-						<i class="fa-solid fa-rotate"></i>
-						<span>Unlimited revisions</span>
-					</div>
-			</div>
 
-			<!-- Help card (desktop) -->
-			<div class="help-card">
-				<i class="fa-solid fa-headset"></i>
-				<h4>Need Help?</h4>
-				<p>Our team is here to assist you.</p>
-				<a href="contact.html" class="text-link">Contact Support →</a>
+				<hr class="checkout-invoice__divider">
+
+				<ul class="checkout-trust">
+					<li><i class="fa-solid fa-check"></i> Secure SSL checkout</li>
+					<li><i class="fa-solid fa-check"></i> 100% satisfaction guarantee</li>
+					<li><i class="fa-solid fa-check"></i> 2–5 day turnaround</li>
+					<li><i class="fa-solid fa-check"></i> Unlimited revisions</li>
+				</ul>
+
+				<div class="checkout-support-card">
+					<p class="checkout-support-card__text">Questions about your order?</p>
+					<a href="contact.html" class="checkout-support-card__link">Contact support</a>
+				</div>
+
+				<!-- Hidden elements for JS -->
+				<span id="package-price" class="checkout-sr-only" aria-hidden="true">£0.00</span>
+				<span id="summary-package-name" class="checkout-sr-only" aria-hidden="true">Package</span>
+				<span id="summary-total-mobile-bottom" class="checkout-sr-only" aria-hidden="true">£0.00</span>
 			</div>
-		</div>
+		</aside>
+
 	</div>
 </main>
 
