@@ -27,32 +27,37 @@
 	<meta name="twitter:description" content="Secure checkout for professional graphic design services.">
 	<meta name="twitter:image" content="https://fastgraphicdesign.co.uk/assets/logo.png">
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 	<link rel="stylesheet" href="css/style.css">
 	<script src="https://js.stripe.com/v3/"></script>
 </head>
 <body class="checkout-page">
 
 <header class="checkout-header">
-	<div class="checkout-header__inner">
-		<a href="packages.html" class="checkout-header__back">
-			<i class="fa-solid fa-arrow-left" aria-hidden="true"></i>
-			<span>Packages</span>
+	<div class="container header-inner checkout-header__inner">
+		<a href="index.html" class="brand">
+			<img src="assets/logo.png" alt="Fast logo">
 		</a>
-		<a href="index.html" class="checkout-header__brand">
-			<img src="assets/logo.png" alt="Fast Graphic Design">
-		</a>
-		<div class="checkout-header__secure">
-			<i class="fa-solid fa-lock" aria-hidden="true"></i>
-			<span>Secure checkout</span>
+		<div class="checkout-header__actions">
+			<a href="packages.html" class="checkout-header__back">
+				<i class="fa-solid fa-arrow-left" aria-hidden="true"></i>
+				<span>Packages</span>
+			</a>
+			<div class="checkout-header__secure">
+				<i class="fa-solid fa-lock" aria-hidden="true"></i>
+				<span>Secure checkout</span>
+			</div>
 		</div>
 	</div>
 </header>
 
 <main class="checkout-shell">
-	<div class="checkout-card">
+	<div class="checkout-card checkout-panel">
 
 		<!-- Form column -->
-		<div class="checkout-card__form">
+		<div class="checkout-card__form checkout-form-col">
 
 			<!-- Mobile order summary -->
 			<div class="order-summary-mobile collapsible-summary">
@@ -77,11 +82,11 @@
 						<strong id="summary-total-mobile">£0.00</strong>
 					</div>
 					<hr class="checkout-invoice__divider">
-					<ul class="checkout-trust">
-						<li><i class="fa-solid fa-check"></i> Secure SSL checkout</li>
-						<li><i class="fa-solid fa-check"></i> 100% satisfaction guarantee</li>
-						<li><i class="fa-solid fa-check"></i> 2–5 day turnaround</li>
-						<li><i class="fa-solid fa-check"></i> Unlimited revisions</li>
+					<ul class="checkout-trust checkout-perks">
+						<li><span class="checkout-perk__tick" aria-hidden="true">✓</span> Secure SSL checkout</li>
+						<li><span class="checkout-perk__tick" aria-hidden="true">✓</span> 100% satisfaction guarantee</li>
+						<li><span class="checkout-perk__tick" aria-hidden="true">✓</span> 2–5 day turnaround</li>
+						<li><span class="checkout-perk__tick" aria-hidden="true">✓</span> Unlimited revisions</li>
 					</ul>
 				</div>
 			</div>
@@ -136,7 +141,7 @@
 		</div>
 
 		<!-- Summary column (desktop) -->
-		<aside class="checkout-card__summary order-summary-desktop">
+		<aside class="checkout-card__summary checkout-summary-col order-summary-desktop">
 			<div class="checkout-summary checkout-invoice">
 				<h2 class="checkout-invoice__heading">Order summary</h2>
 
@@ -161,11 +166,11 @@
 
 				<hr class="checkout-invoice__divider">
 
-				<ul class="checkout-trust">
-					<li><i class="fa-solid fa-check"></i> Secure SSL checkout</li>
-					<li><i class="fa-solid fa-check"></i> 100% satisfaction guarantee</li>
-					<li><i class="fa-solid fa-check"></i> 2–5 day turnaround</li>
-					<li><i class="fa-solid fa-check"></i> Unlimited revisions</li>
+				<ul class="checkout-trust checkout-perks">
+					<li><span class="checkout-perk__tick" aria-hidden="true">✓</span> Secure SSL checkout</li>
+					<li><span class="checkout-perk__tick" aria-hidden="true">✓</span> 100% satisfaction guarantee</li>
+					<li><span class="checkout-perk__tick" aria-hidden="true">✓</span> 2–5 day turnaround</li>
+					<li><span class="checkout-perk__tick" aria-hidden="true">✓</span> Unlimited revisions</li>
 				</ul>
 
 				<div class="checkout-support-card">
