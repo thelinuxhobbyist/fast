@@ -18,20 +18,25 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/style.css"></head><body>
-<header><div class="container header-inner"><div class="brand"><img src="assets/logo.png" alt="Fast logo"></div><button class="menu-toggle" id="menuToggleC" aria-label="Open menu"><i class="fa fa-bars"></i></button><nav class="nav" id="navC"><a href="index.html">Home</a><a href="packages.html">Packages</a><a href="contact.html">Contact</a><a href="contact.html#custom" class="cta">Request Custom Work</a></nav></div></header>
+<header><div class="container header-inner"><div class="brand"><img src="assets/logo.png" alt="Fast logo"></div><button class="menu-toggle" id="menuToggleC" aria-label="Open menu"><i class="fa fa-bars"></i></button><nav class="nav" id="navC"><a href="index.html">Home</a><a href="packages.html">Packages</a><a href="contact.html#custom" class="cta">Request Custom Work</a></nav></div></header>
 
-<main class="container" style="margin-top:18px">
-<section class="card">
-  <h1 id="contactTitle">Contact & Custom Work</h1>
-  <p class="text-muted">Use the form to request custom quotes or ask about partnership/white-label work.</p>
-  <form id="contactForm" action="https://formspree.io/f/xldkyoqz" method="POST">
-    <div class="form-field"><label for="name">Name</label><input type="text" id="name" name="name" required></div>
-    <div class="form-field"><label for="email">Email</label><input type="email" id="email" name="email" required></div>
-    <div class="form-field"><label for="type">Inquiry Type</label><select id="type" name="type" required><option value="general">General Inquiry</option><option value="package">Package Purchase</option><option value="custom">Custom Project Request</option></select></div>
-    <div id="customArea" style="display:none" class="form-field"><label for="customDetails">Tell us about your custom project</label><textarea id="customDetails" name="customDetails"></textarea></div>
-    <div class="form-field"><label for="message">Message</label><textarea id="message" name="message" required></textarea></div>
-    <div class="form-actions"><button class="cta" type="submit">Send Message</button></div>
-  </form>
+<main class="container contact-page">
+<section id="contactCard" class="card contact-card">
+  <div class="contact-card__intro">
+    <h1 id="contactTitle">Contact us</h1>
+  </div>
+
+  <div class="contact-form-panel">
+    <form id="contactForm" action="https://formspree.io/f/xldkyoqz" method="POST" novalidate>
+      <div class="form-field"><label for="name">Name</label><input type="text" id="name" name="name" required autocomplete="name"></div>
+      <div class="form-field"><label for="email">Email</label><input type="email" id="email" name="email" required autocomplete="email"></div>
+      <div class="form-field"><label for="type">What can we help with?</label><select id="type" name="type" required><option value="general">General question</option><option value="order">Order or payment issue</option><option value="package">Package enquiry</option><option value="custom">Custom project quote</option></select></div>
+      <div id="customArea" style="display:none" class="form-field"><label for="customDetails">Tell us about your project</label><textarea id="customDetails" name="customDetails" rows="4" placeholder="Brief, timeline, budget — whatever helps us understand what you need."></textarea></div>
+      <div class="form-field"><label for="message">Message</label><textarea id="message" name="message" required rows="5" placeholder="Include your order number if you're asking about a purchase."></textarea></div>
+      <p id="contactFormError" class="contact-form-message contact-form-message--error" role="alert" hidden></p>
+      <div class="form-actions"><button class="cta contact-form__submit" type="submit">Send Message</button></div>
+    </form>
+  </div>
 </section>
 </main>
 
@@ -42,8 +47,72 @@
 <script src="js/services.js"></script>
 <script src="js/main.js"></script>
 <script>
-document.getElementById('type').addEventListener('change', function(){ var custom = document.getElementById('customArea'); if(this.value==='custom') custom.style.display='block'; else custom.style.display='none'; });
-if(window.location.hash && window.location.hash==='#custom'){ document.getElementById('contactTitle').scrollIntoView({behavior:'smooth'}); document.getElementById('type').value='custom'; document.getElementById('customArea').style.display='block'; }
+function showContactSuccess() {
+  var card = document.getElementById('contactCard');
+  if (!card) return;
+  card.innerHTML =
+    '<div class="contact-success">' +
+      '<div class="contact-success__icon" aria-hidden="true"><i class="fa-solid fa-circle-check"></i></div>' +
+      '<h1 class="contact-success__title">Thank you</h1>' +
+      '<p class="contact-success__text">We\'ve received your message and will be in touch soon.</p>' +
+    '</div>';
+}
+
+if (window.location.search.indexOf('sent=1') !== -1) {
+  showContactSuccess();
+} else {
+  document.getElementById('type').addEventListener('change', function() {
+    var custom = document.getElementById('customArea');
+    custom.style.display = this.value === 'custom' ? 'block' : 'none';
+  });
+  if (window.location.hash === '#custom') {
+    document.getElementById('contactTitle').scrollIntoView({ behavior: 'smooth' });
+    document.getElementById('type').value = 'custom';
+    document.getElementById('customArea').style.display = 'block';
+  }
+
+  document.getElementById('contactForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+
+    var form = e.target;
+    var submitBtn = form.querySelector('.contact-form__submit');
+    var errorEl = document.getElementById('contactFormError');
+
+    if (errorEl) {
+      errorEl.hidden = true;
+      errorEl.textContent = '';
+    }
+
+    if (submitBtn) {
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Sending…';
+    }
+
+    fetch(form.action, {
+      method: 'POST',
+      headers: { 'Accept': 'application/json' },
+      body: new FormData(form)
+    }).then(function(response) {
+      if (response.ok) {
+        showContactSuccess();
+        try { history.replaceState(null, '', window.location.pathname + '?sent=1'); } catch (err) {}
+        return;
+      }
+      return response.json().then(function(data) {
+        throw new Error((data && data.error) ? data.error : 'Something went wrong. Please try again.');
+      });
+    }).catch(function(err) {
+      if (submitBtn) {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Send Message';
+      }
+      if (errorEl) {
+        errorEl.textContent = err && err.message ? err.message : 'Something went wrong. Please try again.';
+        errorEl.hidden = false;
+      }
+    });
+  });
+}
 </script>
 
 
