@@ -54,37 +54,41 @@
 	<div class="checkout-layout">
 		<!-- Left: Checkout form -->
 		<div class="checkout-main">
-			<h1 style="margin-top:0;color:var(--accent);font-size:32px">Complete Your Order</h1>
-			<p style="color:var(--muted);margin-bottom:32px">Secure checkout powered by Stripe. Your payment information is encrypted and secure.</p>
+			<h1 class="checkout-title">Complete Your Order</h1>
+			<p class="checkout-subtitle">Secure checkout powered by Stripe. Your payment information is encrypted and secure.</p>
 
 		<!-- Package Selection -->
-		<div class="checkout-section checkout-package-section" style="padding: 20px; margin-bottom: 20px; border-radius: 8px; border: 1px solid var(--muted); background: var(--card);">
-			<h3 style="font-size: 18px; margin-top: 0; margin-bottom: 12px;"><i class="fa-solid fa-box"></i> Selected Package</h3>
-			<div id="selected-package" class="selected-package-card" style="padding: 16px; border-radius: 8px; display: flex; flex-direction: row; justify-content: space-between; align-items: center;">
-				<div class="package-info" style="flex: 1;">
-					<strong id="package-name" style="font-size: 22px; display: block; margin-bottom: 8px; font-weight: 800;">Package</strong>
-					<p id="package-desc" style="color: #666; margin: 0; font-size: 15px;">Selected package description</p>
+		<div class="checkout-section checkout-package-section">
+			<h3><i class="fa-solid fa-box"></i> Selected Package</h3>
+			<div id="selected-package" class="selected-package-card">
+				<div class="package-info">
+					<strong id="package-name">Package</strong>
+					<p id="package-desc">Selected package description</p>
 				</div>
-				<div class="package-price" id="package-price" style="color: var(--green); font-size: 28px; font-weight: 800; margin-left: 16px; white-space: nowrap;">£0.00</div>
+				<div class="package-price" id="package-price">£0.00</div>
 			</div>
-			<a href="packages.html" class="text-link" style="font-size:13px; display:inline-block; color: #F58731; font-weight: 600;">
+			<a href="packages.html" class="checkout-change-package">
 				<i class="fa-solid fa-arrow-left"></i> Choose a different package
 			</a>
-		</div>			<!-- Collapsible Order Summary (mobile only, at top) -->
+		</div>			<!-- Collapsible Order Summary (mobile only) -->
 		<div class="order-summary-mobile collapsible-summary">
 			<button class="summary-toggle" type="button" aria-expanded="false">
-				<span>Order Summary</span>
-				<span class="summary-total-label">— Total <span id="summary-total-mobile">£0.00</span></span>
-				<span class="summary-toggle-icon" aria-hidden="true">&#x25BC;</span>
+				<div class="summary-toggle__inner">
+					<div class="summary-toggle__top">
+						<span class="summary-toggle__label"><i class="fa-solid fa-receipt"></i> Order Summary</span>
+						<span class="summary-toggle-icon" aria-hidden="true">&#x25BC;</span>
+					</div>
+					<div class="summary-toggle__preview">
+						<span id="summary-package-name-mobile" class="summary-toggle__package">Package</span>
+						<span id="summary-total-mobile" class="summary-toggle__total">£0.00</span>
+					</div>
+				</div>
 			</button>
 			<div class="collapsible-content" style="display:none">
-				<div class="summary-item">
-					<span id="summary-package-name-mobile">Package</span>
-					<span id="summary-package-price-mobile">£0.00</span>
-				</div>
+				<p class="summary-package-desc" id="summary-package-desc-mobile"></p>
 				<div class="summary-divider"></div>
 				<div class="summary-item summary-total">
-					<strong>Total</strong>
+					<strong>Total due today</strong>
 					<strong id="summary-total-mobile-bottom">£0.00</strong>
 				</div>
 				<div class="trust-items">
@@ -101,6 +105,9 @@
 						<span>Unlimited revisions</span>
 					</div>
 				</div>
+				<a href="packages.html" class="checkout-change-package checkout-change-package--mobile">
+					<i class="fa-solid fa-arrow-left"></i> Choose a different package
+				</a>
 			</div>
 		</div>
 
@@ -112,11 +119,11 @@
 							<div class="checkout-section">
 								<div class="form-grid">
 									<div class="form-field">
-										<label for="customer_name">Full Name <span style="color: #fa755a;">*</span></label>
+										<label for="customer_name">Full Name <span class="required-mark">*</span></label>
 										<input type="text" id="customer_name" name="customer_name" required placeholder="John Smith">
 									</div>
 									<div class="form-field">
-										<label for="customer_email">Email Address <span style="color: #fa755a;">*</span></label>
+										<label for="customer_email">Email Address <span class="required-mark">*</span></label>
 										<input type="email" id="customer_email" name="customer_email" required placeholder="john@example.com">
 									</div>
 								</div>
@@ -126,13 +133,13 @@
 							<!-- Payment element + submit placed on the right column -->
 							<div class="checkout-section">
 								<div class="form-field">
-									<label for="payment_element">Card Information <span style="color: #fa755a;">*</span></label>
+									<label for="payment_element">Card Information <span class="required-mark">*</span></label>
 									<div id="payment_element" class="stripe-element"></div>
-									<div style="margin-top: 8px; font-size: 12px; color: #666;">
-										<img src="https://img.shields.io/badge/Visa-1A1F71?style=flat&logo=visa&logoColor=white" alt="Visa" style="height: 20px; margin-right: 8px;">
-										<img src="https://img.shields.io/badge/Mastercard-EB001B?style=flat&logo=mastercard&logoColor=white" alt="Mastercard" style="height: 20px;">
+									<div class="checkout-card-brands">
+										<img src="https://img.shields.io/badge/Visa-1A1F71?style=flat&logo=visa&logoColor=white" alt="Visa">
+										<img src="https://img.shields.io/badge/Mastercard-EB001B?style=flat&logo=mastercard&logoColor=white" alt="Mastercard">
 									</div>
-									<div id="payment_error_message" role="alert" class="error-message" style="margin-top: 8px; color: #fa755a; font-size: 13px;"></div>
+									<div id="payment_error_message" role="alert" class="error-message"></div>
 								</div>
 								<div style="margin-top:12px">
 									<button type="button" id="submit_payment" class="btn-checkout" disabled>
@@ -176,7 +183,7 @@
 			</div>
 
 			<!-- Help card (desktop) -->
-			<div class="help-card" style="margin-top:20px">
+			<div class="help-card">
 				<i class="fa-solid fa-headset"></i>
 				<h4>Need Help?</h4>
 				<p>Our team is here to assist you.</p>

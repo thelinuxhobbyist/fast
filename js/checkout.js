@@ -91,6 +91,7 @@ function loadPackageDetailsImmediate(packageId) {
 	if (pkg) {
 		var pn = document.getElementById('package-name'); if (pn) pn.textContent = pkg.title;
 		var pd = document.getElementById('package-desc'); if (pd) pd.textContent = pkg.shortDescription || pkg.longDescription || '';
+		var spd = document.getElementById('summary-package-desc-mobile'); if (spd) spd.textContent = pkg.shortDescription || pkg.longDescription || '';
 		var pp = document.getElementById('package-price'); if (pp) pp.textContent = pkg.price;
 	}
 }
@@ -580,11 +581,8 @@ function updateSummaries(){
 		var st = document.getElementById('summary-total'); if (st) st.textContent = formatted;
 		// mobile
 		var spNameM = document.getElementById('summary-package-name-mobile'); if (spNameM && typeof findService === 'function') { var pkg2 = findService(getSelectedPackageId()); if (pkg2) spNameM.textContent = pkg2.title; }
-		var spPriceM = document.getElementById('summary-package-price-mobile'); if (spPriceM) spPriceM.textContent = formatted;
 		var stM = document.getElementById('summary-total-mobile'); if (stM) stM.textContent = formatted;
 		var stMbot = document.getElementById('summary-total-mobile-bottom'); if (stMbot) stMbot.textContent = formatted;
-		// update any toggle label
-		var toggleLabel = document.querySelector('.summary-total-label span'); if (toggleLabel) toggleLabel.textContent = formatted;
 		// Show debug info for troubleshooting (disabled by default)
 		try{
 			var dbg = document.getElementById('debug-banner');
@@ -616,6 +614,7 @@ function loadPackageDetails(packageId) {
 		// Update main package card
 		var pn = document.getElementById('package-name'); if (pn) pn.textContent = pkg.title;
 		var pd = document.getElementById('package-desc'); if (pd) pd.textContent = pkg.shortDescription || pkg.longDescription || '';
+		var spd = document.getElementById('summary-package-desc-mobile'); if (spd) spd.textContent = pkg.shortDescription || pkg.longDescription || '';
 		var pp = document.getElementById('package-price'); if (pp) pp.textContent = pkg.price;
 		// Update summaries (desktop + mobile)
 		updateSummaries();

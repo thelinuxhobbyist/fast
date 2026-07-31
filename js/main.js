@@ -129,50 +129,54 @@ function initFaqAccordion(container) {
   });
 }
 
+function buildPriceCardHtml(s) {
+  return '<aside class="price-card">' +
+    '<div class="price-card__header">' +
+      '<span class="price-card__label">Price</span>' +
+      '<div class="price-card__amount">' + escapeHtml(s.price) + '</div>' +
+      '<span class="price-card__note">One-time payment · No hidden fees</span>' +
+    '</div>' +
+    '<a class="price-card__cta" href="checkout.html?package=' + encodeURIComponent(s.id) + '" onclick="try{sessionStorage.setItem(\'fast_selected_package\', \'' + encodeURIComponent(s.id) + '\');}catch(e){}">' +
+      'Order Your Design Now <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>' +
+    '</a>' +
+  '</aside>';
+}
+
+function buildFeaturesSectionHtml(s) {
+  if (!s.features || !s.features.length) return '';
+  var list = '<ul class="details-features">' +
+    s.features.map(function (f) {
+      return '<li><i class="fa-solid fa-check" aria-hidden="true"></i><span>' + escapeHtml(f) + '</span></li>';
+    }).join('') +
+  '</ul>';
+  return '<section class="details-section details-features-block">' +
+    '<h2 class="details-section__title">Features</h2>' + list +
+  '</section>';
+}
+
 function renderServiceDetails(s, container) {
-  var featuresHtml = '';
-  if (s.features && s.features.length) {
-    featuresHtml = '<ul class="details-features">' +
-      s.features.map(function (f) {
-        return '<li><i class="fa-solid fa-check" aria-hidden="true"></i><span>' + escapeHtml(f) + '</span></li>';
-      }).join('') +
-    '</ul>';
-  }
-
   var includesHtml = buildDetailsIncludesHtml(s);
+  var featuresHtml = buildFeaturesSectionHtml(s);
+  var priceCardHtml = buildPriceCardHtml(s);
 
-  var sidebarHtml =
-    '<aside class="price-card">' +
-      '<div class="price-card__header">' +
-        '<span class="price-card__label">Price</span>' +
-        '<div class="price-card__amount">' + escapeHtml(s.price) + '</div>' +
-        '<span class="price-card__note">One-time payment · No hidden fees</span>' +
-      '</div>' +
-      '<a class="price-card__cta" href="checkout.html?package=' + encodeURIComponent(s.id) + '" onclick="try{sessionStorage.setItem(\'fast_selected_package\', \'' + encodeURIComponent(s.id) + '\');}catch(e){}">' +
-        'Order Your Design Now <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>' +
-      '</a>' +
-    '</aside>';
-
-  var mainHtml =
-    '<div class="details-main">' +
-      '<div class="details-hero">' +
-        '<h1 class="details-title">' + escapeHtml(s.title) + '</h1>' +
-        (s.shortDescription ? '<p class="details-lead">' + escapeHtml(s.shortDescription) + '</p>' : '') +
-        featuresHtml +
-      '</div>' +
-      includesHtml +
-      '<div class="details-custom-box">' +
-        '<h3>Need Something Different?</h3>' +
-        '<p>Have a unique project in mind? We offer custom quotes for work beyond our standard packages.</p>' +
-        '<a class="details-custom-box__link" href="contact.html#custom">Request Custom Quote <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>' +
-      '</div>' +
-      buildDetailsFaqHtml() +
-    '</div>';
+  var customHtml =
+    '<section class="details-section details-custom-box">' +
+      '<h2 class="details-section__title">Need Something Different?</h2>' +
+      '<p>Have a unique project in mind? We offer custom quotes for work beyond our standard packages.</p>' +
+      '<a class="details-custom-box__link" href="contact.html#custom">Request Custom Quote <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>' +
+    '</section>';
 
   container.innerHTML =
     '<div class="details-layout">' +
-      mainHtml +
-      '<div class="details-sidebar">' + sidebarHtml + '</div>' +
+      '<div class="details-intro">' +
+        '<h1 class="details-title">' + escapeHtml(s.title) + '</h1>' +
+        (s.shortDescription ? '<p class="details-lead">' + escapeHtml(s.shortDescription) + '</p>' : '') +
+      '</div>' +
+      '<div class="details-sidebar">' + priceCardHtml + '</div>' +
+      includesHtml +
+      featuresHtml +
+      buildDetailsFaqHtml() +
+      customHtml +
     '</div>';
 
   initFaqAccordion(container.querySelector('.faq-accordion'));
