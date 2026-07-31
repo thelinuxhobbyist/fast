@@ -20,6 +20,7 @@
               '<nav class="site-footer__nav">' +
                 '<a href="' + b + 'index.html">Home</a>' +
                 '<a href="' + b + 'packages.html">Packages</a>' +
+                '<a href="' + b + 'contact.html">Contact</a>' +
                 '<a href="' + b + 'resources/">Resources</a>' +
               '</nav>' +
             '</div>' +
