@@ -34,11 +34,29 @@ let submitButton = null;
 let buttonText = null;
 let spinner = null;
 
+function getSubmitButtons() {
+	return Array.prototype.slice.call(document.querySelectorAll('#submit_payment, #submit_payment_mobile'));
+}
+
+function setSubmitButtonsDisabled(disabled) {
+	getSubmitButtons().forEach(function (btn) {
+		btn.disabled = disabled;
+	});
+}
+
+function getPayBlockElements(btn) {
+	var block = btn.closest('.checkout-pay-block');
+	return {
+		buttonText: block ? block.querySelector('.btn-checkout > span') : null,
+		spinner: block ? block.querySelector('.spinner') : null
+	};
+}
+
 function getFormElements() {
 	if (!submitButton) {
-		submitButton = document.getElementById('submit_payment');
-		buttonText = document.getElementById('button-text');
-		spinner = document.getElementById('spinner');
+		submitButton = document.getElementById('submit_payment') || document.getElementById('submit_payment_mobile');
+		buttonText = document.getElementById('button-text') || document.getElementById('button-text-mobile');
+		spinner = document.getElementById('spinner') || document.getElementById('spinner-mobile');
 	}
 	return { submitButton, buttonText, spinner };
 }
@@ -103,10 +121,14 @@ loadPackageDetailsImmediate(SELECTED_PACKAGE_ID);
 
 // Function to attach click handler to button
 
-function attachPaymentHandler(btn, btnText, spin) {
-	if (btn) {
-		btn.addEventListener('click', async function(event) {
-			event.preventDefault();
+function attachPaymentHandler(btn) {
+	if (!btn) return;
+	btn.addEventListener('click', async function(event) {
+		event.preventDefault();
+
+		var payEls = getPayBlockElements(btn);
+		var btnText = payEls.buttonText;
+		var spin = payEls.spinner;
 			
 			// Validate contact information
 			const customerName = document.getElementById('customer_name').value.trim();
@@ -124,23 +146,19 @@ function attachPaymentHandler(btn, btnText, spin) {
 				return;
 			}
 			
-			// Disable button and show loading state
-			btn.disabled = true;
-			btnText.style.display = 'none';
-			spin.classList.remove('hidden');
+			// Disable buttons and show loading state on clicked button
+			setSubmitButtonsDisabled(true);
+			if (btnText) btnText.style.display = 'none';
+			if (spin) spin.classList.remove('hidden');
 			
 			// Process payment with Stripe
 			processPayment(customerName, customerEmail, btn, btnText, spin);
-		});
-	}
+	});
 }
 
 // Attach handler when DOM is ready
 function initializePaymentForm() {
-	const { submitButton: btn, buttonText: btnText, spinner: spin } = getFormElements();
-	if (btn) {
-		attachPaymentHandler(btn, btnText, spin);
-	}
+	getSubmitButtons().forEach(attachPaymentHandler);
 }
 
 // Ensure Payment Element is created and mounted (creates PaymentIntent via server)
@@ -280,20 +298,14 @@ async function ensurePaymentElement(name, email, forceRefresh = false) {
 			} catch (e) { paymentElementReady = true; console.debug('ready listener failed', e); }
 			
 			// Enable submit button when Payment Element is ready
-			const { submitButton } = getFormElements();
-			if (submitButton) {
-				submitButton.disabled = false;
-				console.log('Submit button enabled');
-			}
+			setSubmitButtonsDisabled(false);
+			console.log('Submit button enabled');
 			
 			// Listen for Payment Element state changes to enable/disable button
 			if (paymentElement && typeof paymentElement.on === 'function') {
 				paymentElement.on('change', function(event) {
 					paymentElementComplete = !!event.complete;
-					const { submitButton: btn } = getFormElements();
-					if (btn) {
-						btn.disabled = event.error || !event.complete;
-					}
+					setSubmitButtonsDisabled(!!event.error || !event.complete);
 					// Detailed debug output for troubleshooting incomplete-field issues
 					try {
 						console.log('Payment Element change event:', event);
@@ -420,10 +432,13 @@ function showError(message, btn, btnText, spin) {
 		try { alert(message); } catch(e) { console.error('Unable to show error to user', e); }
 	}
 	console.error('Payment error displayed to user:', message);
-	// Re-enable button safely
-	try { if (btn) btn.disabled = false; } catch (e){}
-	try { if (btnText) btnText.style.display = 'flex'; } catch (e){}
-	try { if (spin) spin.classList.add('hidden'); } catch (e){}
+	// Re-enable buttons safely
+	setSubmitButtonsDisabled(false);
+	getSubmitButtons().forEach(function (payBtn) {
+		var payEls = getPayBlockElements(payBtn);
+		try { if (payEls.buttonText) payEls.buttonText.style.display = 'flex'; } catch (e) {}
+		try { if (payEls.spinner) payEls.spinner.classList.add('hidden'); } catch (e) {}
+	});
 }
 
 // Payment Request Button for Apple Pay, Google Pay, etc.
@@ -584,6 +599,19 @@ function formatCurrency(n){
 	return '£' + Number(n).toFixed(2);
 }
 
+function formatPayLabel(total, pkg) {
+	var amount = (pkg && pkg.price) ? pkg.price : formatCurrency(total);
+	return 'Pay ' + amount;
+}
+
+function updatePayButtonLabels(total, pkg) {
+	var label = formatPayLabel(total, pkg);
+	['button-text', 'button-text-mobile'].forEach(function (id) {
+		var el = document.getElementById(id);
+		if (el) el.innerHTML = '<i class="fa-solid fa-lock"></i> ' + label;
+	});
+}
+
 function updateSummaries(){
 	try{
 		const total = getOrderTotal();
@@ -594,14 +622,16 @@ function updateSummaries(){
 		// desktop
 		var spName = document.getElementById('summary-package-name'); if (spName && pkg) spName.textContent = pkg.title;
 		var spPrice = document.getElementById('summary-package-price'); if (spPrice) spPrice.textContent = displayPrice;
-		var st = document.getElementById('summary-total'); if (st) st.textContent = formatted;
+		var st = document.getElementById('summary-total'); if (st) st.textContent = displayPrice;
 
 		// mobile
 		var spNameM = document.getElementById('summary-package-name-mobile'); if (spNameM && pkg) spNameM.textContent = pkg.title;
 		var spPriceM = document.getElementById('summary-package-price-mobile'); if (spPriceM) spPriceM.textContent = displayPrice;
-		var stM = document.getElementById('summary-total-mobile'); if (stM) stM.textContent = formatted;
-		var stMbot = document.getElementById('summary-total-mobile-bottom'); if (stMbot) stMbot.textContent = formatted;
+		var stM = document.getElementById('summary-total-mobile'); if (stM) stM.textContent = displayPrice;
+		var stMbot = document.getElementById('summary-total-mobile-bottom'); if (stMbot) stMbot.textContent = displayPrice;
 		var ppHidden = document.getElementById('package-price'); if (ppHidden && pkg && pkg.price) ppHidden.textContent = pkg.price;
+
+		updatePayButtonLabels(total, pkg);
 		// Show debug info for troubleshooting (disabled by default)
 		try{
 			var dbg = document.getElementById('debug-banner');

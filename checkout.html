@@ -41,10 +41,6 @@
 			<a href="index.html" class="brand">
 				<img src="assets/logo.png" alt="Fast logo">
 			</a>
-			<a href="packages.html" class="checkout-header__back">
-				<i class="fa-solid fa-arrow-left" aria-hidden="true"></i>
-				<span>Packages</span>
-			</a>
 		</div>
 		<div class="checkout-header__secure">
 			<i class="fa-solid fa-lock" aria-hidden="true"></i>
@@ -54,6 +50,14 @@
 </header>
 
 <main class="checkout-shell">
+	<div class="checkout-shell__content">
+		<nav class="checkout-subnav" aria-label="Checkout navigation">
+			<a href="packages.html" class="checkout-back-link">
+				<i class="fa-solid fa-arrow-left" aria-hidden="true"></i>
+				<span>Packages</span>
+			</a>
+		</nav>
+
 	<div class="checkout-card checkout-panel">
 
 		<!-- Form column -->
@@ -83,10 +87,10 @@
 					</div>
 					<hr class="checkout-invoice__divider">
 					<ul class="checkout-trust checkout-perks">
-						<li><span class="checkout-perk__tick" aria-hidden="true">✓</span> Secure SSL checkout</li>
+						<li><span class="checkout-perk__tick" aria-hidden="true">✓</span> Secure payment</li>
 						<li><span class="checkout-perk__tick" aria-hidden="true">✓</span> 100% satisfaction guarantee</li>
-						<li><span class="checkout-perk__tick" aria-hidden="true">✓</span> 2–5 day turnaround</li>
-						<li><span class="checkout-perk__tick" aria-hidden="true">✓</span> Unlimited revisions</li>
+						<li><span class="checkout-perk__tick" aria-hidden="true">✓</span> 2–5 business day turnaround</li>
+						<li><span class="checkout-perk__tick" aria-hidden="true">✓</span> Multiple revisions</li>
 					</ul>
 				</div>
 			</div>
@@ -125,15 +129,14 @@
 						<div id="payment_error_message" role="alert" class="error-message"></div>
 					</div>
 
-					<div class="checkout-pay-block">
-						<button type="button" id="submit_payment" class="btn-checkout" disabled>
-							<span id="button-text"><i class="fa-solid fa-lock"></i> Pay now</span>
-							<div id="spinner" class="spinner hidden"></div>
+					<div class="checkout-pay-block checkout-pay-block--mobile">
+						<button type="button" id="submit_payment_mobile" class="btn-checkout" disabled>
+							<span id="button-text-mobile"><i class="fa-solid fa-lock"></i> Pay £0.00</span>
+							<div id="spinner-mobile" class="spinner hidden"></div>
 						</button>
 						<p class="checkout-secure-note">
-							<span class="checkout-secure-note__item"><i class="fa-solid fa-shield-halved" aria-hidden="true"></i> 256-bit SSL encryption</span>
-							<span class="checkout-secure-note__sep" aria-hidden="true">·</span>
-							<span class="checkout-secure-note__item">Powered by Stripe</span>
+							<i class="fa-solid fa-lock" aria-hidden="true"></i>
+							Your payment is securely processed by Stripe. We never store your payment details.
 						</p>
 					</div>
 
@@ -166,13 +169,22 @@
 					<strong id="summary-total">£0.00</strong>
 				</div>
 
-				<hr class="checkout-invoice__divider">
+				<div class="checkout-pay-block checkout-pay-block--desktop">
+					<button type="button" id="submit_payment" class="btn-checkout" disabled>
+						<span id="button-text"><i class="fa-solid fa-lock"></i> Pay £0.00</span>
+						<div id="spinner" class="spinner hidden"></div>
+					</button>
+					<p class="checkout-secure-note">
+						<i class="fa-solid fa-lock" aria-hidden="true"></i>
+						Your payment is securely processed by Stripe. We never store your payment details.
+					</p>
+				</div>
 
 				<ul class="checkout-trust checkout-perks">
-					<li><span class="checkout-perk__tick" aria-hidden="true">✓</span> Secure SSL checkout</li>
+					<li><span class="checkout-perk__tick" aria-hidden="true">✓</span> Secure payment</li>
 					<li><span class="checkout-perk__tick" aria-hidden="true">✓</span> 100% satisfaction guarantee</li>
-					<li><span class="checkout-perk__tick" aria-hidden="true">✓</span> 2–5 day turnaround</li>
-					<li><span class="checkout-perk__tick" aria-hidden="true">✓</span> Unlimited revisions</li>
+					<li><span class="checkout-perk__tick" aria-hidden="true">✓</span> 2–5 business day turnaround</li>
+					<li><span class="checkout-perk__tick" aria-hidden="true">✓</span> Multiple revisions</li>
 				</ul>
 
 				<div class="checkout-support-card">
@@ -187,6 +199,7 @@
 			</div>
 		</aside>
 
+	</div>
 	</div>
 </main>
 
