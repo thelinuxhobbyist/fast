@@ -75,6 +75,110 @@ function buildPackageCard(s, options) {
   return card;
 }
 
+function buildDetailsIncludesHtml(s) {
+  if (!s.meta || typeof s.meta !== 'object') return '';
+  var items = Object.entries(s.meta).map(function (kv) {
+    var label = formatMetaKey(kv[0]);
+    var icon = getMetaIcon(kv[0]);
+    return '<li class="details-includes__item">' +
+      '<i class="fa-solid ' + icon + '" aria-hidden="true"></i>' +
+      '<span class="details-includes__text"><strong>' + escapeHtml(label) + ':</strong> ' + escapeHtml(kv[1]) + '</span>' +
+    '</li>';
+  }).join('');
+  if (!items) return '';
+  return '<section class="details-section details-includes">' +
+    '<h2 class="details-section__title">What\'s Included</h2>' +
+    '<ul class="details-includes__list">' + items + '</ul>' +
+  '</section>';
+}
+
+function buildDetailsFaqHtml() {
+  var faqs = [
+    { q: 'What if I don\'t love my design?', a: 'We offer a 30-day money-back guarantee, no questions asked. Your satisfaction is guaranteed.' },
+    { q: 'Can I request changes?', a: 'Yes! This package includes revisions so we can get your design perfect.' },
+    { q: 'How long does it take?', a: 'First draft is delivered quickly — turnaround depends on the package, typically within 2–7 days.' },
+    { q: 'Do I own the files?', a: 'Yes. You receive full commercial use rights and can use your files however you like.' }
+  ];
+  var items = faqs.map(function (faq, i) {
+    return '<div class="faq-accordion__item">' +
+      '<button class="faq-accordion__trigger" type="button" aria-expanded="false" aria-controls="faq-panel-' + i + '" id="faq-trigger-' + i + '">' +
+        '<span>' + escapeHtml(faq.q) + '</span>' +
+        '<i class="fa-solid fa-chevron-down" aria-hidden="true"></i>' +
+      '</button>' +
+      '<div class="faq-accordion__panel" id="faq-panel-' + i + '" role="region" aria-labelledby="faq-trigger-' + i + '" hidden>' +
+        '<p>' + escapeHtml(faq.a) + '</p>' +
+      '</div>' +
+    '</div>';
+  }).join('');
+  return '<section class="details-section details-faq">' +
+    '<h2 class="details-section__title">Frequently Asked Questions</h2>' +
+    '<div class="faq-accordion">' + items + '</div>' +
+  '</section>';
+}
+
+function initFaqAccordion(container) {
+  if (!container) return;
+  container.querySelectorAll('.faq-accordion__trigger').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var isOpen = btn.getAttribute('aria-expanded') === 'true';
+      var panel = document.getElementById(btn.getAttribute('aria-controls'));
+      btn.setAttribute('aria-expanded', isOpen ? 'false' : 'true');
+      btn.classList.toggle('is-open', !isOpen);
+      if (panel) panel.hidden = isOpen;
+    });
+  });
+}
+
+function renderServiceDetails(s, container) {
+  var featuresHtml = '';
+  if (s.features && s.features.length) {
+    featuresHtml = '<ul class="details-features">' +
+      s.features.map(function (f) {
+        return '<li><i class="fa-solid fa-check" aria-hidden="true"></i><span>' + escapeHtml(f) + '</span></li>';
+      }).join('') +
+    '</ul>';
+  }
+
+  var includesHtml = buildDetailsIncludesHtml(s);
+
+  var sidebarHtml =
+    '<aside class="price-card">' +
+      '<div class="price-card__header">' +
+        '<span class="price-card__label">Price</span>' +
+        '<div class="price-card__amount">' + escapeHtml(s.price) + '</div>' +
+        '<span class="price-card__note">One-time payment · No hidden fees</span>' +
+      '</div>' +
+      '<a class="price-card__cta" href="checkout.html?package=' + encodeURIComponent(s.id) + '" onclick="try{sessionStorage.setItem(\'fast_selected_package\', \'' + encodeURIComponent(s.id) + '\');}catch(e){}">' +
+        'Order Your Design Now <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>' +
+      '</a>' +
+    '</aside>';
+
+  var mainHtml =
+    '<div class="details-main">' +
+      '<div class="details-hero">' +
+        '<h1 class="details-title">' + escapeHtml(s.title) + '</h1>' +
+        (s.shortDescription ? '<p class="details-lead">' + escapeHtml(s.shortDescription) + '</p>' : '') +
+        featuresHtml +
+      '</div>' +
+      includesHtml +
+      '<div class="details-custom-box">' +
+        '<h3>Need Something Different?</h3>' +
+        '<p>Have a unique project in mind? We offer custom quotes for work beyond our standard packages.</p>' +
+        '<a class="details-custom-box__link" href="contact.html#custom">Request Custom Quote <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>' +
+      '</div>' +
+      buildDetailsFaqHtml() +
+    '</div>';
+
+  container.innerHTML =
+    '<div class="details-layout">' +
+      mainHtml +
+      '<div class="details-sidebar">' + sidebarHtml + '</div>' +
+    '</div>';
+
+  initFaqAccordion(container.querySelector('.faq-accordion'));
+  document.title = s.title + ' \u2014 Fast Graphic Design';
+}
+
 document.addEventListener('DOMContentLoaded', function(){
   // Mobile nav toggles
   var toggles = document.querySelectorAll('.menu-toggle');
@@ -118,39 +222,17 @@ document.addEventListener('DOMContentLoaded', function(){
     });
   }
 
-  // Details page rendering with two-column layout
+  // Details page rendering
   var details = document.getElementById('service-details');
-  if(details && typeof SERVICES !== 'undefined'){
+  if (details && typeof SERVICES !== 'undefined') {
     var params = new URLSearchParams(window.location.search);
     var id = params.get('id');
     var s = findService(id);
-    if(!s){
-      details.innerHTML = '<h2>Service not found</h2><p><a href="packages.html">Back to packages</a></p>';
+    if (!s) {
+      details.innerHTML = '<div class="details-not-found"><h2>Service not found</h2><p><a href="packages.html">Back to packages</a></p></div>';
       return;
     }
-    // build left content (text only - no duplication)
-    var featuresHtml = '<ul class="features-list">'+ (s.features||[]).map(function(f){ return '<li>'+f+'</li>'; }).join('') +'</ul>';
-    var customSection = '<div style="padding:20px;background:#f9f9f9;border-radius:10px;border-left:4px solid var(--accent)"><h3 style="margin-top:0;color:var(--accent)">Need Something Different?</h3><p style="color:#666;margin:8px 0">Have a unique project in mind? We offer custom quotes for work beyond our standard packages.</p><a class="btn" href="contact.html#custom" style="display:inline-block;margin-top:10px;background:var(--accent);color:#fff;padding:10px 16px;font-weight:700">Request Custom Quote</a></div>';
-    var faqContent = '<div class="faq-section"><h3 style="margin:18px 0 12px 0;color:var(--accent)">Frequently Asked Questions</h3><div class="faq-item"><div class="faq-question"><i class="fa-solid fa-circle-question"></i> What if I don\'t love my design?</div><div class="faq-answer">We offer a 30-day money-back guarantee, no questions asked. Your satisfaction is guaranteed.</div></div><div class="faq-item"><div class="faq-question"><i class="fa-solid fa-circle-question"></i> Can I request changes?</div><div class="faq-answer">Yes! This package includes 2 rounds of free revisions to get your design perfect.</div></div><div class="faq-item"><div class="faq-question"><i class="fa-solid fa-circle-question"></i> How long does it take?</div><div class="faq-answer">First draft delivered within 48 hours. Revisions and final files follow quickly after.</div></div><div class="faq-item"><div class="faq-question"><i class="fa-solid fa-circle-question"></i> Do I own the files?</div><div class="faq-answer">100% yes. You\'ll receive full copyright ownership and can use them however you like.</div></div></div>';
-    var leftHtml = '<div style="display:flex;flex-direction:column;gap:24px"><h1>'+s.title+'</h1><p style="margin:0;color:#666">'+(s.longDescription||'')+'</p>'+featuresHtml+'</div>';
-    var supportingHtml = '<div style="display:flex;flex-direction:column;gap:24px">'+customSection+faqContent+'</div>';
-    
-    // build right price card (with meta info and trust)
-    var metaHtmlRight = '';
-    if(s.meta && typeof s.meta === 'object'){
-      metaHtmlRight = Object.entries(s.meta).map(function(kv){
-        var key = kv[0];
-        var val = kv[1];
-        var icon = '';
-        if(/turnaround|time|days/i.test(key)) icon = '<i class="fa-solid fa-clock"></i>';
-        else if(/format|file|format/i.test(key)) icon = '<i class="fa-solid fa-file"></i>';
-        else if(/revis/i.test(key)) icon = '<i class="fa-solid fa-pen-fancy"></i>';
-        else icon = '<i class="fa-solid fa-info-circle"></i>';
-        return '<div class="meta-item">'+icon+'<div><strong>'+key+':</strong><div style="color:var(--muted)">'+val+'</div></div></div>';
-      }).join('');
-    }
-    var rightHtml = '<aside class="price-card"><div style="text-align:center;margin-bottom:20px"><div class="price-sub">Price</div><div class="price-big">'+s.price+'</div><div class="price-sub" style="font-size:12px;color:var(--green);font-weight:700">One-time payment • No hidden fees</div></div><div style="background:linear-gradient(135deg,rgba(164,206,57,0.08),rgba(11,102,51,0.05));padding:14px;border-radius:8px;margin-bottom:16px"><a class="btn-primary btn btn-primary-cta" href="checkout.html?package='+encodeURIComponent(s.id)+'" onclick="try{sessionStorage.setItem(\'fast_selected_package\', \''+encodeURIComponent(s.id)+'\');}catch(e){}" style="width:100%;background:var(--accent);box-shadow:0 8px 24px rgba(11, 102, 102, 0.3)"><span class="btn-icon">✓</span> Order Your Design Now</a></div><div class="meta-list" style="border-top:1px solid #eee;padding-top:14px;margin-bottom:16px">'+metaHtmlRight+'</div><div class="trust-section"><div class="trust-badge"><i class="fa-solid fa-star" style="color:#ffc107"></i> <span><strong>Rated 4.9/5</strong> by 300+ Clients</span></div><div class="trust-item"><i class="fa-solid fa-shield-halved" style="color:var(--green)"></i> <span>30-Day Money-Back Guarantee</span></div><div class="trust-item"><i class="fa-solid fa-bolt" style="color:var(--accent)"></i> <span>First Draft in 48 Hours</span></div><div class="trust-item"><i class="fa-solid fa-undo" style="color:var(--green)"></i> <span>2 Rounds of Free Revisions</span></div></div></aside>';
-    details.innerHTML = '<div class="details-layout"><div class="details-main">'+leftHtml+'</div><div class="details-price">'+rightHtml+'</div><div class="details-supporting">'+supportingHtml+'</div></div>';
+    renderServiceDetails(s, details);
   }
 
 });
