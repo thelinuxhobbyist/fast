@@ -37,18 +37,18 @@
 
 <header class="checkout-header">
 	<div class="container header-inner checkout-header__inner">
-		<a href="index.html" class="brand">
-			<img src="assets/logo.png" alt="Fast logo">
-		</a>
-		<div class="checkout-header__actions">
+		<div class="checkout-header__left">
+			<a href="index.html" class="brand">
+				<img src="assets/logo.png" alt="Fast logo">
+			</a>
 			<a href="packages.html" class="checkout-header__back">
 				<i class="fa-solid fa-arrow-left" aria-hidden="true"></i>
 				<span>Packages</span>
 			</a>
-			<div class="checkout-header__secure">
-				<i class="fa-solid fa-lock" aria-hidden="true"></i>
-				<span>Secure checkout</span>
-			</div>
+		</div>
+		<div class="checkout-header__secure">
+			<i class="fa-solid fa-lock" aria-hidden="true"></i>
+			<span>Secure checkout</span>
 		</div>
 	</div>
 </header>
@@ -99,7 +99,7 @@
 			<form id="payment_form" class="checkout-form">
 				<fieldset class="checkout-fieldset">
 					<legend class="checkout-fieldset__title">Contact details</legend>
-					<div class="form-grid checkout-form__grid">
+					<div class="checkout-form__grid checkout-contact-fields">
 						<div class="form-field">
 							<label for="customer_name">Full name <span class="required-mark">*</span></label>
 							<input type="text" id="customer_name" name="customer_name" required placeholder="John Smith" autocomplete="name">
@@ -113,13 +113,15 @@
 
 				<fieldset class="checkout-fieldset checkout-fieldset--payment">
 					<legend class="checkout-fieldset__title">Payment</legend>
-					<div class="form-field">
-						<label for="payment_element">Card details <span class="required-mark">*</span></label>
-						<div id="payment_element" class="stripe-element"></div>
-						<div class="checkout-card-brands">
-							<img src="https://img.shields.io/badge/Visa-1A1F71?style=flat&logo=visa&logoColor=white" alt="Visa">
-							<img src="https://img.shields.io/badge/Mastercard-EB001B?style=flat&logo=mastercard&logoColor=white" alt="Mastercard">
+					<div class="form-field checkout-payment-field">
+						<div class="checkout-payment-label-row">
+							<label for="payment_element">Card details <span class="required-mark">*</span></label>
+							<div class="checkout-card-brands" aria-hidden="true">
+								<span class="checkout-card-brand checkout-card-brand--visa">VISA</span>
+								<span class="checkout-card-brand checkout-card-brand--mc">MC</span>
+							</div>
 						</div>
+						<div id="payment_element" class="stripe-element"></div>
 						<div id="payment_error_message" role="alert" class="error-message"></div>
 					</div>
 
