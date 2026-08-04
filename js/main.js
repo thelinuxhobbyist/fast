@@ -38,10 +38,18 @@ function formatMetaKey(k) {
   }).join(' ');
 }
 
+function parsePricePence(price) {
+  var num = String(price || '').replace(/[^0-9.]/g, '');
+  var pounds = parseFloat(num);
+  if (isNaN(pounds)) return null;
+  return Math.round(pounds * 100);
+}
+
 function buildPackageCard(s, options) {
   options = options || {};
   var maxFeatures = options.maxFeatures != null ? options.maxFeatures : 4;
   var maxMeta = options.maxMeta != null ? options.maxMeta : 4;
+  var isPopular = !!s.popular;
 
   var metaHtml = '';
   if (s.meta && typeof s.meta === 'object') {
@@ -60,8 +68,9 @@ function buildPackageCard(s, options) {
   }
 
   var card = document.createElement('article');
-  card.className = 'package-card';
+  card.className = 'package-card' + (isPopular ? ' package-card--popular' : '');
   card.innerHTML =
+    (isPopular ? '<div class="package-card__badge" aria-label="Most Popular package">Most Popular</div>' : '') +
     '<div class="package-card__body">' +
       '<h3 class="package-card__title">' + escapeHtml(s.title) + '</h3>' +
       '<div class="package-card__price">' + escapeHtml(s.price) + '</div>' +
@@ -70,9 +79,57 @@ function buildPackageCard(s, options) {
       (s.shortDescription ? '<p class="package-card__desc">' + escapeHtml(s.shortDescription) + '</p>' : '') +
     '</div>' +
     '<div class="package-card__footer">' +
-      '<a class="package-card__cta" href="details.html?id=' + encodeURIComponent(s.id) + '">View Details <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>' +
+      '<a class="package-card__cta' + (isPopular ? ' package-card__cta--popular' : '') + '" href="details.html?id=' + encodeURIComponent(s.id) + '">View Details <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>' +
     '</div>';
   return card;
+}
+
+function injectPackagesSchema(services) {
+  if (!services || !services.length) return;
+  var existing = document.getElementById('packages-jsonld');
+  if (existing) existing.remove();
+
+  var origin = window.location.origin || 'https://fastgraphic.co.uk';
+  var items = services.map(function (s, index) {
+    var pence = parsePricePence(s.price);
+    var offer = {
+      '@type': 'Offer',
+      priceCurrency: 'GBP',
+      availability: 'https://schema.org/InStock',
+      url: origin + '/details.html?id=' + encodeURIComponent(s.id)
+    };
+    if (pence != null) offer.price = (pence / 100).toFixed(2);
+
+    return {
+      '@type': 'ListItem',
+      position: index + 1,
+      item: {
+        '@type': 'Service',
+        name: s.title,
+        description: s.shortDescription || s.longDescription || '',
+        provider: {
+          '@type': 'Organization',
+          name: 'Fast Graphic Design'
+        },
+        offers: offer
+      }
+    };
+  });
+
+  var schema = {
+    '@context': 'https://schema.org',
+    '@type': 'ItemList',
+    name: 'Fast Graphic Design Packages',
+    description: 'Fixed-price design and web packages for small businesses.',
+    numberOfItems: items.length,
+    itemListElement: items
+  };
+
+  var script = document.createElement('script');
+  script.type = 'application/ld+json';
+  script.id = 'packages-jsonld';
+  script.textContent = JSON.stringify(schema);
+  document.head.appendChild(script);
 }
 
 function buildDetailsIncludesHtml(s) {
@@ -130,15 +187,27 @@ function initFaqAccordion(container) {
 }
 
 function buildPriceCardHtml(s) {
-  return '<aside class="price-card">' +
+  var popularBadge = s.popular
+    ? '<span class="price-card__popular">Most Popular</span>'
+    : '';
+  return '<aside class="price-card' + (s.popular ? ' price-card--popular' : '') + '">' +
+    popularBadge +
     '<div class="price-card__header">' +
       '<span class="price-card__label">Price</span>' +
       '<div class="price-card__amount">' + escapeHtml(s.price) + '</div>' +
       '<span class="price-card__note">One-time payment · No hidden fees</span>' +
     '</div>' +
     '<a class="price-card__cta" href="checkout.html?package=' + encodeURIComponent(s.id) + '" onclick="try{sessionStorage.setItem(\'fast_selected_package\', \'' + encodeURIComponent(s.id) + '\');}catch(e){}">' +
-      'Order Your Design Now <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>' +
+      'Order Now <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>' +
     '</a>' +
+  '</aside>';
+}
+
+function buildCustomQuoteHtml() {
+  return '<aside class="details-custom-box">' +
+    '<h2 class="details-custom-box__title">Need something different?</h2>' +
+    '<p>We also quote custom work beyond these packages.</p>' +
+    '<a class="details-custom-box__link" href="contact.html#custom">Request Custom Quote <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>' +
   '</aside>';
 }
 
@@ -159,24 +228,16 @@ function renderServiceDetails(s, container) {
   var featuresHtml = buildFeaturesSectionHtml(s);
   var priceCardHtml = buildPriceCardHtml(s);
 
-  var customHtml =
-    '<section class="details-section details-custom-box">' +
-      '<h2 class="details-section__title">Need Something Different?</h2>' +
-      '<p>Have a unique project in mind? We offer custom quotes for work beyond our standard packages.</p>' +
-      '<a class="details-custom-box__link" href="contact.html#custom">Request Custom Quote <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>' +
-    '</section>';
-
   container.innerHTML =
     '<div class="details-layout">' +
       '<div class="details-intro">' +
         '<h1 class="details-title">' + escapeHtml(s.title) + '</h1>' +
         (s.shortDescription ? '<p class="details-lead">' + escapeHtml(s.shortDescription) + '</p>' : '') +
       '</div>' +
-      '<div class="details-sidebar">' + priceCardHtml + '</div>' +
+      '<div class="details-sidebar">' + priceCardHtml + buildCustomQuoteHtml() + '</div>' +
       includesHtml +
       featuresHtml +
       buildDetailsFaqHtml() +
-      customHtml +
     '</div>';
 
   initFaqAccordion(container.querySelector('.faq-accordion'));
@@ -224,6 +285,7 @@ document.addEventListener('DOMContentLoaded', function(){
     SERVICES.forEach(function (s) {
       list.appendChild(buildPackageCard(s));
     });
+    injectPackagesSchema(SERVICES);
   }
 
   // Details page rendering
@@ -237,6 +299,7 @@ document.addEventListener('DOMContentLoaded', function(){
       return;
     }
     renderServiceDetails(s, details);
+    injectPackagesSchema([s]);
   }
 
 });

@@ -2,7 +2,7 @@ const SERVICES = [
   {
     "id": "logo-basic",
     "title": "Logo \u2014 Basic",
-    "price": "\u00a349",
+    "price": "\u00a359",
     "meta": {
       "revisions": "1 revision",
       "format": "PNG & JPG",
@@ -20,7 +20,7 @@ const SERVICES = [
   {
     "id": "logo-premium",
     "title": "Logo \u2014 Premium Brand Kit",
-    "price": "\u00a399",
+    "price": "\u00a3129",
     "meta": {
       "revisions": "3 revisions",
       "format": "AI, SVG, PNG, JPG",
@@ -38,7 +38,7 @@ const SERVICES = [
   {
     "id": "flyer",
     "title": "Flyer / Poster Design",
-    "price": "\u00a335",
+    "price": "\u00a345",
     "meta": {
       "size": "A4 or A5",
       "turnaround": "2 days",
@@ -56,7 +56,7 @@ const SERVICES = [
   {
     "id": "business-card",
     "title": "Business Card Design",
-    "price": "\u00a325",
+    "price": "\u00a335",
     "meta": {
       "size": "85\u00d755mm",
       "format": "PDF, PNG"
@@ -72,8 +72,8 @@ const SERVICES = [
   },
   {
     "id": "social-templates",
-    "title": "Social Media Templates",
-    "price": "\u00a375",
+    "title": "Social Media Templates (10 Templates)",
+    "price": "\u00a395",
     "meta": {
       "platforms": "FB, IG, LinkedIn, Twitter",
       "count": "10 templates"
@@ -90,7 +90,7 @@ const SERVICES = [
   {
     "id": "website-starter",
     "title": "Website \u2014 Starter",
-    "price": "\u00a3149",
+    "price": "\u00a3199",
     "meta": {
       "platform": "HTML or WordPress",
       "pages": "Up to 3 pages",
@@ -108,7 +108,8 @@ const SERVICES = [
   {
     "id": "website-business",
     "title": "Website \u2014 Business",
-    "price": "\u00a3249",
+    "price": "\u00a3349",
+    "popular": true,
     "meta": {
       "platform": "WordPress",
       "pages": "Up to 6 pages",
@@ -126,7 +127,7 @@ const SERVICES = [
   {
     "id": "online-shop",
     "title": "Online Shop (eCommerce)",
-    "price": "\u00a3399",
+    "price": "\u00a3549",
     "meta": {
       "platform": "Shopify or WooCommerce",
       "products": "Up to 20 products"
@@ -143,7 +144,7 @@ const SERVICES = [
   {
     "id": "stripe-setup",
     "title": "Website Setup with Stripe",
-    "price": "\u00a3129",
+    "price": "\u00a3149",
     "meta": {
       "service": "Stripe integration",
       "turnaround": "2 days"
@@ -160,7 +161,7 @@ const SERVICES = [
   {
     "id": "shopify",
     "title": "Shopify Setup",
-    "price": "\u00a3299",
+    "price": "\u00a3399",
     "meta": {
       "service": "Shopify store",
       "products": "Up to 50 products"
@@ -177,7 +178,7 @@ const SERVICES = [
   {
     "id": "birthday-banner",
     "title": "Birthday Banner Design",
-    "price": "\u00a330",
+    "price": "\u00a339",
     "meta": {
       "size": "Custom",
       "format": "PNG, PDF"
@@ -194,7 +195,7 @@ const SERVICES = [
   {
     "id": "greeting-card",
     "title": "Greeting Card Design",
-    "price": "\u00a335",
+    "price": "\u00a345",
     "meta": {
       "format": "Print or Digital"
     },
@@ -210,7 +211,7 @@ const SERVICES = [
   {
     "id": "brochure",
     "title": "Brochure Design",
-    "price": "\u00a379",
+    "price": "\u00a399",
     "meta": {
       "type": "Tri-fold or Bi-fold",
       "format": "Print-ready PDF"
@@ -227,7 +228,7 @@ const SERVICES = [
   {
     "id": "amend-flyer",
     "title": "Amending Existing Flyers",
-    "price": "\u00a325",
+    "price": "\u00a330",
     "meta": {
       "edits": "Minor text/image edits",
       "turnaround": "24 hours"
@@ -244,7 +245,7 @@ const SERVICES = [
   {
     "id": "amend-logo",
     "title": "Amending Existing Logos",
-    "price": "\u00a330",
+    "price": "\u00a340",
     "meta": {
       "service": "Logo tweaks",
       "format": "Vector/PNG"
@@ -260,8 +261,8 @@ const SERVICES = [
   },
   {
     "id": "photo-editing",
-    "title": "Product Photo Editing",
-    "price": "\u00a340",
+    "title": "Product Photo Editing (up to 10 photos)",
+    "price": "\u00a355",
     "meta": {
       "count": "Up to 10 photos",
       "service": "Background cleanup"
@@ -278,7 +279,7 @@ const SERVICES = [
   {
     "id": "seo-basics",
     "title": "SEO Basics",
-    "price": "\u00a389",
+    "price": "\u00a3109",
     "meta": {
       "pages": "Up to 6 pages",
       "service": "On-page SEO"
@@ -295,7 +296,7 @@ const SERVICES = [
   {
     "id": "google-profile",
     "title": "Google Business Profile Setup",
-    "price": "\u00a349",
+    "price": "\u00a369",
     "meta": {
       "service": "GBP setup",
       "photos": "3 photos"
@@ -312,7 +313,7 @@ const SERVICES = [
   {
     "id": "analytics",
     "title": "Analytics & Tracking Setup",
-    "price": "\u00a339",
+    "price": "\u00a359",
     "meta": {
       "tools": "GA4, Search Console, GTM",
       "service": "Tracking setup"
@@ -329,7 +330,7 @@ const SERVICES = [
   {
     "id": "content-updates",
     "title": "Content Upload & Page Updates",
-    "price": "\u00a329",
+    "price": "\u00a339",
     "meta": {
       "edits": "Up to 5 edits",
       "service": "Content updates"
